@@ -262,20 +262,46 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   .nav__platforms li:nth-child(n+3) { display: none; }
 }
 
-/* ---- hero: pure typography on pure black -------------------------- */
+/* ---- hero ---------------------------------------------------------
+   Phone: full-bleed photo behind the type. A 390px viewport renders the
+   1920px source far below native scale, so it is razor sharp there.
+   Desktop: photo drops away, pure typography carries the frame. */
 .hero {
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.hero__media { position: absolute; inset: 0; z-index: 0; }
+.hero__img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 64% 30%;
+  filter: grayscale(1) contrast(1.06);
+}
+.hero__scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.15) 22%),
+    linear-gradient(to top, #000 4%, rgba(0,0,0,.82) 26%, rgba(0,0,0,.35) 45%, rgba(0,0,0,0) 68%);
 }
 
 .hero__content {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: var(--wrap);
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding: 0 var(--gutter) clamp(6rem, 16vh, 9rem);
   text-align: center;
+}
+
+@media (min-width: 900px) {
+  .hero { align-items: center; }
+  .hero__media { display: none; }
+  .hero__content { padding-bottom: 0; }
 }
 
 .hero__tag {
@@ -337,9 +363,11 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 
 /* ---- cinematic image strip ---------------------------------------- */
 .band {
-  height: clamp(220px, 42vh, 420px);
+  display: none;                 /* the phone already has the photo */
+  height: clamp(260px, 40vh, 440px);
   overflow: hidden;
 }
+@media (min-width: 900px) { .band { display: block; } }
 .band__img {
   width: 100%;
   height: 100%;
@@ -397,59 +425,35 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   margin-top: 1.75rem;
 }
 
-.oscillator__rostertitle { margin-top: clamp(3.5rem, 8vw, 6rem); }
-
-.grid--roster {
+/* quiet fact list — replaces the roster grid */
+.facts {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: clamp(1.25rem, 2.5vw, 2rem);
-  margin-top: 1.75rem;
-}
-@media (min-width: 1100px) {
-  .grid--roster { grid-template-columns: repeat(4, 1fr); }
-}
-
-.roster-card { display: block; }
-.roster-card__media {
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  background: var(--surface);
-}
-.roster-card__media img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.15);
-  transition: transform .7s var(--ease);
-}
-.roster-card:hover .roster-card__media img { transform: scale(1.05); }
-
-.roster-card--text .roster-card__media {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: clamp(3rem, 7vw, 5rem) 0 0;
+  background: var(--hairline);
   border: 1px solid var(--hairline);
 }
-.roster-card__initial {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--accent);
-  text-transform: uppercase;
-}
+@media (min-width: 720px) { .facts { grid-template-columns: repeat(4, 1fr); } }
 
-.roster-card__name {
-  font-size: .9375rem;
-  font-weight: 500;
-  margin-top: .8rem;
+.facts__cell {
+  background: var(--bg);
+  padding: clamp(1.1rem, 2.5vw, 1.75rem);
 }
-.roster-card__handle {
-  font-size: .625rem;
+.facts dt {
+  font-size: .5625rem;
   font-weight: 500;
-  letter-spacing: .18em;
+  letter-spacing: .26em;
   text-transform: uppercase;
   color: var(--dim);
-  margin-top: .15rem;
 }
+.facts dd {
+  margin: .55rem 0 0;
+  font-size: .875rem;
+  font-weight: 500;
+}
+
+
 
 /* ---- music -------------------------------------------------------- */
 .music__more {
@@ -579,22 +583,31 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   padding: .2rem .5rem;
 }
 
-/* two quiet lines under each cover — the card itself is the link */
+/* two quiet lines under each cover, both clamped to one line so every
+   card in the row ends at the same baseline */
 .card__title {
   font-size: .9375rem;
   font-weight: 500;
   line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card__meta {
   display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
+  gap: .55rem;
   align-items: baseline;
   margin-top: .35rem;
   font-size: .625rem;
   font-weight: 500;
   letter-spacing: .16em;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.card__meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card__meta em { font-style: normal; color: var(--muted); }
 .card__meta span { color: var(--dim); }
@@ -832,19 +845,27 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .works__group:first-of-type { margin-top: 0; }
 .works__group > .tag-label { margin-bottom: 1.25rem; }
 
+/* phone: cover + title on one row, the links drop to their own row */
 .work {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
-  gap: 1.25rem;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: .5rem 1rem;
   align-items: center;
   padding: 1.1rem 0;
   border-bottom: 1px solid var(--hairline);
   transition: background .35s var(--ease), padding .35s var(--ease);
 }
+.work__links {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1.25rem;
+}
 .work:first-of-type { border-top: 1px solid var(--hairline); }
 @media (min-width: 720px) {
   .work { grid-template-columns: 88px minmax(0, 1fr) minmax(0, 12rem) auto; gap: 2rem; }
   .work:hover { background: rgba(255, 255, 255, .025); padding-inline: .75rem; }
+  .work__links { grid-column: auto; justify-self: end; flex-wrap: nowrap; }
 }
 
 .work__cover {
@@ -866,32 +887,15 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .work__meta span { color: var(--dim); margin-left: .6rem; }
 @media (min-width: 720px) { .work__meta { display: block; } }
 
-.work__links {
-  display: flex;
-  gap: 1.25rem;
-  justify-self: end;
-}
-
 .works__back { margin-top: clamp(3rem, 6vw, 4.5rem); }
 
 /* ---- reveal (JS adds .is-in; GSAP takes over when available) ------- */
-.reveal, .card, .roster-card, .event { opacity: 1; }
-html.js .reveal,
-html.js .card,
-html.js .roster-card,
-html.js .event {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity .8s var(--ease), transform .8s var(--ease);
-}
-html.js .is-in { opacity: 1; transform: none; }
+.reveal, .card, html.js .is-in { opacity: 1; transform: none; }
 
 /* GSAP drives these directly — the CSS transition would double-animate */
 html.gsap .reveal,
 html.gsap .card,
-html.gsap .roster-card,
-html.gsap .event { transition: none; }
-
+html.gsap 
 /* ---- reduced motion ----------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -902,9 +906,7 @@ html.gsap .event { transition: none; }
   }
   html.js .reveal,
   html.js .card,
-  html.js .roster-card,
-  html.js .event { opacity: 1; transform: none; }
-
+  html.js 
   /* the ticker parks instead of snapping to its end frame */
   .ticker__track { animation: none; }
 }

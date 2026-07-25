@@ -62,8 +62,7 @@
 
   var GROUPS = [
     { type: 'release', title: 'Label releases' },
-    { type: 'mix',     title: 'Live mixes' },
-    { type: 'video',   title: 'Video' }
+    { type: 'mix',     title: 'Live mixes' }
   ];
 
   function workRow(release) {
@@ -141,19 +140,41 @@
     }
 
     /* simple reveal — no GSAP dependency on this page */
-    var targets = document.querySelectorAll('.reveal, .work');
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target);
-        });
-      }, { rootMargin: '0px 0px -6% 0px' });
-      targets.forEach(function (node) { io.observe(node); });
-    } else {
+    var targets = Array.prototype.slice.call(document.querySelectorAll('.reveal, .work'));
+    if (!('IntersectionObserver' in window)) {
       targets.forEach(function (node) { node.classList.add('is-in'); });
+      return;
     }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px' });
+    targets.forEach(function (node) { io.observe(node); });
+
+    /* A fast scroll can carry a row from below the viewport to above it
+       between frames, so the observer never sees it intersect. Sweep
+       anything already scrolled past. */
+    var ticking = false;
+    function sweep() {
+      targets = targets.filter(function (node) {
+        if (node.classList.contains('is-in')) return false;
+        if (node.getBoundingClientRect().bottom > 0) return true;
+        node.classList.add('is-in');
+        io.unobserve(node);
+        return false;
+      });
+      if (!targets.length) window.removeEventListener('scroll', onScroll);
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { sweep(); ticking = false; });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
   if (document.readyState === 'loading') {

@@ -276,48 +276,21 @@
 
   /* ---- label ------------------------------------------------------ */
 
-  function renderRoster() {
-    var grid = $('#roster-grid');
-    var roster = get('label.roster');
-    if (grid && Array.isArray(roster)) {
-      grid.textContent = '';
-      roster.forEach(function (artist) {
-        if (!artist || !artist.name) return;
-        var photo = safeUrl(artist.photo);
-        var card = el('article', 'roster-card' + (photo ? '' : ' roster-card--text'));
-
-        var media = el('div', 'roster-card__media');
-        if (photo) {
-          media.appendChild(img(photo, artist.name));
-        } else {
-          /* no photo yet — a typographic tile reads as a design choice,
-             an empty frame reads as a bug */
-          media.appendChild(el('span', 'roster-card__initial', artist.name.charAt(0)));
-        }
-        card.appendChild(media);
-
-        card.appendChild(el('h4', 'roster-card__name', artist.name));
-        if (artist.handle) card.appendChild(el('p', 'roster-card__handle', artist.handle));
-        grid.appendChild(card);
+  function renderLabel() {
+    var facts = get('label.facts');
+    var list = $('#label-facts');
+    if (list && Array.isArray(facts)) {
+      list.textContent = '';
+      facts.forEach(function (fact) {
+        if (!fact || !fact.label) return;
+        var cell = el('div', 'facts__cell');
+        cell.appendChild(el('dt', null, fact.label));
+        cell.appendChild(el('dd', null, fact.value || ''));
+        list.appendChild(cell);
       });
-
-      /* photo tiles fill out the row beside the artist cards */
-      var gallery = get('label.gallery');
-      if (Array.isArray(gallery)) {
-        gallery.forEach(function (src) {
-          var url = safeUrl(src);
-          if (!url) return;
-          var tile = el('figure', 'roster-card');
-          var media = el('div', 'roster-card__media');
-          media.appendChild(img(url, ''));
-          tile.appendChild(media);
-          grid.appendChild(tile);
-        });
-      }
     }
 
-    /* section title is the label's own lockup; if the artwork is missing,
-       fall back to the name set in the display face */
+    /* section title lockup; falls back to the label name in Anton */
     var title = $('#label-title');
     var wordmark = $('#label-wordmark');
     if (wordmark) {
@@ -338,29 +311,14 @@
       }
     }
 
-    /* the circular logo appears twice: hero sticker + footer stamp */
-    ['#label-logo', '#footer-stamp'].forEach(function (sel) {
-      var node = $(sel);
-      if (!node) return;
+    var stamp = $('#footer-stamp');
+    if (stamp) {
       var src = safeUrl(get('label.logo'));
       if (src) {
-        node.src = src;
-        node.addEventListener('error', function () { node.remove(); }, { once: true });
+        stamp.src = src;
+        stamp.addEventListener('error', function () { stamp.remove(); }, { once: true });
       } else {
-        node.remove();
-      }
-    });
-
-    var link = $('#label-link');
-    if (link) {
-      var href = safeUrl(get('label.url'));
-      link.textContent = get('label.linkLabel') || 'Listen';
-      if (href) {
-        link.href = href;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-      } else {
-        link.removeAttribute('href');
+        stamp.remove();
       }
     }
   }
@@ -534,7 +492,7 @@
 
   function revealTargets() {
     return Array.prototype.slice.call(
-      document.querySelectorAll('.reveal, .card, .roster-card, .event')
+      document.querySelectorAll('.reveal, .card, .event')
     );
   }
 
@@ -599,7 +557,7 @@
     gsap.set(targets, { opacity: 0, y: 28 });
 
     document.querySelectorAll('.section, .footer').forEach(function (section) {
-      var children = section.querySelectorAll('.reveal, .card, .roster-card, .event');
+      var children = section.querySelectorAll('.reveal, .card, .event');
       if (!children.length) return;
       gsap.to(children, {
         opacity: 1,
@@ -642,7 +600,7 @@
     renderReleases();
     renderPlayer();
     renderNavPlatforms();
-    renderRoster();
+    renderLabel();
     renderEvents();
     renderForm();
     initNav();

@@ -32,8 +32,7 @@ window.KEYV_CONFIG = {
   socials: [
     { label: "SoundCloud", url: "https://soundcloud.com/keyvdj",                    handle: "keyvdj" },
     { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942",     handle: "KEYV"   },
-    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic", handle: "Tugwave" },
-    { label: "YouTube",    url: "https://youtu.be/qVqKLeuRrA0",                     handle: "KEYV"   }
+    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic", handle: "Tugwave" }
   ],
 
   /* ---- music ------------------------------------------------------- */
@@ -77,25 +76,13 @@ window.KEYV_CONFIG = {
       links: [
         { label: "SoundCloud", url: "https://soundcloud.com/keyvdj/demonstrator" }
       ]
-    },
-    {
-      title: "Live DJ Set",
-      mix: "Uchiha Mob · Series 01 EP01",
-      genre: "Electro",
-      year: "",
-      type: "video",
-      cover: "img/releases/live-set.webp",
-      links: [
-        { label: "YouTube", url: "https://youtu.be/qVqKLeuRrA0" }
-      ]
     }
   ],
 
   platforms: [
     { label: "SoundCloud", url: "https://soundcloud.com/keyvdj" },
     { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942" },
-    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" },
-    { label: "YouTube",    url: "https://youtu.be/qVqKLeuRrA0" }
+    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" }
   ],
 
   /* ---- label ------------------------------------------------------- */
@@ -105,17 +92,15 @@ window.KEYV_CONFIG = {
     description:
       "Oscillator is an independent techno label founded by KEYV. It exists " +
       "for records that are built for the floor first: stripped, loud and " +
-      "unpolished. A roster of artists who play the same way.",
+      "unpolished, and made to be played loud.",
     logo: "img/oscillator-logo.webp",          /* circular stamp — footer + favicon */
     wordmark: "img/oscillator-wordmark.webp",  /* horizontal lockup — section title */
-    roster: [
-      { name: "KEYV", handle: "@keyvdj", photo: "img/roster/artist-01.webp" }
-    ],
-    /* photo tiles rendered beside the roster cards */
-    gallery: [
-      "img/scene-crowd.webp",
-      "img/scene-burst.webp",
-      "img/scene-party.webp"
+    /* quiet fact list under the label copy */
+    facts: [
+      { label: "Founded", value: "by KEYV" },
+      { label: "Focus",   value: "Techno · Electro" },
+      { label: "Format",  value: "Digital · V.A." },
+      { label: "Base",    value: "Tehran" }
     ]
   },
 
@@ -126,10 +111,10 @@ window.KEYV_CONFIG = {
 
   /* ---- theme ------------------------------------------------------- */
   colors: {
-    bg: "#0A0A0A",
-    surface: "#141414",
+    bg: "#000000",
+    surface: "#0D0D0D",
     text: "#EDEDED",
-    muted: "#8A8A8A",
+    muted: "#9A9A9A",
     accent: "#E5E418"
   },
 

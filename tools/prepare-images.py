@@ -44,21 +44,13 @@ JOBS = [
     # downscaled = sharp) so it is never stretched past native scale there;
     # the single Lanczos+unsharp upscale only serves very wide viewports.
     dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1920, upscale=True, sharpen=True),
-    # portrait: untouched original look — no crop, no grade, full frame
-    dict(src="portrait-studio.jpeg", out="bio.webp",        width=1600, mono=False),
-    dict(src="live-beams.jpeg",      out="roster/artist-01.webp", width=900, aspect=(3, 4), focus=0.38),
+    # portrait: press crop on the face, full source resolution behind it
+    dict(src="portrait-studio.jpeg", out="bio.webp",        width=1500, aspect=(4, 5), focus=0.13, mono=False),
 
-    # spare scene shots, not referenced by config.js yet
-    dict(src="crowd-booth.jpeg",     out="scene-crowd.webp", width=1600),
-    dict(src="crowd-party.jpeg",     out="scene-party.webp", width=1600, trim=True),
-    dict(src="hero-red-burst.jpeg",  out="scene-burst.webp", width=1080),
-    dict(src="scene-blue-wall.jpeg", out="scene-blue.webp",  width=1080),
-
-    # release covers — real artwork pulled from SoundCloud / YouTube
+    # release covers — real artwork pulled from SoundCloud
     dict(src="covers/qryptic.png",        out="releases/qryptic.webp",        width=900, aspect=(1, 1), mono=False),
     dict(src="covers/demonstrator-2.jpg", out="releases/demonstrator-2.webp", width=900, aspect=(1, 1), mono=False),
     dict(src="covers/demonstrator.jpg",   out="releases/demonstrator.webp",   width=900, aspect=(1, 1), mono=False),
-    dict(src="covers/live-set.jpg",       out="releases/live-set.webp",       width=900, aspect=(1, 1), mono=False),
 ]
 
 LOGO = "oscillator-logo.jpeg"           # circular stamp -> favicon + footer

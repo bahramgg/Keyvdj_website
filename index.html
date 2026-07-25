@@ -41,12 +41,19 @@
 
 <main>
 
-  <!-- ══ 1 · HERO — pure typography on pure black ═══════════════════ -->
+  <!-- ══ 1 · HERO ═══════════════════════════════════════════════════
+       Phone: full-bleed photo behind the type (a 390px viewport renders
+       the 1920px source far below native scale, so it is razor sharp).
+       Desktop: pure typography, photo moves to the band below. -->
   <section id="hero" class="hero" aria-label="Intro">
+    <div class="hero__media" aria-hidden="true">
+      <img class="hero__img" src="img/hero.webp" alt="" fetchpriority="high" decoding="async">
+      <span class="hero__scrim"></span>
+    </div>
+
     <div class="hero__content">
       <p class="hero__tag">
         <em data-config="artist.genreTag">#techno</em>
-        <span>hard&nbsp;groove&nbsp;/&nbsp;raw</span>
       </p>
       <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
       <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
@@ -65,7 +72,7 @@
     </div>
   </div>
 
-  <!-- cinematic strip — the live shot, short and sharp -->
+  <!-- cinematic strip — desktop only, the phone already has the photo -->
   <div class="band" aria-label="Live photo">
     <img class="band__img" id="hero-img" src="img/hero.webp" alt="KEYV behind the decks" loading="lazy" decoding="async">
   </div>
@@ -84,8 +91,7 @@
 
       <p class="oscillator__desc reveal" data-config="label.description"></p>
 
-      <p class="tag-label oscillator__rostertitle reveal">Artists</p>
-      <div class="grid--roster" id="roster-grid"></div>
+      <dl class="facts reveal" id="label-facts"></dl>
     </div>
   </section>
 
