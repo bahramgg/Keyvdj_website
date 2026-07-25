@@ -30,8 +30,9 @@ window.KEYV_CONFIG = {
   },
 
   socials: [
-    { label: "SoundCloud", url: "https://soundcloud.com/keyvdj",                    handle: "keyvdj" },
-    { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942",     handle: "KEYV"   },
+    { label: "Instagram",  url: "https://www.instagram.com/keyvdj",                  handle: "@keyvdj" },
+    { label: "SoundCloud", url: "https://soundcloud.com/keyvdj",                     handle: "keyvdj"  },
+    { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942",      handle: "KEYV"    },
     { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic", handle: "Tugwave" }
   ],
 
@@ -76,10 +77,22 @@ window.KEYV_CONFIG = {
       links: [
         { label: "SoundCloud", url: "https://soundcloud.com/keyvdj/demonstrator" }
       ]
+    },
+    {
+      title: "Live DJ Set",
+      mix: "Uchiha Mob Series 01",
+      genre: "Electro",
+      year: "",
+      type: "mix",
+      cover: "img/releases/live-set.webp",
+      links: [
+        { label: "YouTube", url: "https://youtu.be/qVqKLeuRrA0" }
+      ]
     }
   ],
 
   platforms: [
+    { label: "Instagram",  url: "https://www.instagram.com/keyvdj" },
     { label: "SoundCloud", url: "https://soundcloud.com/keyvdj" },
     { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942" },
     { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" }
@@ -95,12 +108,9 @@ window.KEYV_CONFIG = {
       "unpolished, and made to be played loud.",
     logo: "img/oscillator-logo.webp",          /* circular stamp — footer + favicon */
     wordmark: "img/oscillator-wordmark.webp",  /* horizontal lockup — section title */
-    /* quiet fact list under the label copy */
-    facts: [
-      { label: "Founded", value: "by KEYV" },
-      { label: "Focus",   value: "Techno · Electro" },
-      { label: "Format",  value: "Digital · V.A." },
-      { label: "Base",    value: "Tehran" }
+    links: [
+      { label: "Instagram",  url: "https://www.instagram.com/oscillator__" },
+      { label: "SoundCloud", url: "https://soundcloud.com/oscillatorr" }
     ]
   },
 

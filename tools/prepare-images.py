@@ -37,6 +37,9 @@ QUALITY = 82
 #          Opt-in: a genuinely dark photo edge would otherwise be eaten.
 # lift     exposure multiplier for an underexposed source (1.0 = leave alone)
 # sharpen  unsharp-mask after resize, for a soft source shown large
+# black_point  crush everything below this luminance to true black, so a
+#              studio backdrop matches the page instead of sitting grey
+# gamma        midtone lift applied with black_point (lower = brighter)
 # mono     False keeps the source colour — release artwork keeps its identity;
 #          the card CSS shows it grayscale at rest and lets colour through on
 #          hover, so the files stay colour. Photos default to B&W.
@@ -49,12 +52,15 @@ JOBS = [
     dict(src="hero-led-blue.jpeg", out="hero-phone.webp", width=1080, aspect=(1, 1), sharpen=True),
     dict(src="hero-led-blue.jpeg", out="hero-desk.webp",  width=864,  aspect=(4, 5), focus_x=1.0, sharpen=True),
     # portrait: press crop on the face, full source resolution behind it
-    dict(src="portrait-studio.jpeg", out="bio.webp",        width=1500, aspect=(4, 5), focus=0.13, mono=False),
+    # portrait: backdrop crushed to true black so it melts into the page
+    dict(src="portrait-studio.jpeg", out="bio.webp", width=1500, aspect=(4, 5),
+         focus=0.13, mono=False, black_point=44, gamma=0.66),
 
     # release covers — real artwork pulled from SoundCloud
     dict(src="covers/qryptic.png",        out="releases/qryptic.webp",        width=900, aspect=(1, 1), mono=False),
     dict(src="covers/demonstrator-2.jpg", out="releases/demonstrator-2.webp", width=900, aspect=(1, 1), mono=False),
     dict(src="covers/demonstrator.jpg",   out="releases/demonstrator.webp",   width=900, aspect=(1, 1), mono=False),
+    dict(src="covers/live-set.jpg",       out="releases/live-set.webp",       width=900, aspect=(1, 1), mono=False),
 ]
 
 LOGO = "oscillator-logo.jpeg"           # circular stamp -> favicon + footer
@@ -112,6 +118,22 @@ def monochrome(im, lift=1.0):
     im = ImageEnhance.Contrast(im).enhance(1.12)
     im = ImageEnhance.Brightness(im).enhance(0.94 * lift)
     return im.convert("RGB")
+
+
+def crush_blacks(im, black_point, gamma=0.78):
+    """Drop everything below `black_point` to true 0 so a studio backdrop
+    matches the page's pure black, then lift the surviving midtones with
+    `gamma` so the subject does not go dark with it."""
+    span = 255.0 - black_point
+
+    def curve(v):
+        if v <= black_point:
+            return 0
+        return int(round(255 * (((v - black_point) / span) ** gamma)))
+
+    lut = [curve(v) for v in range(256)]
+    channels = im.split()
+    return Image.merge(im.mode, [c.point(lut) for c in channels])
 
 
 def resize(im, max_w, upscale=False):
@@ -221,6 +243,8 @@ def main():
         im = crop_to(im, job.get("aspect"), job.get("focus", 0.5), job.get("focus_x", 0.5))
         if job.get("mono", True):
             im = monochrome(im, job.get("lift", 1.0))
+        if job.get("black_point"):
+            im = crush_blacks(im, job["black_point"], job.get("gamma", 0.78))
         im = resize(im, job["width"], job.get("upscale", False))
         if job.get("sharpen"):
             im = im.filter(ImageFilter.UnsharpMask(radius=2, percent=110, threshold=2))

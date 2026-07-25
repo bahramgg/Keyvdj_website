@@ -242,6 +242,31 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 
 @media (min-width: 720px) { .nav__links { display: flex; } }
 
+/* phones get the same links, wrapped onto a second row */
+@media (max-width: 719px) {
+  .nav {
+    flex-wrap: wrap;
+    row-gap: .55rem;
+    padding-block: .7rem;
+  }
+  .nav__links {
+    display: flex;
+    gap: .85rem;
+    font-size: .5625rem;
+    letter-spacing: .14em;
+  }
+  .nav__platforms {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    gap: .5rem;
+    font-size: .5rem;
+    letter-spacing: .12em;
+    padding-top: .5rem;
+    border-top: 1px solid var(--hairline);
+  }
+}
+
 /* music platform links, right side of the header */
 .nav__platforms {
   display: flex;
@@ -257,10 +282,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   transition: color .3s var(--ease);
 }
 .nav__platforms a:hover { color: var(--accent); }
-@media (max-width: 719px) {
-  /* on phones only the strongest link survives */
-  .nav__platforms li:nth-child(n+3) { display: none; }
-}
+
 
 /* ---- hero ---------------------------------------------------------
    The photo is capped so it never renders above its native pixel size.
@@ -340,6 +362,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   /* type reads first, photo sits to its right */
   .hero__content { grid-column: 1; grid-row: 1; }
   .hero__photo { grid-column: 2; grid-row: 1; width: 460px; max-width: 100%; margin: 0; }
+  .hero__cue { grid-column: 1 / -1; grid-row: 2; margin-top: clamp(2rem, 5vh, 4rem); }
   .hero__content {
     padding-inline: 0;
     text-align: left;
@@ -349,13 +372,35 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   .hero__mark { font-size: clamp(6rem, 12vw, 11rem); }
 }
 
-/* scroll cue — frameless, centred at the bottom */
-.hero__cue {
-  position: absolute;
-  left: 50%;
-  bottom: 1.75rem;
-  transform: translateX(-50%);
+/* ---- ticker: the one moving element ------------------------------- */
+.ticker {
+  overflow: hidden;
+  border-block: 1px solid var(--hairline);
+  padding-block: .85rem;
+}
+.ticker__track {
   display: flex;
+  width: max-content;
+  animation: ticker 36s linear infinite;
+}
+.ticker__track span {
+  white-space: nowrap;
+  font-size: .6875rem;
+  font-weight: 500;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* scroll cue — sits in flow under the hero, never over the type */
+.hero__cue {
+  display: flex;
+  align-self: center;
+  margin-top: clamp(1rem, 3vh, 2rem);
   flex-direction: column;
   align-items: center;
   gap: .6rem;
@@ -397,32 +442,27 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   margin-top: 1.75rem;
 }
 
-/* quiet fact list — replaces the roster grid */
-.facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  margin: clamp(3rem, 7vw, 5rem) 0 0;
-  background: var(--hairline);
-  border: 1px solid var(--hairline);
+/* the label's own two links */
+.oscillator__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
 }
-@media (min-width: 720px) { .facts { grid-template-columns: repeat(4, 1fr); } }
 
-.facts__cell {
-  background: var(--bg);
-  padding: clamp(1.1rem, 2.5vw, 1.75rem);
+/* outlined variant — the solid yellow button stays reserved for the
+   page's single primary action */
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  color: var(--text);
+  transition: border-color .3s var(--ease), color .3s var(--ease);
 }
-.facts dt {
-  font-size: .5625rem;
-  font-weight: 500;
-  letter-spacing: .26em;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-.facts dd {
-  margin: .55rem 0 0;
-  font-size: .875rem;
-  font-weight: 500;
+.btn--ghost:hover, .btn--ghost:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: none;
+  box-shadow: none;
 }
 
 

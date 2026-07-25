@@ -272,16 +272,13 @@
   /* ---- label ------------------------------------------------------ */
 
   function renderLabel() {
-    var facts = get('label.facts');
-    var list = $('#label-facts');
-    if (list && Array.isArray(facts)) {
-      list.textContent = '';
-      facts.forEach(function (fact) {
-        if (!fact || !fact.label) return;
-        var cell = el('div', 'facts__cell');
-        cell.appendChild(el('dt', null, fact.label));
-        cell.appendChild(el('dd', null, fact.value || ''));
-        list.appendChild(cell);
+    var links = get('label.links');
+    var host = $('#label-links');
+    if (host && Array.isArray(links)) {
+      host.textContent = '';
+      links.forEach(function (link) {
+        if (!link || !link.label) return;
+        host.appendChild(extLink(link.url, link.label, 'btn btn--ghost'));
       });
     }
 
