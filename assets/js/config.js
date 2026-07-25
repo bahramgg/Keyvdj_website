@@ -18,7 +18,7 @@ window.KEYV_CONFIG = {
       "sits between warehouse tradition and contemporary hardgroove.",
     bioShort: "DJ · Producer · Founder of Oscillator.",
     portrait: "img/bio.webp",
-    hero: "img/hero.webp"
+    hero: "img/hero-phone.webp"
   },
 
   /* ---- contact ----------------------------------------------------- */

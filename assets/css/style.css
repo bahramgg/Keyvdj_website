@@ -263,66 +263,55 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 
 /* ---- hero ---------------------------------------------------------
-   Phone: full-bleed photo behind the type. A 390px viewport renders the
-   1920px source far below native scale, so it is razor sharp there.
-   Desktop: photo drops away, pure typography carries the frame. */
+   The photo is capped so it never renders above its native pixel size.
+   Phone: full-width square under the nav, type below it on black.
+   Desktop: type left, a 4:5 photo block right, both vertically centred. */
 .hero {
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(1.75rem, 5vh, 3rem);
+  padding-top: 4rem;                 /* clears the fixed nav */
 }
 
-.hero__media { position: absolute; inset: 0; z-index: 0; }
-.hero__img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: 64% 30%;
-  filter: grayscale(1) contrast(1.06);
+.hero__photo {
+  width: 100%;
+  max-width: 640px;                  /* 1080 native / ~1.7 = never upscaled */
+  margin-inline: auto;
 }
-.hero__scrim {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.15) 22%),
-    linear-gradient(to top, #000 4%, rgba(0,0,0,.82) 26%, rgba(0,0,0,.35) 45%, rgba(0,0,0,0) 68%);
+.hero__img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .hero__content {
-  position: relative;
-  z-index: 1;
   width: 100%;
   max-width: var(--wrap);
   margin-inline: auto;
-  padding: 0 var(--gutter) clamp(6rem, 16vh, 9rem);
+  padding-inline: var(--gutter);
   text-align: center;
-}
-
-@media (min-width: 900px) {
-  .hero { align-items: center; }
-  .hero__media { display: none; }
-  .hero__content { padding-bottom: 0; }
 }
 
 .hero__tag {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: .75rem;
   font-size: .625rem;
   font-weight: 500;
   letter-spacing: .3em;
   text-transform: uppercase;
-  margin-bottom: clamp(1rem, 3vh, 2rem);
+  margin-bottom: .9rem;
 }
 .hero__tag em { font-style: normal; color: var(--accent); }
-.hero__tag span { color: var(--dim); }
 
 .hero__mark {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(6rem, 24vw, 22rem);
-  line-height: .82;
+  font-size: clamp(4.5rem, 21vw, 9rem);
+  line-height: .84;
   letter-spacing: .02em;
   text-transform: uppercase;
   color: var(--text);
@@ -332,50 +321,33 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   color: var(--muted);
   font-size: .625rem;
   font-weight: 500;
-  letter-spacing: .3em;
+  letter-spacing: .28em;
   text-transform: uppercase;
-  margin-top: clamp(1.25rem, 3.5vh, 2.25rem);
+  margin-top: 1rem;
 }
 
-/* ---- ticker: the one moving element ------------------------------- */
-.ticker {
-  overflow: hidden;
-  border-block: 1px solid var(--hairline);
-  padding-block: .85rem;
+/* desktop: side by side, photo capped at 460px so it stays under native */
+@media (min-width: 900px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(3rem, 6vw, 6rem);
+    max-width: var(--wrap);
+    margin-inline: auto;
+    padding: 4rem var(--gutter) 0;
+  }
+  /* type reads first, photo sits to its right */
+  .hero__content { grid-column: 1; grid-row: 1; }
+  .hero__photo { grid-column: 2; grid-row: 1; width: 460px; max-width: 100%; margin: 0; }
+  .hero__content {
+    padding-inline: 0;
+    text-align: left;
+    max-width: none;
+  }
+  .hero__tag { justify-content: flex-start; }
+  .hero__mark { font-size: clamp(6rem, 12vw, 11rem); }
 }
-.ticker__track {
-  display: flex;
-  width: max-content;
-  animation: ticker 36s linear infinite;
-}
-.ticker__track span {
-  white-space: nowrap;
-  font-size: .6875rem;
-  font-weight: 500;
-  letter-spacing: .32em;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* ---- cinematic image strip ---------------------------------------- */
-.band {
-  display: none;                 /* the phone already has the photo */
-  height: clamp(260px, 40vh, 440px);
-  overflow: hidden;
-}
-@media (min-width: 900px) { .band { display: block; } }
-.band__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 30%;
-  filter: grayscale(1) contrast(1.05);
-}
-
 
 /* scroll cue — frameless, centred at the bottom */
 .hero__cue {

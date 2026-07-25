@@ -136,11 +136,6 @@
       if (value) node.src = value;
     });
 
-    var hero = safeUrl(get('artist.hero'));
-    var heroImg = $('#hero-img');
-    if (hero && heroImg) heroImg.src = hero;
-    if (heroImg) heroImg.addEventListener('error', function () { heroImg.style.display = 'none'; }, { once: true });
-
     var name = get('artist.name');
     if (name) document.title = name + ' · Techno DJ & Producer';
   }

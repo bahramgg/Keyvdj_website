@@ -10,7 +10,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="KEYV · Techno DJ &amp; Producer">
 <meta property="og:description" content="Raw techno. Releases, mixes and booking.">
-<meta property="og:image" content="img/hero.webp">
+<meta property="og:image" content="img/hero-phone.webp">
 
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -42,14 +42,19 @@
 <main>
 
   <!-- ══ 1 · HERO ═══════════════════════════════════════════════════
-       Phone: full-bleed photo behind the type (a 390px viewport renders
-       the 1920px source far below native scale, so it is razor sharp).
-       Desktop: pure typography, photo moves to the band below. -->
+       The source photo is 1080px. Both crops ship at native resolution
+       and the CSS caps how wide each may render, so the browser only
+       ever scales them DOWN — that is what keeps the hero sharp.
+         phone : square, full width   (1080 -> 1170 device px, 1.08x)
+         desk  : 4:5 block, max 460px (864 -> 920 device px, 0.94x)  -->
   <section id="hero" class="hero" aria-label="Intro">
-    <div class="hero__media" aria-hidden="true">
-      <img class="hero__img" src="img/hero.webp" alt="" fetchpriority="high" decoding="async">
-      <span class="hero__scrim"></span>
-    </div>
+    <figure class="hero__photo">
+      <picture>
+        <source media="(min-width: 900px)" srcset="img/hero-desk.webp" width="864" height="1080">
+        <img class="hero__img" id="hero-img" src="img/hero-phone.webp" alt="KEYV behind the decks"
+             width="1080" height="1080" fetchpriority="high" decoding="async">
+      </picture>
+    </figure>
 
     <div class="hero__content">
       <p class="hero__tag">
@@ -70,11 +75,6 @@
     <div class="ticker__track">
       <span>KEYV&ensp;·&ensp;OSCILLATOR&ensp;·&ensp;TECHNO&ensp;·&ensp;HARD&nbsp;GROOVE&ensp;·&ensp;RAW&ensp;·&ensp;</span><span>KEYV&ensp;·&ensp;OSCILLATOR&ensp;·&ensp;TECHNO&ensp;·&ensp;HARD&nbsp;GROOVE&ensp;·&ensp;RAW&ensp;·&ensp;</span>
     </div>
-  </div>
-
-  <!-- cinematic strip — desktop only, the phone already has the photo -->
-  <div class="band" aria-label="Live photo">
-    <img class="band__img" id="hero-img" src="img/hero.webp" alt="KEYV behind the decks" loading="lazy" decoding="async">
   </div>
 
   <!-- ══ 2 · LABEL ══════════════════════════════════════════════════ -->

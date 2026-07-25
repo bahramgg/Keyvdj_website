@@ -32,6 +32,7 @@ QUALITY = 82
 # width    max width, never upscaled past the source
 # aspect   crop to this ratio (omit to keep the source ratio)
 # focus    0..1 vertical crop anchor — 0 keeps the top of the frame, 1 the bottom
+# focus_x  0..1 horizontal crop anchor — 0 keeps the left edge, 1 the right
 # trim     strip uniform black letterbox bars (phone screenshots have them).
 #          Opt-in: a genuinely dark photo edge would otherwise be eaten.
 # lift     exposure multiplier for an underexposed source (1.0 = leave alone)
@@ -40,10 +41,13 @@ QUALITY = 82
 #          the card CSS shows it grayscale at rest and lets colour through on
 #          hover, so the files stay colour. Photos default to B&W.
 JOBS = [
-    # hero: B&W. Shown in a contained frame on desktop (full square visible,
-    # downscaled = sharp) so it is never stretched past native scale there;
-    # the single Lanczos+unsharp upscale only serves very wide viewports.
-    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1920, upscale=True, sharpen=True),
+    # Two hero crops, both at the source's native resolution — no upscale.
+    # The CSS caps how large each one is allowed to render (see .hero), so
+    # the browser only ever scales them DOWN, which is what keeps them sharp.
+    #   phone : full-width square, 1080px wide  -> 390css x 3dpr = 1170px  (1.08x)
+    #   desk  : 4:5 block, 864px wide           -> 460css x 2dpr =  920px  (0.94x)
+    dict(src="hero-led-blue.jpeg", out="hero-phone.webp", width=1080, aspect=(1, 1), sharpen=True),
+    dict(src="hero-led-blue.jpeg", out="hero-desk.webp",  width=864,  aspect=(4, 5), focus_x=1.0, sharpen=True),
     # portrait: press crop on the face, full source resolution behind it
     dict(src="portrait-studio.jpeg", out="bio.webp",        width=1500, aspect=(4, 5), focus=0.13, mono=False),
 
@@ -83,8 +87,8 @@ def trim_letterbox(im, threshold=12):
     return im.crop((left, top, right + 1, bottom + 1))
 
 
-def crop_to(im, aspect, focus):
-    """Centre-crop horizontally, focus-weighted vertically."""
+def crop_to(im, aspect, focus, focus_x=0.5):
+    """Crop to `aspect`, anchored by focus (vertical) and focus_x (horizontal)."""
     if aspect is None:
         return im
     w, h = im.size
@@ -93,7 +97,8 @@ def crop_to(im, aspect, focus):
         return im
     if w / h > target:                       # too wide -> trim sides
         new_w = int(round(h * target))
-        left = (w - new_w) // 2
+        left = int(round((w - new_w) * focus_x))
+        left = max(0, min(left, w - new_w))
         return im.crop((left, 0, left + new_w, h))
     new_h = int(round(w / target))           # too tall -> trim top/bottom
     top = int(round((h - new_h) * focus))
@@ -213,7 +218,7 @@ def main():
         im = Image.open(path).convert("RGB")
         if job.get("trim"):
             im = trim_letterbox(im)
-        im = crop_to(im, job.get("aspect"), job.get("focus", 0.5))
+        im = crop_to(im, job.get("aspect"), job.get("focus", 0.5), job.get("focus_x", 0.5))
         if job.get("mono", True):
             im = monochrome(im, job.get("lift", 1.0))
         im = resize(im, job["width"], job.get("upscale", False))
