@@ -412,8 +412,7 @@
       if (!email) return false;
       var body =
         'Name: ' + data.name + '\n' +
-        'Email: ' + data.email + '\n' +
-        'Venue / City: ' + (data.venue || '-') + '\n\n' +
+        'Email: ' + data.email + '\n\n' +
         data.message;
       window.location.href =
         'mailto:' + email +
@@ -442,7 +441,7 @@
       }
 
       var data = {};
-      ['name', 'email', 'venue', 'message'].forEach(function (name) {
+      ['name', 'email', 'message'].forEach(function (name) {
         data[name] = form.elements[name] ? form.elements[name].value.trim() : '';
       });
 

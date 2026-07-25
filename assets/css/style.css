@@ -732,23 +732,24 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.1rem;
+  gap: .9rem;
   background: var(--surface);
   border: 1px solid var(--hairline);
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+  max-width: 30rem;      /* the form no longer fills the whole column */
 }
 .form__title {
   grid-column: span 2;
-  font-size: .625rem;
+  font-size: .5625rem;
   font-weight: 500;
   letter-spacing: .26em;
   text-transform: uppercase;
   color: var(--muted);
-  padding-bottom: .8rem;
+  padding-bottom: .65rem;
   border-bottom: 1px solid var(--hairline);
 }
 
-.field { grid-column: span 2; display: flex; flex-direction: column; gap: .45rem; }
+.field { grid-column: span 2; display: flex; flex-direction: column; gap: .35rem; }
 .field--half { grid-column: span 2; }
 @media (min-width: 560px) { .field--half { grid-column: span 1; } }
 
@@ -763,14 +764,14 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .field textarea {
   background: #0C0C0C;
   border: 1px solid var(--hairline-strong);
-  padding: .8rem .95rem;
+  padding: .6rem .8rem;
   color: var(--text);
-  font-size: .875rem;
+  font-size: .8125rem;
   border-radius: 0;
   width: 100%;
   transition: border-color .3s var(--ease);
 }
-.field textarea { resize: vertical; min-height: 7.5rem; }
+.field textarea { resize: vertical; min-height: 5.5rem; }
 .field input:focus,
 .field textarea:focus {
   outline: none;
@@ -779,7 +780,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .field input[aria-invalid="true"],
 .field textarea[aria-invalid="true"] { border-color: #ff5d5d; }
 
-.form .btn { grid-column: span 2; justify-self: start; }
+.form .btn { grid-column: span 2; justify-self: start; padding: .75rem 1.5rem; }
 .form__status {
   grid-column: span 2;
   font-size: .6875rem;
