@@ -91,7 +91,7 @@ eaten by the detector.
 Currently generated:
 
 ```
-img/hero.webp                    from raw/hero-warehouse.jpeg
+img/hero.webp                    from raw/hero-led-blue.jpeg
 img/bio.webp                     from raw/portrait-studio.jpeg
 img/roster/artist-01.webp        from raw/live-beams.jpeg
 img/releases/*.webp              real artwork (raw/covers/, from SoundCloud/YouTube)
@@ -146,7 +146,6 @@ admin.html                 content panel (localStorage)
 assets/css/style.css       tokens, layout, motion
 assets/js/config.js        ← all content lives here
 assets/js/main.js          config merge, rendering, form, GSAP motion
-assets/js/orbital.js       the rotating yellow ring over the hero
 assets/fonts/              Anton + Space Grotesk (self-hosted woff2)
 assets/vendor/             GSAP 3.12.5 + ScrollTrigger (self-hosted)
 img/                       generated WebP, lazy-loaded + icons
@@ -167,7 +166,7 @@ vercel.json
 - **No video anywhere.** Critical path is ~195 KB including the hero image;
   GSAP is deferred and the page reveals correctly without it via an
   IntersectionObserver fallback.
-- **`prefers-reduced-motion`** disables the parallax, grain, orbit animation and
-  scroll reveals; all content shows immediately.
+- **`prefers-reduced-motion`** disables the parallax, grain and scroll
+  reveals; all content shows immediately.
 - Config values are treated as untrusted when rendering — URLs are restricted to
   `http(s)`/`mailto:` and text is inserted as text, never as HTML.

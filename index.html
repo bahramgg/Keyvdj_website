@@ -39,6 +39,9 @@
     <a href="#shows">Shows</a>
     <a href="#booking">Booking</a>
   </nav>
+  <span class="nav__sound" role="status">
+    <span class="dot" aria-hidden="true"></span><span>SOUND ON</span>
+  </span>
 </header>
 
 <main>
@@ -49,17 +52,11 @@
       <img class="hero__img" id="hero-img" src="img/hero.webp" alt="" fetchpriority="high" decoding="async">
       <div class="hero__overlay" aria-hidden="true"></div>
       <div class="grain" aria-hidden="true"></div>
-      <canvas class="hero__orbit" id="orbital" aria-hidden="true"></canvas>
-    </div>
-
-    <div class="hero__sound" id="sound-toggle" role="status">
-      <span class="dot" aria-hidden="true"></span><span>SOUND ON</span>
     </div>
 
     <div class="hero__content">
       <p class="hero__tag" data-config="artist.genreTag">#techno</p>
       <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
-      <p class="hero__loc" data-config="artist.location">Tehran / Berlin</p>
     </div>
 
     <a class="hero__cue" href="#bio" aria-label="Scroll to bio">
@@ -217,7 +214,6 @@
 <script defer src="assets/vendor/ScrollTrigger.min.js"></script>
 
 <script src="assets/js/config.js"></script>
-<script defer src="assets/js/orbital.js"></script>
 <script defer src="assets/js/main.js"></script>
 </body>
 </html>
