@@ -91,11 +91,10 @@ window.KEYV_CONFIG = {
     }
   ],
 
+  /* shown in the header next to the nav — everything else lives in the
+     footer, so the bar stays on one row */
   platforms: [
-    { label: "Instagram",  url: "https://www.instagram.com/keyvdj" },
-    { label: "SoundCloud", url: "https://soundcloud.com/keyvdj" },
-    { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942" },
-    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" }
+    { label: "Instagram", url: "https://www.instagram.com/keyvdj" }
   ],
 
   /* ---- label ------------------------------------------------------- */

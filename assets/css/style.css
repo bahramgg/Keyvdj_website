@@ -242,29 +242,16 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 
 @media (min-width: 720px) { .nav__links { display: flex; } }
 
-/* phones get the same links, wrapped onto a second row */
+/* four items total, so phones keep the same single row */
 @media (max-width: 719px) {
-  .nav {
-    flex-wrap: wrap;
-    row-gap: .55rem;
-    padding-block: .7rem;
-  }
+  .nav { gap: .75rem; }
   .nav__links {
     display: flex;
-    gap: .85rem;
+    gap: .9rem;
     font-size: .5625rem;
     letter-spacing: .14em;
   }
-  .nav__platforms {
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
-    gap: .5rem;
-    font-size: .5rem;
-    letter-spacing: .12em;
-    padding-top: .5rem;
-    border-top: 1px solid var(--hairline);
-  }
+  .nav__platforms { font-size: .5625rem; letter-spacing: .14em; }
 }
 
 /* music platform links, right side of the header */
@@ -446,8 +433,9 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .oscillator__links {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: .75rem;
-  margin-top: clamp(2rem, 5vw, 3rem);
+  margin-top: clamp(2.5rem, 6vw, 4rem);
 }
 
 /* outlined variant — the solid yellow button stays reserved for the
