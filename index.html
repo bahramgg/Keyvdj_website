@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KEYV · Techno DJ &amp; Producer</title>
 <meta name="description" content="KEYV, techno DJ and producer, founder of the Oscillator label. Releases, mixes and booking.">
-<meta name="theme-color" content="#0A0A0A">
+<meta name="theme-color" content="#000000">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="KEYV · Techno DJ &amp; Producer">
@@ -20,8 +20,6 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<!-- hero image is the critical path -->
-<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
@@ -43,16 +41,8 @@
 
 <main>
 
-  <!-- ══ 1 · HERO ═══════════════════════════════════════════════════ -->
+  <!-- ══ 1 · HERO — pure typography on pure black ═══════════════════ -->
   <section id="hero" class="hero" aria-label="Intro">
-    <div class="hero__media">
-      <div class="hero__frame">
-        <img class="hero__img" id="hero-img" src="img/hero.webp" alt="KEYV behind the decks" fetchpriority="high" decoding="async">
-        <span class="hero__fade" aria-hidden="true"></span>
-      </div>
-      <div class="hero__overlay" aria-hidden="true"></div>
-    </div>
-
     <div class="hero__content">
       <p class="hero__tag">
         <em data-config="artist.genreTag">#techno</em>
@@ -67,6 +57,18 @@
       <span class="hero__cue-line" aria-hidden="true"></span>
     </a>
   </section>
+
+  <!-- ticker — the one moving element on the page -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>KEYV&ensp;·&ensp;OSCILLATOR&ensp;·&ensp;TECHNO&ensp;·&ensp;HARD&nbsp;GROOVE&ensp;·&ensp;RAW&ensp;·&ensp;</span><span>KEYV&ensp;·&ensp;OSCILLATOR&ensp;·&ensp;TECHNO&ensp;·&ensp;HARD&nbsp;GROOVE&ensp;·&ensp;RAW&ensp;·&ensp;</span>
+    </div>
+  </div>
+
+  <!-- cinematic strip — the live shot, short and sharp -->
+  <div class="band" aria-label="Live photo">
+    <img class="band__img" id="hero-img" src="img/hero.webp" alt="KEYV behind the decks" loading="lazy" decoding="async">
+  </div>
 
   <!-- ══ 2 · LABEL ══════════════════════════════════════════════════ -->
   <section id="oscillator" class="section oscillator" aria-labelledby="label-title">

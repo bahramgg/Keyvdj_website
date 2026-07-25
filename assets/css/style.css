@@ -48,9 +48,9 @@
 
 /* ---- tokens ------------------------------------------------------- */
 :root {
-  --bg:      #0A0A0A;
-  --surface: #111111;
-  --panel:   #141414;
+  --bg:      #000000;
+  --surface: #0D0D0D;
+  --panel:   #111111;
   --text:    #EDEDED;
   --muted:   #9A9A9A;
   --dim:     #666666;
@@ -88,19 +88,6 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-
-/* one static, barely-there noise pass — the flat black gets the faint
-   texture the reference has, with no animation cost */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
-  opacity: .05;
-}
-main, footer, header { position: relative; z-index: 1; }
 
 img { display: block; max-width: 100%; height: auto; }
 ul { list-style: none; margin: 0; padding: 0; }
@@ -187,16 +174,16 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .link-grow:hover::after,
 .link-grow:focus-visible::after { transform: scaleX(1); }
 
-/* small caps action link — "BUY TICKETS ↗" style */
+/* small caps action link — quiet until hovered, so yellow stays rare */
 .action {
   font-size: .625rem;
   font-weight: 500;
   letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--muted);
   transition: color .3s var(--ease);
 }
-.action:hover { color: var(--text); }
+.action:hover { color: var(--accent); }
 
 /* solid yellow chip button */
 .btn {
@@ -228,7 +215,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   justify-content: space-between;
   gap: 1.5rem;
   padding: .9rem var(--gutter);
-  background: linear-gradient(to bottom, rgba(10, 10, 10, .92), rgba(10, 10, 10, .75));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, .94), rgba(0, 0, 0, .8));
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--hairline);
   transition: transform .4s var(--ease);
@@ -275,94 +262,92 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   .nav__platforms li:nth-child(n+3) { display: none; }
 }
 
-/* ---- hero --------------------------------------------------------- */
+/* ---- hero: pure typography on pure black -------------------------- */
 .hero {
   position: relative;
   min-height: 100svh;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.hero__media { position: absolute; inset: 0; z-index: -1; }
-
-/* On desktop the square photo is CONTAINED, not cover-cropped: the full
-   frame is visible "from further away" and rendered below native scale,
-   so it stays sharp. Its edges melt into the black with side fades. */
-.hero__frame { position: relative; width: 100%; height: 100%; }
-
-.hero__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 62% 32%;
-  filter: grayscale(1) contrast(1.04);
-}
-
-.hero__fade { display: none; }
-
-@media (min-width: 900px) {
-  .hero__media { display: flex; justify-content: center; }
-  .hero__frame { width: auto; aspect-ratio: 1; max-width: 100%; }
-  .hero__img { object-fit: cover; object-position: center; }
-  .hero__fade {
-    display: block;
-    position: absolute; inset: 0;
-    background: linear-gradient(to right,
-      var(--bg) 0%, transparent 14%, transparent 86%, var(--bg) 100%);
-    pointer-events: none;
-  }
-}
-
-.hero__overlay {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(to bottom, rgba(10,10,10,.72) 0%, rgba(10,10,10,0) 20%),
-    linear-gradient(to top, rgba(10,10,10,.92) 0%, rgba(10,10,10,.25) 34%, rgba(10,10,10,0) 55%);
+  align-items: center;
 }
 
 .hero__content {
-  padding: 0 var(--gutter) clamp(4.5rem, 11vh, 7rem);
   width: 100%;
   max-width: var(--wrap);
   margin-inline: auto;
+  padding-inline: var(--gutter);
+  text-align: center;
 }
 
 .hero__tag {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: .75rem;
-  font-size: .6875rem;
+  font-size: .625rem;
   font-weight: 500;
-  letter-spacing: .22em;
+  letter-spacing: .3em;
   text-transform: uppercase;
-  margin-bottom: .5rem;
+  margin-bottom: clamp(1rem, 3vh, 2rem);
 }
 .hero__tag em { font-style: normal; color: var(--accent); }
-.hero__tag span { color: var(--muted); }
+.hero__tag span { color: var(--dim); }
 
-/* ghost name: heavy condensed caps, translucent fill over the photo */
 .hero__mark {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(5.5rem, 21vw, 17rem);
+  font-size: clamp(6rem, 24vw, 22rem);
   line-height: .82;
-  letter-spacing: .01em;
+  letter-spacing: .02em;
   text-transform: uppercase;
-  color: rgba(237, 237, 237, .34);
-  margin-left: -.04em;
+  color: var(--text);
 }
 
 .hero__sub {
   color: var(--muted);
+  font-size: .625rem;
+  font-weight: 500;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  margin-top: clamp(1.25rem, 3.5vh, 2.25rem);
+}
+
+/* ---- ticker: the one moving element ------------------------------- */
+.ticker {
+  overflow: hidden;
+  border-block: 1px solid var(--hairline);
+  padding-block: .85rem;
+}
+.ticker__track {
+  display: flex;
+  width: max-content;
+  animation: ticker 36s linear infinite;
+}
+.ticker__track span {
+  white-space: nowrap;
   font-size: .6875rem;
   font-weight: 500;
-  letter-spacing: .24em;
+  letter-spacing: .32em;
   text-transform: uppercase;
-  margin-top: 1.25rem;
+  color: var(--dim);
 }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- cinematic image strip ---------------------------------------- */
+.band {
+  height: clamp(220px, 42vh, 420px);
+  overflow: hidden;
+}
+.band__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: grayscale(1) contrast(1.05);
+}
+
 
 /* scroll cue — frameless, centred at the bottom */
 .hero__cue {
@@ -589,8 +574,8 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   font-size: .5625rem;
   font-weight: 500;
   letter-spacing: .18em;
-  color: var(--accent);
-  background: rgba(10, 10, 10, .8);
+  color: var(--muted);
+  background: rgba(0, 0, 0, .78);
   padding: .2rem .5rem;
 }
 
@@ -611,7 +596,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   letter-spacing: .16em;
   text-transform: uppercase;
 }
-.card__meta em { font-style: normal; color: var(--accent); }
+.card__meta em { font-style: normal; color: var(--muted); }
 .card__meta span { color: var(--dim); }
 
 /* ---- shows -------------------------------------------------------- */
@@ -668,7 +653,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   letter-spacing: .18em;
   text-transform: uppercase;
 }
-.event__city { color: var(--accent); }
+.event__city { color: var(--text); }
 .event__country { color: var(--dim); margin-left: .5rem; }
 @media (min-width: 860px) { .event__place { grid-column: auto; } }
 
@@ -877,7 +862,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   letter-spacing: .18em;
   text-transform: uppercase;
 }
-.work__meta em { font-style: normal; color: var(--accent); }
+.work__meta em { font-style: normal; color: var(--muted); }
 .work__meta span { color: var(--dim); margin-left: .6rem; }
 @media (min-width: 720px) { .work__meta { display: block; } }
 
@@ -919,4 +904,7 @@ html.gsap .event { transition: none; }
   html.js .card,
   html.js .roster-card,
   html.js .event { opacity: 1; transform: none; }
+
+  /* the ticker parks instead of snapping to its end frame */
+  .ticker__track { animation: none; }
 }
