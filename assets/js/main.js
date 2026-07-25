@@ -312,14 +312,36 @@
       });
     }
 
-    var logo = $('#label-logo');
-    if (logo) {
-      var logoSrc = safeUrl(get('label.logo'));
-      if (logoSrc) {
-        logo.src = logoSrc;
-        logo.addEventListener('error', function () { logo.remove(); }, { once: true });
+    /* section title is the label's own lockup; if the artwork is missing,
+       fall back to the name set in the display face */
+    var title = $('#label-title');
+    var wordmark = $('#label-wordmark');
+    if (wordmark) {
+      var markSrc = safeUrl(get('label.wordmark'));
+      var toText = function () {
+        wordmark.remove();
+        if (title) {
+          title.textContent = get('label.name') || 'Oscillator';
+          title.classList.add('oscillator__title--text');
+        }
+      };
+      if (markSrc) {
+        wordmark.src = markSrc;
+        wordmark.alt = get('label.name') || 'Oscillator';
+        wordmark.addEventListener('error', toText, { once: true });
       } else {
-        logo.remove();
+        toText();
+      }
+    }
+
+    var stamp = $('#footer-stamp');
+    if (stamp) {
+      var stampSrc = safeUrl(get('label.logo'));
+      if (stampSrc) {
+        stamp.src = stampSrc;
+        stamp.addEventListener('error', function () { stamp.remove(); }, { once: true });
+      } else {
+        stamp.remove();
       }
     }
 

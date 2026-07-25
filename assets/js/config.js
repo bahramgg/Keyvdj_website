@@ -107,14 +107,12 @@ window.KEYV_CONFIG = {
       "unpolished — and for a roster of artists who play the same way.",
     url: "https://soundcloud.com/",
     linkLabel: "Listen on SoundCloud",
-    logo: "img/oscillator-logo.webp",
+    logo: "img/oscillator-logo.webp",          /* circular stamp — footer + favicon */
+    wordmark: "img/oscillator-wordmark.webp",  /* horizontal lockup — section title */
     /* photo: "" renders a typographic card instead of an empty frame —
        drop a file in raw/, add it to tools/prepare-images.py, point here */
     roster: [
-      { name: "KEYV",     handle: "@keyvdj",     photo: "img/roster/artist-01.webp" },
-      { name: "Nima R",   handle: "@nima.r",     photo: "" },
-      { name: "VOLTA",    handle: "@voltasound", photo: "" },
-      { name: "Sepehr K", handle: "@sepehr.k",   photo: "" }
+      { name: "KEYV", handle: "@keyvdj", photo: "img/roster/artist-01.webp" }
     ]
   },
 

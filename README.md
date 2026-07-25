@@ -72,35 +72,51 @@ as WebP at quality 82. Yellow is a UI accent only — it never appears inside a
 photo. The label logo is the exception: it keeps its colour and gets an alpha
 circle so it can sit on the yellow section.
 
-To add or swap a photo: drop the file in `raw/`, then add a line to the `JOBS`
-list at the top of `tools/prepare-images.py` — source, output path, max width,
-aspect ratio, and a vertical focus point (0 = crop toward the top of the frame,
-1 = toward the bottom). Images are never upscaled past their source size.
+To add or swap a photo: drop the file in `raw/`, then add an entry to the `JOBS`
+list at the top of `tools/prepare-images.py`. Each entry takes:
+
+| key      | meaning                                                        |
+|----------|----------------------------------------------------------------|
+| `src`    | filename in `raw/`                                             |
+| `out`    | output path under `img/`                                       |
+| `width`  | max width — never upscaled past the source                     |
+| `aspect` | crop ratio, e.g. `(4, 5)`; omit to keep the source ratio       |
+| `focus`  | 0–1 vertical crop anchor (0 = keep the top, 1 = keep the bottom) |
+| `trim`   | strip black letterbox bars — phone screenshot exports have them |
+| `lift`   | exposure multiplier for an underexposed source                 |
+
+`trim` is opt-in on purpose: a genuinely dark photo edge would otherwise get
+eaten by the detector.
 
 Currently generated:
 
 ```
-img/hero.webp                    from raw/hero-red-burst.jpeg
-img/bio.webp                     from raw/bio-lasers.jpeg
-img/scene-blue.webp              from raw/scene-blue-wall.jpeg  (spare, unused)
+img/hero.webp                    from raw/hero-warehouse.jpeg
+img/bio.webp                     from raw/portrait-studio.jpeg
 img/roster/artist-01.webp        from raw/live-beams.jpeg
-img/releases/release-01..04.webp square crops of the four photos
-img/oscillator-logo.webp         colour, alpha circle
+img/releases/release-01..04.webp square crops of four live shots
+img/scene-*.webp                 spares, not referenced by config.js yet
+img/oscillator-wordmark.webp     black on transparent — the label section title
+img/oscillator-logo.webp         circular stamp — footer + favicon source
 img/favicon.png, apple-touch-icon.png
 ```
+
+The two label marks are handled differently. The **wordmark** ships as
+yellow-on-black, so the script turns luminance into alpha and makes the ink
+black — it then sits on the yellow section as a clean lockup. The **circular
+stamp** keeps its colour and gets an alpha circle, so on the yellow section the
+disc would disappear and only the artwork read; it is used on black in the
+footer instead.
 
 Two things to replace when you have the assets:
 
 - **Release covers** are square photo crops standing in for real artwork.
-- **Roster photos** — only KEYV has one. An artist with `photo: ""` in
-  `config.js` renders as a typographic tile (initial on a striped black
+- **Roster** is KEYV only. Add artists to `label.roster` in `config.js`; one
+  with `photo: ""` renders as a typographic tile (initial on a striped black
   ground) rather than an empty frame, so the grid still looks deliberate.
 
-The hero source is 1080×1080, so on a wide desktop it is upscaled slightly. If
-you have a higher-resolution original of that frame, drop it in and re-run the
-script — nothing else needs to change.
-
-A missing image degrades to an empty dark frame rather than a broken icon.
+A missing image degrades to an empty dark frame rather than a broken icon, and
+a missing wordmark falls back to the label name set in Anton.
 
 ---
 

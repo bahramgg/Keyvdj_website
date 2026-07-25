@@ -27,22 +27,64 @@ IMG = os.path.join(ROOT, "img")
 
 QUALITY = 82
 
-# src in raw/ , output in img/ , max width , aspect (None = keep) , vertical
-# focus 0..1 used when cropping (0 = top of frame, 1 = bottom)
+# src      file in raw/
+# out      file in img/
+# width    max width, never upscaled past the source
+# aspect   crop to this ratio (omit to keep the source ratio)
+# focus    0..1 vertical crop anchor — 0 keeps the top of the frame, 1 the bottom
+# trim     strip uniform black letterbox bars (phone screenshots have them).
+#          Opt-in: a genuinely dark photo edge would otherwise be eaten.
+# lift     exposure multiplier for an underexposed source (1.0 = leave alone)
 JOBS = [
-    ("hero-red-burst.jpeg",  "hero.webp",                 1600, None,      0.50),
-    ("bio-lasers.jpeg",      "bio.webp",                  1400, (4, 5),    0.42),
-    ("live-beams.jpeg",      "roster/artist-01.webp",      900, (3, 4),    0.38),
-    ("scene-blue-wall.jpeg", "scene-blue.webp",           1600, None,      0.50),
+    # no aspect crop: the hero is close to 5:4, so the full-bleed CSS crops
+    # it vertically and both the subject (left) and the windows (right) stay
+    # in frame. Cropping it to 16:9 here would force a horizontal crop later
+    # and lose both edges.
+    dict(src="hero-warehouse.jpeg",  out="hero.webp",       width=2000, trim=True, lift=1.16),
+    dict(src="portrait-studio.jpeg", out="bio.webp",        width=1400, aspect=(4, 5),  focus=0.20),
+    dict(src="live-beams.jpeg",      out="roster/artist-01.webp", width=900, aspect=(3, 4), focus=0.38),
+
+    # spare scene shots, not referenced by config.js yet
+    dict(src="crowd-booth.jpeg",     out="scene-crowd.webp", width=1600),
+    dict(src="crowd-party.jpeg",     out="scene-party.webp", width=1600, trim=True),
+    dict(src="hero-red-burst.jpeg",  out="scene-burst.webp", width=1080),
+    dict(src="scene-blue-wall.jpeg", out="scene-blue.webp",  width=1080),
 
     # release covers — square crops standing in until real artwork exists
-    ("hero-red-burst.jpeg",  "releases/release-01.webp",   900, (1, 1),    0.50),
-    ("scene-blue-wall.jpeg", "releases/release-02.webp",   900, (1, 1),    0.50),
-    ("bio-lasers.jpeg",      "releases/release-03.webp",   900, (1, 1),    0.35),
-    ("live-beams.jpeg",      "releases/release-04.webp",   900, (1, 1),    0.32),
+    dict(src="hero-red-burst.jpeg",  out="releases/release-01.webp", width=900, aspect=(1, 1)),
+    dict(src="crowd-booth.jpeg",     out="releases/release-02.webp", width=900, aspect=(1, 1), focus=0.45),
+    dict(src="scene-blue-wall.jpeg", out="releases/release-03.webp", width=900, aspect=(1, 1)),
+    dict(src="crowd-party.jpeg",     out="releases/release-04.webp", width=900, aspect=(1, 1), focus=0.30, trim=True),
 ]
 
-LOGO = "oscillator-logo.jpeg"
+LOGO = "oscillator-logo.jpeg"           # circular stamp -> favicon + footer
+WORDMARK = "oscillator-wordmark.jpeg"   # horizontal lockup -> label section
+
+
+def trim_letterbox(im, threshold=12):
+    """Strip uniform black bars around a phone-screenshot export."""
+    grey = ImageOps.grayscale(im)
+    w, h = grey.size
+    px = grey.load()
+    step = max(1, w // 200)
+
+    def row_max(y):
+        return max(px[x, y] for x in range(0, w, step))
+
+    def col_max(x):
+        return max(px[x, y] for y in range(0, h, step))
+
+    top, bottom, left, right = 0, h - 1, 0, w - 1
+    while top < bottom and row_max(top) < threshold:
+        top += 1
+    while bottom > top and row_max(bottom) < threshold:
+        bottom -= 1
+    while left < right and col_max(left) < threshold:
+        left += 1
+    while right > left and col_max(right) < threshold:
+        right -= 1
+
+    return im.crop((left, top, right + 1, bottom + 1))
 
 
 def crop_to(im, aspect, focus):
@@ -63,11 +105,11 @@ def crop_to(im, aspect, focus):
     return im.crop((0, top, w, top + new_h))
 
 
-def monochrome(im):
+def monochrome(im, lift=1.0):
     im = ImageOps.grayscale(im)
     im = ImageOps.autocontrast(im, cutoff=(0.4, 0.2))
     im = ImageEnhance.Contrast(im).enhance(1.12)
-    im = ImageEnhance.Brightness(im).enhance(0.94)
+    im = ImageEnhance.Brightness(im).enhance(0.94 * lift)
     return im.convert("RGB")
 
 
@@ -123,6 +165,33 @@ def build_logo(src):
     logo.putalpha(mask)
     save(logo, "oscillator-logo.webp", lossless=True)
 
+    build_icons(logo)
+
+
+def build_wordmark(src):
+    """The horizontal lockup ships as yellow-on-black. The label section is
+    yellow, so invert it: luminance becomes the alpha channel and the ink is
+    solid black. One transparent PNG-style asset that sits on any ground."""
+    im = ImageOps.grayscale(Image.open(src).convert("RGB"))
+    im = ImageOps.autocontrast(im, cutoff=1)
+
+    alpha = im                                     # bright ink -> opaque
+    box = alpha.point(lambda v: 255 if v > 40 else 0).getbbox()
+    if box:
+        alpha = alpha.crop(box)
+
+    mark = Image.new("RGBA", alpha.size, (10, 10, 10, 255))
+    mark.putalpha(alpha)
+
+    target_w = 1200
+    if mark.width > target_w:
+        mark = mark.resize(
+            (target_w, round(mark.height * target_w / mark.width)), Image.LANCZOS
+        )
+    save(mark, "oscillator-wordmark.webp", lossless=True)
+
+
+def build_icons(logo):
     # favicon + touch icon, flattened on the brand black
     for size, name in ((64, "favicon.png"), (180, "apple-touch-icon.png")):
         icon = Image.new("RGB", (size, size), "#0A0A0A")
@@ -140,20 +209,24 @@ def main():
 
     print("photos (B&W):")
     missing = []
-    for src, rel, max_w, aspect, focus in JOBS:
-        path = os.path.join(RAW, src)
+    for job in JOBS:
+        path = os.path.join(RAW, job["src"])
         if not os.path.exists(path):
-            missing.append(src)
+            missing.append(job["src"])
             continue
         im = Image.open(path).convert("RGB")
-        save(resize(monochrome(crop_to(im, aspect, focus)), max_w), rel)
+        if job.get("trim"):
+            im = trim_letterbox(im)
+        im = crop_to(im, job.get("aspect"), job.get("focus", 0.5))
+        save(resize(monochrome(im, job.get("lift", 1.0)), job["width"]), job["out"])
 
-    logo_path = os.path.join(RAW, LOGO)
-    if os.path.exists(logo_path):
-        print("logo (colour):")
-        build_logo(logo_path)
-    else:
-        missing.append(LOGO)
+    print("logos (colour):")
+    for name, builder in ((LOGO, build_logo), (WORDMARK, build_wordmark)):
+        path = os.path.join(RAW, name)
+        if os.path.exists(path):
+            builder(path)
+        else:
+            missing.append(name)
 
     if missing:
         print("\nnot found in raw/: " + ", ".join(sorted(set(missing))))
