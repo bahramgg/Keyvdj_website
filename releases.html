@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KEYV · Discography</title>
+<meta name="description" content="All works by KEYV: label releases, live mixes and video sets.">
+<meta name="theme-color" content="#0A0A0A">
+
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════════ -->
+<header class="nav" id="nav">
+  <a class="nav__mark" href="index.html" aria-label="KEYV, home">KEYV</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="index.html#oscillator">Label</a>
+    <a href="index.html#music">Music</a>
+    <a href="index.html#shows">Shows</a>
+    <a href="index.html#booking">Contact</a>
+  </nav>
+  <ul class="nav__platforms" id="nav-platforms" aria-label="Music platforms"></ul>
+</header>
+
+<main>
+  <section class="section works" aria-labelledby="works-title">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="tag-label">Discography</p>
+        <h1 id="works-title">All works</h1>
+        <p>Every release, live mix and video set in one place.</p>
+      </header>
+
+      <div id="works"></div>
+
+      <p class="works__back reveal">
+        <a class="action" href="index.html#music">← Back to the site</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════════════ -->
+<footer id="footer" class="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__mark" data-config="artist.wordmark">KEYV</p>
+    <img class="footer__stamp" id="footer-stamp" src="img/oscillator-logo.webp"
+         alt="Oscillator" width="600" height="600" loading="lazy" decoding="async">
+    <ul class="socials socials--footer" id="footer-socials"></ul>
+  </div>
+  <div class="wrap footer__credit">
+    <span data-config="credit">© KEYV</span>
+    <span class="footer__built">Blast the speakers to full volume.</span>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script defer src="assets/js/releases.js"></script>
+</body>
+</html>

@@ -142,21 +142,11 @@
     if (heroImg) heroImg.addEventListener('error', function () { heroImg.style.display = 'none'; }, { once: true });
 
     var name = get('artist.name');
-    if (name) document.title = name + ' — Techno DJ & Producer';
+    if (name) document.title = name + ' · Techno DJ & Producer';
   }
 
-  function applyEmail() {
-    var email = get('booking.email');
-    if (!email) return;
-    ['#booking-email', '#footer-email'].forEach(function (sel) {
-      var node = $(sel);
-      if (!node) return;
-      node.href = 'mailto:' + email;
-      node.textContent = email;
-    });
-    var chip = $('#booking-chip');
-    if (chip) chip.href = 'mailto:' + email;   /* keeps its "Booking" label */
-  }
+  /* the email is not shown anywhere; it only powers the form's mailto
+     fallback */
 
   function renderSocials() {
     var socials = get('socials');
@@ -174,40 +164,46 @@
     });
   }
 
+  /* platform links live in the header */
+  function renderNavPlatforms() {
+    var list = $('#nav-platforms');
+    var platforms = get('platforms');
+    if (!list || !Array.isArray(platforms)) return;
+    list.textContent = '';
+    platforms.forEach(function (p) {
+      if (!p || !p.label) return;
+      var li = el('li');
+      li.appendChild(extLink(p.url, p.label));
+      list.appendChild(li);
+    });
+  }
+
   /* ---- releases --------------------------------------------------- */
 
-  /* reference card anatomy: cover → "Title (Mix)" → artist → genre · year */
+  /* quiet card: cover, title, one meta line — the whole card links to the
+     release's first URL, the full detail lives on the discography page */
   function releaseCard(release) {
-    var card = el('article', 'card');
+    var primary = Array.isArray(release.links) && release.links[0] ? safeUrl(release.links[0].url) : '';
+    var card = el(primary ? 'a' : 'article', 'card');
+    if (primary) {
+      card.href = primary;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
+      card.setAttribute('aria-label', (release.title || 'Release') + ' ↗');
+    }
 
     var media = el('div', 'card__media');
     media.appendChild(img(release.cover, release.title ? release.title + ' cover art' : ''));
     if (release.year) media.appendChild(el('span', 'card__year', release.year));
     card.appendChild(media);
 
-    var title = el('h3', 'card__title', release.title || 'Untitled');
-    if (release.mix) {
-      title.appendChild(document.createTextNode(' '));
-      title.appendChild(el('span', null, '(' + release.mix + ')'));
-    }
-    card.appendChild(title);
+    card.appendChild(el('h3', 'card__title', release.title || 'Untitled'));
 
-    var artist = get('artist.name');
-    if (artist) card.appendChild(el('p', 'card__artist', artist));
-
-    if (release.genre || release.year) {
+    if (release.genre || release.mix) {
       var meta = el('p', 'card__meta');
       if (release.genre) meta.appendChild(el('em', null, '#' + String(release.genre).toLowerCase()));
-      if (release.year) meta.appendChild(el('span', null, release.year));
+      if (release.mix) meta.appendChild(el('span', null, release.mix));
       card.appendChild(meta);
-    }
-
-    if (Array.isArray(release.links) && release.links.length) {
-      var links = el('div', 'card__links');
-      release.links.forEach(function (l) {
-        if (l && l.label) links.appendChild(extLink(l.url, l.label + ' ↗'));
-      });
-      card.appendChild(links);
     }
     return card;
   }
@@ -219,19 +215,6 @@
       grid.textContent = '';
       releases.forEach(function (r) { grid.appendChild(releaseCard(r)); });
     }
-  }
-
-  function renderPlatforms() {
-    var list = $('#platform-list');
-    var platforms = get('platforms');
-    if (!list || !Array.isArray(platforms)) return;
-    list.textContent = '';
-    platforms.forEach(function (p) {
-      if (!p || !p.label) return;
-      var li = el('li');
-      li.appendChild(extLink(p.url, p.label));
-      list.appendChild(li);
-    });
   }
 
   /* ---- featured player -------------------------------------------- */
@@ -317,6 +300,20 @@
         if (artist.handle) card.appendChild(el('p', 'roster-card__handle', artist.handle));
         grid.appendChild(card);
       });
+
+      /* photo tiles fill out the row beside the artist cards */
+      var gallery = get('label.gallery');
+      if (Array.isArray(gallery)) {
+        gallery.forEach(function (src) {
+          var url = safeUrl(src);
+          if (!url) return;
+          var tile = el('figure', 'roster-card');
+          var media = el('div', 'roster-card__media');
+          media.appendChild(img(url, ''));
+          tile.appendChild(media);
+          grid.appendChild(tile);
+        });
+      }
     }
 
     /* section title is the label's own lockup; if the artwork is missing,
@@ -401,7 +398,7 @@
     });
 
     if (!events.length) {
-      list.appendChild(el('li', 'events__empty', 'No dates announced — check back soon.'));
+      list.appendChild(el('li', 'events__empty', 'Coming soon.'));
       return;
     }
 
@@ -466,8 +463,7 @@
       var body =
         'Name: ' + data.name + '\n' +
         'Email: ' + data.email + '\n' +
-        'Date: ' + (data.date || '—') + '\n' +
-        'Venue / City: ' + (data.venue || '—') + '\n\n' +
+        'Venue / City: ' + (data.venue || '-') + '\n\n' +
         data.message;
       window.location.href =
         'mailto:' + email +
@@ -496,7 +492,7 @@
       }
 
       var data = {};
-      ['name', 'email', 'date', 'venue', 'message'].forEach(function (name) {
+      ['name', 'email', 'venue', 'message'].forEach(function (name) {
         data[name] = form.elements[name] ? form.elements[name].value.trim() : '';
       });
 
@@ -642,11 +638,10 @@
   function init() {
     applyColors();
     applyTextBindings();
-    applyEmail();
     renderSocials();
     renderReleases();
     renderPlayer();
-    renderPlatforms();
+    renderNavPlatforms();
     renderRoster();
     renderEvents();
     renderForm();

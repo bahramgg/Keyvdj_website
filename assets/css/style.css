@@ -255,20 +255,25 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 
 @media (min-width: 720px) { .nav__links { display: flex; } }
 
-.nav__sound {
-  display: flex; align-items: center; gap: .55rem;
+/* music platform links, right side of the header */
+.nav__platforms {
+  display: flex;
+  align-items: center;
+  gap: clamp(.9rem, 1.8vw, 1.75rem);
   font-size: .5625rem;
-  font-weight: 500;
-  letter-spacing: .26em;
-  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
 }
-.nav__sound .dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: pulse 1.8s ease-in-out infinite;
+.nav__platforms a {
+  color: var(--muted);
+  transition: color .3s var(--ease);
 }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
+.nav__platforms a:hover { color: var(--accent); }
+@media (max-width: 719px) {
+  /* on phones only the strongest link survives */
+  .nav__platforms li:nth-child(n+3) { display: none; }
+}
 
 /* ---- hero --------------------------------------------------------- */
 .hero {
@@ -283,12 +288,32 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 
 .hero__media { position: absolute; inset: 0; z-index: -1; }
 
+/* On desktop the square photo is CONTAINED, not cover-cropped: the full
+   frame is visible "from further away" and rendered below native scale,
+   so it stays sharp. Its edges melt into the black with side fades. */
+.hero__frame { position: relative; width: 100%; height: 100%; }
+
 .hero__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 62% 32%;
-  /* the hero stays colour — the blue LED wall is the shot */
+  filter: grayscale(1) contrast(1.04);
+}
+
+.hero__fade { display: none; }
+
+@media (min-width: 900px) {
+  .hero__media { display: flex; justify-content: center; }
+  .hero__frame { width: auto; aspect-ratio: 1; max-width: 100%; }
+  .hero__img { object-fit: cover; object-position: center; }
+  .hero__fade {
+    display: block;
+    position: absolute; inset: 0;
+    background: linear-gradient(to right,
+      var(--bg) 0%, transparent 14%, transparent 86%, var(--bg) 100%);
+    pointer-events: none;
+  }
 }
 
 .hero__overlay {
@@ -296,17 +321,6 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   background:
     linear-gradient(to bottom, rgba(10,10,10,.72) 0%, rgba(10,10,10,0) 20%),
     linear-gradient(to top, rgba(10,10,10,.92) 0%, rgba(10,10,10,.25) 34%, rgba(10,10,10,0) 55%);
-}
-
-/* the label sticker, dropped over the photo like a slap tag */
-.hero__sticker {
-  position: absolute;
-  top: clamp(5.5rem, 14vh, 8rem);
-  left: var(--gutter);
-  width: clamp(4.5rem, 8vw, 6.5rem);
-  height: auto;
-  transform: rotate(-8deg);
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, .55));
 }
 
 .hero__content {
@@ -350,29 +364,35 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   margin-top: 1.25rem;
 }
 
-/* scroll cue — thin circle, bottom right */
+/* scroll cue — frameless, centred at the bottom */
 .hero__cue {
   position: absolute;
-  right: var(--gutter);
-  bottom: 2rem;
-  width: 64px; height: 64px;
-  border: 1px solid var(--hairline-strong);
-  border-radius: 50%;
+  left: 50%;
+  bottom: 1.75rem;
+  transform: translateX(-50%);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: .5rem;
+  gap: .6rem;
+  font-size: .5625rem;
   font-weight: 500;
-  letter-spacing: .28em;
+  letter-spacing: .3em;
   text-transform: uppercase;
   color: var(--muted);
-  transition: border-color .3s var(--ease), color .3s var(--ease);
-  animation: cue-drift 3s var(--ease) infinite;
+  transition: color .3s var(--ease);
 }
-.hero__cue:hover { border-color: var(--accent); color: var(--accent); }
-@keyframes cue-drift {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
+.hero__cue:hover { color: var(--accent); }
+.hero__cue-line {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(to bottom, currentColor, transparent);
+  animation: cue-line 2.4s var(--ease) infinite;
+  transform-origin: top;
+}
+@keyframes cue-line {
+  0%   { transform: scaleY(0); opacity: 0; }
+  40%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1) translateY(30px); opacity: 0; }
 }
 
 /* ---- label (oscillator) ------------------------------------------- */
@@ -447,47 +467,11 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 
 /* ---- music -------------------------------------------------------- */
-/* platform band — the reference's full-bleed yellow strip with dark
-   platform wordmarks */
-.platforms {
-  margin-top: clamp(3rem, 6vw, 5rem);
-  background: var(--accent);
-  padding-block: 1.4rem;
-}
-.platforms__inner {
+.music__more {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 1rem 2.75rem;
+  justify-content: center;
 }
-.platforms__label {
-  font-size: .5625rem;
-  font-weight: 700;
-  letter-spacing: .26em;
-  text-transform: uppercase;
-  color: rgba(10, 10, 10, .6);
-}
-.platforms__list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: .75rem 2.5rem;
-  font-size: .9375rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.platforms__list a {
-  color: #0A0A0A;
-  opacity: .85;
-  transition: opacity .3s var(--ease), transform .3s var(--ease);
-  display: inline-block;
-}
-.platforms__list a:hover { opacity: 1; transform: translateY(-2px); }
-
-/* the band hangs at the section's end, flush with its bottom edge */
-.music { padding-bottom: 0; }
-.music .platforms { margin-top: clamp(3.5rem, 7vw, 5.5rem); }
 
 /* featured player */
 .player { margin-top: clamp(2rem, 4.5vw, 3.5rem); }
@@ -610,23 +594,18 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   padding: .2rem .5rem;
 }
 
+/* two quiet lines under each cover — the card itself is the link */
 .card__title {
   font-size: .9375rem;
   font-weight: 500;
   line-height: 1.4;
-}
-.card__title span { color: var(--muted); font-weight: 400; }
-.card__artist {
-  font-size: .75rem;
-  color: var(--dim);
-  margin-top: .1rem;
 }
 .card__meta {
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
   align-items: baseline;
-  margin-top: .5rem;
+  margin-top: .35rem;
   font-size: .625rem;
   font-weight: 500;
   letter-spacing: .16em;
@@ -634,19 +613,6 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 .card__meta em { font-style: normal; color: var(--accent); }
 .card__meta span { color: var(--dim); }
-
-.card__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem 1.1rem;
-  margin-top: .6rem;
-  font-size: .5625rem;
-  font-weight: 500;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-.card__links a { color: var(--muted); transition: color .3s var(--ease); }
-.card__links a:hover { color: var(--accent); }
 
 /* ---- shows -------------------------------------------------------- */
 .events { border-top: 1px solid var(--hairline); }
@@ -742,54 +708,21 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   .booking__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; }
 }
 
-.booking__portrait {
-  position: relative;
-  max-width: 26rem;
-}
-.booking__portrait img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.08);
-}
-/* yellow chip riding the portrait corner, reference-style */
-.booking__chip {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  transform: translate(-14%, 30%);
-  width: 6rem; height: 6rem;
-  background: var(--accent);
-  color: #0A0A0A;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: .7rem .8rem;
-  font-size: .5625rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  transition: transform .35s var(--ease);
-}
-.booking__chip::after { content: "↗"; font-size: 1rem; align-self: flex-end; }
-.booking__chip:hover { transform: translate(-14%, 30%) scale(1.05); }
+/* portrait shown as shot — natural aspect, no grade */
+.booking__portrait { max-width: 24rem; }
+.booking__portrait img { width: 100%; height: auto; }
 
 .booking__name {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 500;
   letter-spacing: -.01em;
+  margin-top: 2rem;
 }
 .booking__intro .bio-text {
   color: var(--muted);
   margin-top: 1rem;
   max-width: 48ch;
 }
-.booking__email {
-  margin-top: 1.5rem;
-  font-size: .8125rem;
-}
-.booking__email .label { color: var(--dim); margin-right: .6rem; }
-.booking__email a { color: var(--accent); }
 
 .socials {
   display: flex;
@@ -891,8 +824,6 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   opacity: .9;
 }
 .socials--footer { justify-content: center; margin-top: 0; }
-.footer__email { font-size: .75rem; }
-.footer__email a { color: var(--accent); }
 
 .footer__credit {
   display: flex;
@@ -908,6 +839,55 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   text-transform: uppercase;
   color: var(--dim);
 }
+
+/* ---- discography page (releases.html) ----------------------------- */
+.works { padding-top: clamp(7rem, 16vh, 10rem); }
+
+.works__group { margin-top: clamp(3rem, 6vw, 4.5rem); }
+.works__group:first-of-type { margin-top: 0; }
+.works__group > .tag-label { margin-bottom: 1.25rem; }
+
+.work {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--hairline);
+  transition: background .35s var(--ease), padding .35s var(--ease);
+}
+.work:first-of-type { border-top: 1px solid var(--hairline); }
+@media (min-width: 720px) {
+  .work { grid-template-columns: 88px minmax(0, 1fr) minmax(0, 12rem) auto; gap: 2rem; }
+  .work:hover { background: rgba(255, 255, 255, .025); padding-inline: .75rem; }
+}
+
+.work__cover {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: var(--panel);
+}
+.work__title { font-size: .9375rem; font-weight: 500; line-height: 1.35; }
+.work__sub { font-size: .75rem; color: var(--dim); margin-top: .1rem; }
+.work__meta {
+  display: none;
+  font-size: .625rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.work__meta em { font-style: normal; color: var(--accent); }
+.work__meta span { color: var(--dim); margin-left: .6rem; }
+@media (min-width: 720px) { .work__meta { display: block; } }
+
+.work__links {
+  display: flex;
+  gap: 1.25rem;
+  justify-self: end;
+}
+
+.works__back { margin-top: clamp(3rem, 6vw, 4.5rem); }
 
 /* ---- reveal (JS adds .is-in; GSAP takes over when available) ------- */
 .reveal, .card, .roster-card, .event { opacity: 1; }

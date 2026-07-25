@@ -12,7 +12,7 @@ window.KEYV_CONFIG = {
     genreTag: "#techno",
     bio:
       "KEYV is a DJ and producer working in the harder, faster end of the " +
-      "techno spectrum — hypnotic loops, rolling percussion and industrial " +
+      "techno spectrum: hypnotic loops, rolling percussion and industrial " +
       "textures pushed through a raw, high-energy set. Founder of the " +
       "Oscillator label, he has spent the last decade building a sound that " +
       "sits between warehouse tradition and contemporary hardgroove.",
@@ -42,12 +42,14 @@ window.KEYV_CONFIG = {
   featuredTrackUrl: "https://soundcloud.com/keyvdj/demonstrator-2",
   featuredTrackTitle: "DEMONSTRATOR #2",
 
+  /* type: "release" | "mix" | "video" — groups the discography page */
   releases: [
     {
       title: "Qryptic",
-      mix: "TUGwave V.A. Vol.01 · A",
+      mix: "TUGwave V.A. Vol.01",
       genre: "Electro",
       year: "2025",
+      type: "release",
       cover: "img/releases/qryptic.webp",
       links: [
         { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" },
@@ -59,6 +61,7 @@ window.KEYV_CONFIG = {
       mix: "Live Mix",
       genre: "Techno",
       year: "2023",
+      type: "mix",
       cover: "img/releases/demonstrator-2.webp",
       links: [
         { label: "SoundCloud", url: "https://soundcloud.com/keyvdj/demonstrator-2" }
@@ -69,6 +72,7 @@ window.KEYV_CONFIG = {
       mix: "Live Mix",
       genre: "Techno",
       year: "2020",
+      type: "mix",
       cover: "img/releases/demonstrator.webp",
       links: [
         { label: "SoundCloud", url: "https://soundcloud.com/keyvdj/demonstrator" }
@@ -79,6 +83,7 @@ window.KEYV_CONFIG = {
       mix: "Uchiha Mob · Series 01 EP01",
       genre: "Electro",
       year: "",
+      type: "video",
       cover: "img/releases/live-set.webp",
       links: [
         { label: "YouTube", url: "https://youtu.be/qVqKLeuRrA0" }
@@ -99,59 +104,25 @@ window.KEYV_CONFIG = {
     tagline: "Raw techno from the edge of the signal.",
     description:
       "Oscillator is an independent techno label founded by KEYV. It exists " +
-      "for records that are built for the floor first — stripped, loud and " +
-      "unpolished — and for a roster of artists who play the same way.",
-    url: "https://soundcloud.com/",
-    linkLabel: "Listen on SoundCloud",
+      "for records that are built for the floor first: stripped, loud and " +
+      "unpolished. A roster of artists who play the same way.",
     logo: "img/oscillator-logo.webp",          /* circular stamp — footer + favicon */
     wordmark: "img/oscillator-wordmark.webp",  /* horizontal lockup — section title */
-    /* photo: "" renders a typographic card instead of an empty frame —
-       drop a file in raw/, add it to tools/prepare-images.py, point here */
     roster: [
       { name: "KEYV", handle: "@keyvdj", photo: "img/roster/artist-01.webp" }
+    ],
+    /* photo tiles rendered beside the roster cards */
+    gallery: [
+      "img/scene-crowd.webp",
+      "img/scene-burst.webp",
+      "img/scene-party.webp"
     ]
   },
 
   /* ---- shows ------------------------------------------------------- */
-  /* status: "tickets" | "soldout" | "free" */
-  events: [
-    {
-      date: "2026-08-14",
-      title: "Oscillator Night",
-      artist: "KEYV b2b VOLTA",
-      city: "Berlin",
-      country: "DE",
-      status: "tickets",
-      ticketUrl: "https://ra.co/"
-    },
-    {
-      date: "2026-08-29",
-      title: "Warehouse 09",
-      artist: "KEYV",
-      city: "Amsterdam",
-      country: "NL",
-      status: "soldout",
-      ticketUrl: ""
-    },
-    {
-      date: "2026-09-12",
-      title: "Signal / Noise",
-      artist: "KEYV",
-      city: "Tbilisi",
-      country: "GE",
-      status: "tickets",
-      ticketUrl: "https://ra.co/"
-    },
-    {
-      date: "2026-09-27",
-      title: "Open Air — Rooftop",
-      artist: "KEYV",
-      city: "Tehran",
-      country: "IR",
-      status: "free",
-      ticketUrl: ""
-    }
-  ],
+  /* Empty list shows the "Coming soon." state.
+     status: "tickets" | "soldout" | "free" */
+  events: [],
 
   /* ---- theme ------------------------------------------------------- */
   colors: {
