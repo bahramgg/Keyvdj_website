@@ -52,9 +52,10 @@ JOBS = [
     dict(src="hero-led-blue.jpeg", out="hero-phone.webp", width=1080, aspect=(1, 1), sharpen=True),
     dict(src="hero-led-blue.jpeg", out="hero-desk.webp",  width=864,  aspect=(4, 5), focus_x=1.0, sharpen=True),
     # portrait: press crop on the face, full source resolution behind it
-    # portrait: backdrop crushed to true black so it melts into the page
-    dict(src="portrait-studio.jpeg", out="bio.webp", width=1500, aspect=(4, 5),
-         focus=0.13, mono=False, black_point=44, gamma=0.66),
+    # portrait: B&W like every other photo, backdrop crushed to true black
+    # so the frame melts into the page instead of sitting grey on it
+    dict(src="portrait-live.jpeg", out="bio.webp", width=1170, aspect=(4, 5),
+         black_point=40, gamma=0.8, sharpen=True),
 
     # release covers — real artwork pulled from SoundCloud
     dict(src="covers/qryptic.png",        out="releases/qryptic.webp",        width=900, aspect=(1, 1), mono=False),
