@@ -52,7 +52,7 @@ def bundle(page, out, extra_scripts, link_map):
         css,
     )
     html = re.sub(
-        r'<link rel="stylesheet" href="assets/css/style.css">',
+        r'<link rel="stylesheet" href="assets/css/style\.css(?:\?v=[0-9a-f]+)?">',
         lambda m: "<style>\n" + css + "\n</style>",
         html,
     )
@@ -79,7 +79,7 @@ def bundle(page, out, extra_scripts, link_map):
             "if (scheme && !/^(https?|mailto|data)$/i.test(scheme[1])) return '';",
         )
         html = re.sub(
-            r'<script[^>]*src="' + re.escape(src) + r'"></script>',
+            r'<script[^>]*src="' + re.escape(src) + r'(?:\?v=[0-9a-f]+)?"></script>',
             lambda m, b=body: "<script>\n" + b + "\n</script>",
             html,
         )
