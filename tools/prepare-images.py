@@ -39,11 +39,9 @@ QUALITY = 82
 #          the card CSS shows it grayscale at rest and lets colour through on
 #          hover, so the files stay colour. Photos default to B&W.
 JOBS = [
-    # no aspect crop: the hero is close to 5:4, so the full-bleed CSS crops
-    # it vertically and both the subject (left) and the windows (right) stay
-    # in frame. Cropping it to 16:9 here would force a horizontal crop later
-    # and lose both edges.
-    dict(src="hero-warehouse.jpeg",  out="hero.webp",       width=2000, trim=True, lift=1.16),
+    # square source, full-bleed CSS does the viewport crop — the subject
+    # stands right of centre with the LED wall filling the left
+    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1080),
     dict(src="portrait-studio.jpeg", out="bio.webp",        width=1400, aspect=(4, 5),  focus=0.20),
     dict(src="live-beams.jpeg",      out="roster/artist-01.webp", width=900, aspect=(3, 4), focus=0.38),
 

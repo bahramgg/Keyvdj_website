@@ -260,7 +260,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   width: 100%;
   height: 118%;          /* headroom for the parallax translate */
   object-fit: cover;
-  object-position: 14% 50%;   /* keep the subject in frame on narrow screens */
+  object-position: 68% 40%;   /* subject stands right of centre */
   filter: grayscale(1) contrast(1.12) brightness(.82);
   will-change: transform;
 }
@@ -321,11 +321,6 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   margin-inline: auto;
 }
 
-/* The hero subject stands in the left of the frame, so the wordmark sits
-   on the right of it rather than across his face. */
-@media (min-width: 900px) {
-  .hero__content { text-align: right; }
-}
 
 .hero__tag {
   color: var(--accent);
@@ -348,8 +343,8 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 
 @media (min-width: 900px) {
-  .hero__mark { font-size: clamp(10rem, 26vw, 22rem); margin-left: 0; margin-right: -.06em; }
-  .hero__img { object-position: center 50%; }
+  .hero__mark { font-size: clamp(10rem, 26vw, 22rem); }
+  .hero__img { object-position: center 40%; }
 }
 
 .hero__loc {
