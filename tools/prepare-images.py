@@ -40,10 +40,9 @@ QUALITY = 82
 #          the card CSS shows it grayscale at rest and lets colour through on
 #          hover, so the files stay colour. Photos default to B&W.
 JOBS = [
-    # square source; on desktop it sits in a half-width panel so it renders
-    # at (near) native scale. Sharpened + lifted — the source is a touch
-    # soft and underexposed for a hero.
-    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1080, lift=1.12, sharpen=True),
+    # full-bleed hero: the 1080px source is upscaled once here with Lanczos
+    # + unsharp (better than letting the browser stretch it) and lifted
+    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1920, upscale=True, lift=1.10, sharpen=True),
     dict(src="portrait-studio.jpeg", out="bio.webp",        width=1400, aspect=(4, 5),  focus=0.20),
     dict(src="live-beams.jpeg",      out="roster/artist-01.webp", width=900, aspect=(3, 4), focus=0.38),
 
@@ -116,9 +115,9 @@ def monochrome(im, lift=1.0):
     return im.convert("RGB")
 
 
-def resize(im, max_w):
-    if im.width <= max_w:
-        return im                            # never upscale
+def resize(im, max_w, upscale=False):
+    if im.width == max_w or (im.width < max_w and not upscale):
+        return im                            # never upscale by default
     h = round(im.height * max_w / im.width)
     return im.resize((max_w, h), Image.LANCZOS)
 
@@ -172,9 +171,9 @@ def build_logo(src):
 
 
 def build_wordmark(src):
-    """The horizontal lockup ships as yellow-on-black. The label section is
-    yellow, so invert it: luminance becomes the alpha channel and the ink is
-    solid black. One transparent PNG-style asset that sits on any ground."""
+    """The horizontal lockup ships as yellow-on-black. The site is dark, so
+    keep the ink acid yellow and turn luminance into the alpha channel — a
+    transparent asset that sits directly on the black sections."""
     im = ImageOps.grayscale(Image.open(src).convert("RGB"))
     im = ImageOps.autocontrast(im, cutoff=1)
 
@@ -183,7 +182,7 @@ def build_wordmark(src):
     if box:
         alpha = alpha.crop(box)
 
-    mark = Image.new("RGBA", alpha.size, (10, 10, 10, 255))
+    mark = Image.new("RGBA", alpha.size, ACCENT + (255,))
     mark.putalpha(alpha)
 
     target_w = 1200
@@ -223,7 +222,7 @@ def main():
         im = crop_to(im, job.get("aspect"), job.get("focus", 0.5))
         if job.get("mono", True):
             im = monochrome(im, job.get("lift", 1.0))
-        im = resize(im, job["width"])
+        im = resize(im, job["width"], job.get("upscale", False))
         if job.get("sharpen"):
             im = im.filter(ImageFilter.UnsharpMask(radius=2, percent=110, threshold=2))
         save(im, job["out"])

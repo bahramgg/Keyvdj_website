@@ -52,32 +52,38 @@
       <div class="hero__overlay" aria-hidden="true"></div>
     </div>
 
+    <img class="hero__sticker" id="label-logo" src="img/oscillator-logo.webp"
+         alt="Oscillator" width="600" height="600" decoding="async">
+
     <div class="hero__content">
-      <p class="hero__tag" data-config="artist.genreTag">#techno</p>
+      <p class="hero__tag">
+        <em data-config="artist.genreTag">#techno</em>
+        <span>hard&nbsp;groove&nbsp;/&nbsp;raw</span>
+      </p>
       <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
       <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
     </div>
 
-    <a class="hero__cue" href="#oscillator" aria-label="Scroll down">
-      <span>SCROLL</span>
-      <span class="hero__cue-line" aria-hidden="true"></span>
-    </a>
+    <a class="hero__cue" href="#oscillator" aria-label="Scroll down">SCROLL</a>
   </section>
 
   <!-- ══ 2 · LABEL ══════════════════════════════════════════════════ -->
   <section id="oscillator" class="section oscillator" aria-labelledby="label-title">
     <div class="wrap">
-      <p class="eyebrow eyebrow--dark reveal">The Label</p>
-      <h2 class="oscillator__title reveal" id="label-title">
-        <img class="oscillator__wordmark" id="label-wordmark" src="img/oscillator-wordmark.webp"
-             alt="Oscillator" width="817" height="241" loading="lazy" decoding="async">
-      </h2>
-      <p class="oscillator__tagline reveal" data-config="label.tagline"></p>
-      <p class="oscillator__desc reveal" data-config="label.description"></p>
-      <a class="btn btn--invert reveal" id="label-link" href="#">Listen on SoundCloud</a>
+      <header class="section-head reveal">
+        <p class="tag-label">The Label</p>
+        <h2 class="oscillator__title" id="label-title">
+          <img class="oscillator__wordmark" id="label-wordmark" src="img/oscillator-wordmark.webp"
+               alt="Oscillator" width="817" height="241" loading="lazy" decoding="async">
+        </h2>
+        <p data-config="label.tagline"></p>
+      </header>
 
-      <h3 class="eyebrow eyebrow--dark oscillator__rostertitle reveal">Roster</h3>
-      <div class="grid grid--roster" id="roster-grid"></div>
+      <p class="oscillator__desc reveal" data-config="label.description"></p>
+      <a class="action oscillator__link reveal" id="label-link" href="#">Listen on SoundCloud&nbsp;↗</a>
+
+      <p class="tag-label oscillator__rostertitle reveal">Roster</p>
+      <div class="grid--roster" id="roster-grid"></div>
     </div>
   </section>
 
@@ -85,21 +91,21 @@
   <section id="music" class="section music" aria-labelledby="music-title">
     <div class="wrap">
       <header class="section-head reveal">
-        <p class="eyebrow">Listen</p>
-        <h2 class="display" id="music-title">Music</h2>
+        <p class="tag-label">Discography</p>
+        <h2 id="music-title">Latest Releases</h2>
+        <p>Originals, live mixes and label V.A. cuts — streamed and sold on the platforms below.</p>
       </header>
 
       <div class="platforms reveal">
-        <span class="platforms__label">Find the releases on</span>
+        <span class="platforms__label">Available on</span>
         <ul class="platforms__list" id="platform-list"></ul>
       </div>
 
       <div class="player reveal">
-        <p class="player__label">Featured</p>
         <div class="player__frame" id="featured-player"></div>
       </div>
 
-      <div class="grid grid--releases" id="release-grid"></div>
+      <div class="grid--releases" id="release-grid"></div>
     </div>
   </section>
 
@@ -107,8 +113,8 @@
   <section id="shows" class="section shows" aria-labelledby="shows-title">
     <div class="wrap">
       <header class="section-head reveal">
-        <p class="eyebrow">Upcoming</p>
-        <h2 class="display" id="shows-title">Shows</h2>
+        <p class="tag-label">Upcoming Tour</p>
+        <h2 id="shows-title">Shows &amp; events</h2>
       </header>
       <ul class="events" id="event-list"></ul>
     </div>
@@ -118,18 +124,20 @@
   <section id="booking" class="section booking" aria-labelledby="booking-title">
     <div class="wrap">
       <header class="section-head reveal">
-        <p class="eyebrow">Get in touch</p>
-        <h2 class="display" id="booking-title">Contact</h2>
+        <p class="tag-label">Get in touch</p>
+        <h2 id="booking-title">Booking &amp; contact</h2>
       </header>
 
       <div class="booking__grid">
         <div class="booking__intro">
           <figure class="booking__portrait reveal">
             <img data-config-src="artist.portrait" src="img/bio.webp" alt="Portrait of KEYV" loading="lazy" decoding="async">
+            <a class="booking__chip" id="booking-chip" href="mailto:booking@keyvdj.com">Booking</a>
           </figure>
-          <h3 class="booking__name reveal" id="bio-title" data-config="artist.name">KEYV</h3>
-          <p class="lede reveal" data-config="artist.bio"></p>
+          <h3 class="booking__name reveal" id="bio-title" data-config="artist.name" style="margin-top:2.5rem">KEYV</h3>
+          <p class="bio-text reveal" data-config="artist.bio"></p>
           <p class="booking__email reveal">
+            <span class="label">Booking</span>
             <a class="link-grow" id="booking-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
           </p>
           <ul class="socials reveal" id="booking-socials"></ul>
@@ -179,7 +187,7 @@
   </div>
   <div class="wrap footer__credit">
     <span data-config="credit">© KEYV</span>
-    <span class="footer__built">Built in the dark.</span>
+    <span class="footer__built">Blast the speakers to full volume.</span>
   </div>
 </footer>
 

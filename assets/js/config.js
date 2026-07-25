@@ -9,7 +9,7 @@ window.KEYV_CONFIG = {
   artist: {
     name: "KEYV",
     wordmark: "KEYV",
-    genreTag: "#techno / #hardgroove",
+    genreTag: "#techno",
     bio:
       "KEYV is a DJ and producer working in the harder, faster end of the " +
       "techno spectrum — hypnotic loops, rolling percussion and industrial " +

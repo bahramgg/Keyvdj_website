@@ -154,6 +154,8 @@
       node.href = 'mailto:' + email;
       node.textContent = email;
     });
+    var chip = $('#booking-chip');
+    if (chip) chip.href = 'mailto:' + email;   /* keeps its "Booking" label */
   }
 
   function renderSocials() {
@@ -174,6 +176,7 @@
 
   /* ---- releases --------------------------------------------------- */
 
+  /* reference card anatomy: cover → "Title (Mix)" → artist → genre · year */
   function releaseCard(release) {
     var card = el('article', 'card');
 
@@ -182,14 +185,27 @@
     if (release.year) media.appendChild(el('span', 'card__year', release.year));
     card.appendChild(media);
 
-    card.appendChild(el('h3', 'card__title', release.title || 'Untitled'));
-    if (release.mix) card.appendChild(el('p', 'card__mix', release.mix));
+    var title = el('h3', 'card__title', release.title || 'Untitled');
+    if (release.mix) {
+      title.appendChild(document.createTextNode(' '));
+      title.appendChild(el('span', null, '(' + release.mix + ')'));
+    }
+    card.appendChild(title);
 
-    if (release.genre) card.appendChild(el('span', 'card__genre', release.genre));
+    var artist = get('artist.name');
+    if (artist) card.appendChild(el('p', 'card__artist', artist));
+
+    if (release.genre || release.year) {
+      var meta = el('p', 'card__meta');
+      if (release.genre) meta.appendChild(el('em', null, '#' + String(release.genre).toLowerCase()));
+      if (release.year) meta.appendChild(el('span', null, release.year));
+      card.appendChild(meta);
+    }
+
     if (Array.isArray(release.links) && release.links.length) {
       var links = el('div', 'card__links');
       release.links.forEach(function (l) {
-        if (l && l.label) links.appendChild(extLink(l.url, l.label));
+        if (l && l.label) links.appendChild(extLink(l.url, l.label + ' ↗'));
       });
       card.appendChild(links);
     }
@@ -263,10 +279,10 @@
     play.type = 'button';
     play.setAttribute('aria-label', 'Play ' + trackTitle + ' (loads the SoundCloud player)');
     play.appendChild(el('span', 'player__icon'));
-    play.appendChild(el('span', 'player__cta', 'Play'));
     play.addEventListener('click', function () { embed(true); });
 
     var meta = el('div', 'player__meta');
+    meta.appendChild(el('p', 'player__eyebrow', 'Featured track'));
     meta.appendChild(el('p', 'player__track', trackTitle));
     meta.appendChild(extLink(url, 'Open on SoundCloud ↗', 'player__out'));
 
@@ -325,16 +341,18 @@
       }
     }
 
-    var stamp = $('#footer-stamp');
-    if (stamp) {
-      var stampSrc = safeUrl(get('label.logo'));
-      if (stampSrc) {
-        stamp.src = stampSrc;
-        stamp.addEventListener('error', function () { stamp.remove(); }, { once: true });
+    /* the circular logo appears twice: hero sticker + footer stamp */
+    ['#label-logo', '#footer-stamp'].forEach(function (sel) {
+      var node = $(sel);
+      if (!node) return;
+      var src = safeUrl(get('label.logo'));
+      if (src) {
+        node.src = src;
+        node.addEventListener('error', function () { node.remove(); }, { once: true });
       } else {
-        stamp.remove();
+        node.remove();
       }
-    }
+    });
 
     var link = $('#label-link');
     if (link) {
@@ -401,22 +419,24 @@
       if (ev.artist) main.appendChild(el('p', 'event__artist', ev.artist));
       row.appendChild(main);
 
-      var place = [ev.city, ev.country].filter(Boolean).join(', ');
-      row.appendChild(el('div', 'event__place', place));
+      var place = el('div', 'event__place');
+      if (ev.city) place.appendChild(el('span', 'event__city', ev.city));
+      if (ev.country) place.appendChild(el('span', 'event__country', ev.country));
+      row.appendChild(place);
 
       var action = el('div', 'event__action');
       if (ev.status === 'soldout') {
-        action.appendChild(el('span', 'tag tag--soldout', 'Sold Out'));
+        action.appendChild(el('span', 'tag--soldout', 'Sold Out ✕'));
       } else if (ev.status === 'free') {
-        action.appendChild(el('span', 'tag tag--free', 'Free Entrance'));
+        action.appendChild(el('span', 'tag--free', 'Free Entrance'));
       } else {
         var url = safeUrl(ev.ticketUrl);
         if (url) {
-          var a = extLink(url, 'Buy Tickets', 'tag tag--tickets');
+          var a = extLink(url, 'Buy Tickets ↗', 'action');
           a.setAttribute('aria-label', 'Buy tickets for ' + (ev.title || 'this show'));
           action.appendChild(a);
         } else {
-          action.appendChild(el('span', 'tag tag--free', 'Announced'));
+          action.appendChild(el('span', 'tag--free', 'Announced'));
         }
       }
       row.appendChild(action);
