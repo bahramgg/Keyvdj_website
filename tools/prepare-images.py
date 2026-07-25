@@ -40,9 +40,10 @@ QUALITY = 82
 #          the card CSS shows it grayscale at rest and lets colour through on
 #          hover, so the files stay colour. Photos default to B&W.
 JOBS = [
-    # full-bleed hero: the 1080px source is upscaled once here with Lanczos
-    # + unsharp (better than letting the browser stretch it) and lifted
-    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1920, upscale=True, lift=1.10, sharpen=True),
+    # full-bleed hero: kept in COLOUR per the artist — the blue LED wall is
+    # the shot's identity. Upscaled once here with Lanczos + unsharp
+    # (better than letting the browser stretch it).
+    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1920, upscale=True, sharpen=True, mono=False),
     dict(src="portrait-studio.jpeg", out="bio.webp",        width=1400, aspect=(4, 5),  focus=0.20),
     dict(src="live-beams.jpeg",      out="roster/artist-01.webp", width=900, aspect=(3, 4), focus=0.38),
 

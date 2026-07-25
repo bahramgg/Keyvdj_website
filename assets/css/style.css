@@ -288,7 +288,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   height: 100%;
   object-fit: cover;
   object-position: 62% 32%;
-  filter: grayscale(1) contrast(1.04);
+  /* the hero stays colour — the blue LED wall is the shot */
 }
 
 .hero__overlay {
@@ -447,33 +447,47 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 
 /* ---- music -------------------------------------------------------- */
-/* platform strip — quiet gray wordmarks that light up on hover */
+/* platform band — the reference's full-bleed yellow strip with dark
+   platform wordmarks */
 .platforms {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  background: var(--accent);
+  padding-block: 1.4rem;
+}
+.platforms__inner {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 1rem 2.5rem;
-  padding-block: 1.25rem;
-  border-block: 1px solid var(--hairline);
+  gap: 1rem 2.75rem;
 }
 .platforms__label {
   font-size: .5625rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: .26em;
   text-transform: uppercase;
-  color: var(--dim);
+  color: rgba(10, 10, 10, .6);
 }
 .platforms__list {
   display: flex;
   flex-wrap: wrap;
-  gap: .75rem 2.25rem;
-  font-size: .8125rem;
+  align-items: baseline;
+  gap: .75rem 2.5rem;
+  font-size: .9375rem;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: .06em;
   text-transform: uppercase;
 }
-.platforms__list a { color: var(--muted); transition: color .3s var(--ease); }
-.platforms__list a:hover { color: var(--accent); }
+.platforms__list a {
+  color: #0A0A0A;
+  opacity: .85;
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+  display: inline-block;
+}
+.platforms__list a:hover { opacity: 1; transform: translateY(-2px); }
+
+/* the band hangs at the section's end, flush with its bottom edge */
+.music { padding-bottom: 0; }
+.music .platforms { margin-top: clamp(3.5rem, 7vw, 5.5rem); }
 
 /* featured player */
 .player { margin-top: clamp(2rem, 4.5vw, 3.5rem); }
