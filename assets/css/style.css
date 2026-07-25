@@ -228,8 +228,18 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   letter-spacing: .08em;
 }
 
-.nav__links {
-  display: none;
+/* Section links and the social link share one row and one type spec, so
+   nothing in the bar reads as a different size or weight. */
+.nav__end {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.5vw, 2.75rem);
+}
+
+.nav__links,
+.nav__platforms {
+  display: flex;
+  align-items: center;
   gap: clamp(1.25rem, 2.5vw, 2.75rem);
   font-size: .625rem;
   font-weight: 500;
@@ -237,38 +247,21 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   text-transform: uppercase;
   color: var(--muted);
 }
-.nav__links a { transition: color .3s var(--ease); }
+.nav__links a,
+.nav__platforms a { transition: color .3s var(--ease); }
 .nav__links a:hover { color: var(--text); }
+.nav__platforms a:hover { color: var(--accent); }
 
-@media (min-width: 720px) { .nav__links { display: flex; } }
-
-/* four items total, so phones keep the same single row */
 @media (max-width: 719px) {
   .nav { gap: .75rem; }
-  .nav__links {
-    display: flex;
-    gap: .9rem;
+  .nav__end,
+  .nav__links,
+  .nav__platforms {
+    gap: .95rem;
     font-size: .5625rem;
     letter-spacing: .14em;
   }
-  .nav__platforms { font-size: .5625rem; letter-spacing: .14em; }
 }
-
-/* music platform links, right side of the header */
-.nav__platforms {
-  display: flex;
-  align-items: center;
-  gap: clamp(.9rem, 1.8vw, 1.75rem);
-  font-size: .5625rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-.nav__platforms a {
-  color: var(--muted);
-  transition: color .3s var(--ease);
-}
-.nav__platforms a:hover { color: var(--accent); }
 
 
 /* ---- hero ---------------------------------------------------------
