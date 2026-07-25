@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KEYV — Techno DJ &amp; Producer</title>
+<meta name="description" content="KEYV — techno DJ and producer, founder of the Oscillator label. Releases, mixes, upcoming shows and booking.">
+<meta name="theme-color" content="#0A0A0A">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="KEYV — Techno DJ &amp; Producer">
+<meta property="og:description" content="Raw techno. Releases, mixes, shows and booking.">
+<meta property="og:image" content="img/hero.webp">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230A0A0A'/><text x='16' y='23' font-family='sans-serif' font-size='20' font-weight='700' fill='%23E5E418' text-anchor='middle'>K</text></svg>">
+
+<!-- fonts are self-hosted: no third-party connection on the critical path,
+     and no dependency on Google Fonts being reachable -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
+
+<!-- hero image is the critical path -->
+<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+<a class="skip-link" href="#bio">Skip to content</a>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════════ -->
+<header class="nav" id="nav">
+  <a class="nav__mark" href="#hero" aria-label="KEYV — top">KEYV</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#bio">Bio</a>
+    <a href="#music">Music</a>
+    <a href="#oscillator">Oscillator</a>
+    <a href="#shows">Shows</a>
+    <a href="#booking">Booking</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ══ HERO ═══════════════════════════════════════════════════════ -->
+  <section id="hero" class="hero" aria-label="Intro">
+    <div class="hero__media">
+      <img class="hero__img" id="hero-img" src="img/hero.webp" alt="" fetchpriority="high" decoding="async">
+      <div class="hero__overlay" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+      <canvas class="hero__orbit" id="orbital" aria-hidden="true"></canvas>
+    </div>
+
+    <div class="hero__sound" id="sound-toggle" role="status">
+      <span class="dot" aria-hidden="true"></span><span>SOUND ON</span>
+    </div>
+
+    <div class="hero__content">
+      <p class="hero__tag" data-config="artist.genreTag">#techno</p>
+      <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
+      <p class="hero__loc" data-config="artist.location">Tehran / Berlin</p>
+    </div>
+
+    <a class="hero__cue" href="#bio" aria-label="Scroll to bio">
+      <span>SCROLL</span>
+      <span class="hero__cue-line" aria-hidden="true"></span>
+    </a>
+  </section>
+
+  <!-- ══ BIO ════════════════════════════════════════════════════════ -->
+  <section id="bio" class="section bio" aria-labelledby="bio-title">
+    <span class="ghost-num" data-parallax aria-hidden="true">C.01</span>
+
+    <div class="wrap bio__grid">
+      <figure class="bio__portrait reveal">
+        <img data-config-src="artist.portrait" src="img/bio.webp" alt="Portrait of KEYV" loading="lazy" decoding="async">
+      </figure>
+
+      <div class="bio__body">
+        <p class="eyebrow reveal">About</p>
+        <h2 class="display reveal" id="bio-title" data-config="artist.name">KEYV</h2>
+        <p class="lede reveal" data-config="artist.bio"></p>
+
+        <p class="bio__booking reveal">
+          Booking:
+          <a class="link-grow" id="bio-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
+        </p>
+
+        <ul class="socials reveal" id="bio-socials"></ul>
+      </div>
+    </div>
+
+    <div class="wrap latest">
+      <div class="latest__head reveal">
+        <h3 class="eyebrow">Latest Releases</h3>
+        <a class="link-grow" href="#music">All music →</a>
+      </div>
+      <div class="latest__strip" id="latest-strip"></div>
+    </div>
+  </section>
+
+  <!-- ══ MUSIC ══════════════════════════════════════════════════════ -->
+  <section id="music" class="section music" aria-labelledby="music-title">
+    <span class="ghost-num" data-parallax aria-hidden="true">C.02</span>
+
+    <div class="wrap">
+      <p class="eyebrow reveal">Listen</p>
+      <h2 class="display reveal" id="music-title">Music</h2>
+
+      <div class="player reveal">
+        <p class="player__label">Featured</p>
+        <div class="player__frame" id="featured-player"></div>
+      </div>
+
+      <div class="grid grid--releases" id="release-grid"></div>
+
+      <div class="platforms reveal">
+        <span class="platforms__label">Available on</span>
+        <ul class="platforms__list" id="platform-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OSCILLATOR ═════════════════════════════════════════════════ -->
+  <section id="oscillator" class="section oscillator" aria-labelledby="label-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--dark reveal">The Label</p>
+      <h2 class="display display--huge reveal" id="label-title" data-config="label.name">Oscillator</h2>
+      <p class="oscillator__tagline reveal" data-config="label.tagline"></p>
+      <p class="oscillator__desc reveal" data-config="label.description"></p>
+      <a class="btn btn--invert reveal" id="label-link" href="#">Listen on SoundCloud</a>
+
+      <h3 class="eyebrow eyebrow--dark oscillator__rostertitle reveal">Roster</h3>
+      <div class="grid grid--roster" id="roster-grid"></div>
+    </div>
+  </section>
+
+  <!-- ══ SHOWS ══════════════════════════════════════════════════════ -->
+  <section id="shows" class="section shows" aria-labelledby="shows-title">
+    <span class="ghost-num" data-parallax aria-hidden="true">C.03</span>
+
+    <div class="wrap">
+      <p class="eyebrow reveal">Upcoming</p>
+      <h2 class="display reveal" id="shows-title">Shows</h2>
+      <ul class="events" id="event-list"></ul>
+    </div>
+  </section>
+
+  <!-- ══ BOOKING ════════════════════════════════════════════════════ -->
+  <section id="booking" class="section booking" aria-labelledby="booking-title">
+    <span class="ghost-num" data-parallax aria-hidden="true">C.04</span>
+
+    <div class="wrap booking__grid">
+      <div class="booking__intro">
+        <p class="eyebrow reveal">Get in touch</p>
+        <h2 class="display reveal" id="booking-title">Booking</h2>
+        <p class="lede reveal">For bookings, promos and label demos — send the details and you&rsquo;ll get a reply.</p>
+        <p class="booking__email reveal">
+          <a class="link-grow" id="booking-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
+        </p>
+        <ul class="socials reveal" id="booking-socials"></ul>
+      </div>
+
+      <form class="form reveal" id="booking-form" novalidate>
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field field--half">
+          <label for="f-date">Date</label>
+          <input id="f-date" name="date" type="date">
+        </div>
+        <div class="field field--half">
+          <label for="f-venue">Venue / City</label>
+          <input id="f-venue" name="venue" type="text">
+        </div>
+        <div class="field">
+          <label for="f-message">Message</label>
+          <textarea id="f-message" name="message" rows="5" required></textarea>
+        </div>
+        <button class="btn" type="submit" id="form-submit">Send enquiry</button>
+        <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════════════ -->
+<footer id="footer" class="footer">
+  <div class="wrap footer__grid">
+    <p class="footer__mark" data-config="artist.wordmark">KEYV</p>
+    <ul class="socials socials--footer" id="footer-socials"></ul>
+    <p class="footer__email">
+      <a class="link-grow" id="footer-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
+    </p>
+  </div>
+  <div class="wrap footer__credit">
+    <span data-config="credit">© KEYV</span>
+    <span class="footer__built">Built in the dark.</span>
+  </div>
+</footer>
+
+<!-- GSAP + ScrollTrigger, served from this origin (deferred — main.js falls
+     back to an IntersectionObserver reveal if they ever fail to load) -->
+<script defer src="assets/vendor/gsap.min.js"></script>
+<script defer src="assets/vendor/ScrollTrigger.min.js"></script>
+
+<script src="assets/js/config.js"></script>
+<script defer src="assets/js/orbital.js"></script>
+<script defer src="assets/js/main.js"></script>
+</body>
+</html>
