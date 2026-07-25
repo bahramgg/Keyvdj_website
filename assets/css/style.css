@@ -706,14 +706,20 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   border-bottom: 1px solid rgba(10,10,10,.35);
 }
 
+/* auto-fill, not auto-fit: this grid has no background, so empty tracks are
+   invisible — and they stop a one-artist roster from stretching to a
+   viewport-wide card */
 .grid--roster {
   margin-top: 2.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: clamp(1.25rem, 3vw, 2.5rem);
   background: transparent;
 }
 @media (min-width: 640px) {
-  .grid--roster { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .grid--roster { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+@media (min-width: 1100px) {
+  .grid--roster { grid-template-columns: repeat(4, 1fr); }
 }
 .roster-card { display: block; }
 .roster-card__media {
