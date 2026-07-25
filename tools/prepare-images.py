@@ -57,6 +57,12 @@ JOBS = [
     dict(src="portrait-live.jpeg", out="bio.webp", width=1170, aspect=(4, 5),
          black_point=40, gamma=0.8, sharpen=True),
 
+    # full-bleed band between sections. The 3840px source is the only one
+    # with enough pixels for a full-width strip: 2560 native covers a
+    # 1440css @2x laptop at 0.9x, so it is still scaled down.
+    dict(src="crowd-party.jpeg", out="band-crowd.webp", width=2560,
+         aspect=(2, 1), focus=0.22, trim=True, sharpen=True),
+
     # release covers — real artwork pulled from SoundCloud
     dict(src="covers/qryptic.png",        out="releases/qryptic.webp",        width=900, aspect=(1, 1), mono=False),
     dict(src="covers/demonstrator-2.jpg", out="releases/demonstrator-2.webp", width=900, aspect=(1, 1), mono=False),

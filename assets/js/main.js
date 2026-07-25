@@ -347,6 +347,9 @@
       return da - db;
     });
 
+    var section = list.closest('.shows');
+    if (section) section.classList.toggle('shows--empty', !events.length);
+
     if (!events.length) {
       list.appendChild(el('li', 'events__empty', 'Coming soon.'));
       return;
