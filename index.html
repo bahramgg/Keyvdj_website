@@ -27,17 +27,16 @@
 
 <body>
 
-<a class="skip-link" href="#bio">Skip to content</a>
+<a class="skip-link" href="#oscillator">Skip to content</a>
 
 <!-- ══ NAV ══════════════════════════════════════════════════════════ -->
 <header class="nav" id="nav">
   <a class="nav__mark" href="#hero" aria-label="KEYV — top">KEYV</a>
   <nav class="nav__links" aria-label="Primary">
-    <a href="#bio">Bio</a>
+    <a href="#oscillator">Label</a>
     <a href="#music">Music</a>
-    <a href="#oscillator">Oscillator</a>
     <a href="#shows">Shows</a>
-    <a href="#booking">Booking</a>
+    <a href="#booking">Contact</a>
   </nav>
   <span class="nav__sound" role="status">
     <span class="dot" aria-hidden="true"></span><span>SOUND ON</span>
@@ -46,80 +45,26 @@
 
 <main>
 
-  <!-- ══ HERO ═══════════════════════════════════════════════════════ -->
+  <!-- ══ 1 · HERO ═══════════════════════════════════════════════════ -->
   <section id="hero" class="hero" aria-label="Intro">
     <div class="hero__media">
-      <img class="hero__img" id="hero-img" src="img/hero.webp" alt="" fetchpriority="high" decoding="async">
+      <img class="hero__img" id="hero-img" src="img/hero.webp" alt="KEYV behind the decks" fetchpriority="high" decoding="async">
       <div class="hero__overlay" aria-hidden="true"></div>
-      <div class="grain" aria-hidden="true"></div>
     </div>
 
     <div class="hero__content">
       <p class="hero__tag" data-config="artist.genreTag">#techno</p>
       <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
+      <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
     </div>
 
-    <a class="hero__cue" href="#bio" aria-label="Scroll to bio">
+    <a class="hero__cue" href="#oscillator" aria-label="Scroll down">
       <span>SCROLL</span>
       <span class="hero__cue-line" aria-hidden="true"></span>
     </a>
   </section>
 
-  <!-- ══ BIO ════════════════════════════════════════════════════════ -->
-  <section id="bio" class="section bio" aria-labelledby="bio-title">
-    <span class="ghost-num" data-parallax aria-hidden="true">C.01</span>
-
-    <div class="wrap bio__grid">
-      <figure class="bio__portrait reveal">
-        <img data-config-src="artist.portrait" src="img/bio.webp" alt="Portrait of KEYV" loading="lazy" decoding="async">
-      </figure>
-
-      <div class="bio__body">
-        <p class="eyebrow reveal">About</p>
-        <h2 class="display reveal" id="bio-title" data-config="artist.name">KEYV</h2>
-        <p class="lede reveal" data-config="artist.bio"></p>
-
-        <p class="bio__booking reveal">
-          Booking:
-          <a class="link-grow" id="bio-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
-        </p>
-
-        <ul class="socials reveal" id="bio-socials"></ul>
-      </div>
-    </div>
-
-    <div class="wrap latest">
-      <div class="latest__head reveal">
-        <h3 class="eyebrow">Latest Releases</h3>
-        <a class="link-grow" href="#music">All music →</a>
-      </div>
-      <div class="latest__strip" id="latest-strip"></div>
-    </div>
-  </section>
-
-  <!-- ══ MUSIC ══════════════════════════════════════════════════════ -->
-  <section id="music" class="section music" aria-labelledby="music-title">
-    <span class="ghost-num" data-parallax aria-hidden="true">C.02</span>
-
-    <div class="wrap">
-      <p class="eyebrow reveal">Listen</p>
-      <h2 class="display reveal" id="music-title">Music</h2>
-
-      <div class="player reveal">
-        <p class="player__label">Featured</p>
-        <div class="player__frame" id="featured-player"></div>
-      </div>
-
-      <div class="grid grid--releases" id="release-grid"></div>
-
-      <div class="platforms reveal">
-        <span class="platforms__label">Available on</span>
-        <ul class="platforms__list" id="platform-list"></ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ OSCILLATOR ═════════════════════════════════════════════════ -->
+  <!-- ══ 2 · LABEL ══════════════════════════════════════════════════ -->
   <section id="oscillator" class="section oscillator" aria-labelledby="label-title">
     <div class="wrap">
       <p class="eyebrow eyebrow--dark reveal">The Label</p>
@@ -136,56 +81,86 @@
     </div>
   </section>
 
-  <!-- ══ SHOWS ══════════════════════════════════════════════════════ -->
-  <section id="shows" class="section shows" aria-labelledby="shows-title">
-    <span class="ghost-num" data-parallax aria-hidden="true">C.03</span>
-
+  <!-- ══ 3 · MUSIC ══════════════════════════════════════════════════ -->
+  <section id="music" class="section music" aria-labelledby="music-title">
     <div class="wrap">
-      <p class="eyebrow reveal">Upcoming</p>
-      <h2 class="display reveal" id="shows-title">Shows</h2>
+      <header class="section-head reveal">
+        <p class="eyebrow">Listen</p>
+        <h2 class="display" id="music-title">Music</h2>
+      </header>
+
+      <div class="platforms reveal">
+        <span class="platforms__label">Find the releases on</span>
+        <ul class="platforms__list" id="platform-list"></ul>
+      </div>
+
+      <div class="player reveal">
+        <p class="player__label">Featured</p>
+        <div class="player__frame" id="featured-player"></div>
+      </div>
+
+      <div class="grid grid--releases" id="release-grid"></div>
+    </div>
+  </section>
+
+  <!-- ══ 4 · SHOWS ══════════════════════════════════════════════════ -->
+  <section id="shows" class="section shows" aria-labelledby="shows-title">
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">Upcoming</p>
+        <h2 class="display" id="shows-title">Shows</h2>
+      </header>
       <ul class="events" id="event-list"></ul>
     </div>
   </section>
 
-  <!-- ══ BOOKING ════════════════════════════════════════════════════ -->
+  <!-- ══ 5 · CONTACT ════════════════════════════════════════════════ -->
   <section id="booking" class="section booking" aria-labelledby="booking-title">
-    <span class="ghost-num" data-parallax aria-hidden="true">C.04</span>
+    <div class="wrap">
+      <header class="section-head reveal">
+        <p class="eyebrow">Get in touch</p>
+        <h2 class="display" id="booking-title">Contact</h2>
+      </header>
 
-    <div class="wrap booking__grid">
-      <div class="booking__intro">
-        <p class="eyebrow reveal">Get in touch</p>
-        <h2 class="display reveal" id="booking-title">Booking</h2>
-        <p class="lede reveal">For bookings, promos and label demos — send the details and you&rsquo;ll get a reply.</p>
-        <p class="booking__email reveal">
-          <a class="link-grow" id="booking-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
-        </p>
-        <ul class="socials reveal" id="booking-socials"></ul>
+      <div class="booking__grid">
+        <div class="booking__intro">
+          <figure class="booking__portrait reveal">
+            <img data-config-src="artist.portrait" src="img/bio.webp" alt="Portrait of KEYV" loading="lazy" decoding="async">
+          </figure>
+          <h3 class="booking__name reveal" id="bio-title" data-config="artist.name">KEYV</h3>
+          <p class="lede reveal" data-config="artist.bio"></p>
+          <p class="booking__email reveal">
+            <a class="link-grow" id="booking-email" href="mailto:booking@keyvdj.com">booking@keyvdj.com</a>
+          </p>
+          <ul class="socials reveal" id="booking-socials"></ul>
+        </div>
+
+        <form class="form reveal" id="booking-form" novalidate>
+          <p class="form__title">Booking enquiry</p>
+          <div class="field">
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field field--half">
+            <label for="f-date">Date</label>
+            <input id="f-date" name="date" type="date">
+          </div>
+          <div class="field field--half">
+            <label for="f-venue">Venue / City</label>
+            <input id="f-venue" name="venue" type="text">
+          </div>
+          <div class="field">
+            <label for="f-message">Message</label>
+            <textarea id="f-message" name="message" rows="5" required></textarea>
+          </div>
+          <button class="btn" type="submit" id="form-submit">Send enquiry</button>
+          <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
       </div>
-
-      <form class="form reveal" id="booking-form" novalidate>
-        <div class="field">
-          <label for="f-name">Name</label>
-          <input id="f-name" name="name" type="text" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="f-email">Email</label>
-          <input id="f-email" name="email" type="email" autocomplete="email" required>
-        </div>
-        <div class="field field--half">
-          <label for="f-date">Date</label>
-          <input id="f-date" name="date" type="date">
-        </div>
-        <div class="field field--half">
-          <label for="f-venue">Venue / City</label>
-          <input id="f-venue" name="venue" type="text">
-        </div>
-        <div class="field">
-          <label for="f-message">Message</label>
-          <textarea id="f-message" name="message" rows="5" required></textarea>
-        </div>
-        <button class="btn" type="submit" id="form-submit">Send enquiry</button>
-        <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
-      </form>
     </div>
   </section>
 

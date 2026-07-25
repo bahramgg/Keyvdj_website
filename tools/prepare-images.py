@@ -17,7 +17,7 @@ import os
 import sys
 
 try:
-    from PIL import Image, ImageDraw, ImageEnhance, ImageOps
+    from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
 except ImportError:
     sys.exit("Pillow is missing.  pip install Pillow")
 
@@ -35,13 +35,15 @@ QUALITY = 82
 # trim     strip uniform black letterbox bars (phone screenshots have them).
 #          Opt-in: a genuinely dark photo edge would otherwise be eaten.
 # lift     exposure multiplier for an underexposed source (1.0 = leave alone)
+# sharpen  unsharp-mask after resize, for a soft source shown large
 # mono     False keeps the source colour — release artwork keeps its identity;
 #          the card CSS shows it grayscale at rest and lets colour through on
 #          hover, so the files stay colour. Photos default to B&W.
 JOBS = [
-    # square source, full-bleed CSS does the viewport crop — the subject
-    # stands right of centre with the LED wall filling the left
-    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1080),
+    # square source; on desktop it sits in a half-width panel so it renders
+    # at (near) native scale. Sharpened + lifted — the source is a touch
+    # soft and underexposed for a hero.
+    dict(src="hero-led-blue.jpeg",   out="hero.webp",       width=1080, lift=1.12, sharpen=True),
     dict(src="portrait-studio.jpeg", out="bio.webp",        width=1400, aspect=(4, 5),  focus=0.20),
     dict(src="live-beams.jpeg",      out="roster/artist-01.webp", width=900, aspect=(3, 4), focus=0.38),
 
@@ -221,7 +223,10 @@ def main():
         im = crop_to(im, job.get("aspect"), job.get("focus", 0.5))
         if job.get("mono", True):
             im = monochrome(im, job.get("lift", 1.0))
-        save(resize(im, job["width"]), job["out"])
+        im = resize(im, job["width"])
+        if job.get("sharpen"):
+            im = im.filter(ImageFilter.UnsharpMask(radius=2, percent=110, threshold=2))
+        save(im, job["out"])
 
     print("logos (colour):")
     for name, builder in ((LOGO, build_logo), (WORDMARK, build_wordmark)):

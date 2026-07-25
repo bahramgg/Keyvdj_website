@@ -148,7 +148,7 @@
   function applyEmail() {
     var email = get('booking.email');
     if (!email) return;
-    ['#bio-email', '#booking-email', '#footer-email'].forEach(function (sel) {
+    ['#booking-email', '#footer-email'].forEach(function (sel) {
       var node = $(sel);
       if (!node) return;
       node.href = 'mailto:' + email;
@@ -159,7 +159,7 @@
   function renderSocials() {
     var socials = get('socials');
     if (!Array.isArray(socials)) return;
-    ['#bio-socials', '#booking-socials', '#footer-socials'].forEach(function (sel) {
+    ['#booking-socials', '#footer-socials'].forEach(function (sel) {
       var list = $(sel);
       if (!list) return;
       list.textContent = '';
@@ -174,7 +174,7 @@
 
   /* ---- releases --------------------------------------------------- */
 
-  function releaseCard(release, compact) {
+  function releaseCard(release) {
     var card = el('article', 'card');
 
     var media = el('div', 'card__media');
@@ -185,32 +185,23 @@
     card.appendChild(el('h3', 'card__title', release.title || 'Untitled'));
     if (release.mix) card.appendChild(el('p', 'card__mix', release.mix));
 
-    if (!compact) {
-      if (release.genre) card.appendChild(el('span', 'card__genre', release.genre));
-      if (Array.isArray(release.links) && release.links.length) {
-        var links = el('div', 'card__links');
-        release.links.forEach(function (l) {
-          if (l && l.label) links.appendChild(extLink(l.url, l.label));
-        });
-        card.appendChild(links);
-      }
+    if (release.genre) card.appendChild(el('span', 'card__genre', release.genre));
+    if (Array.isArray(release.links) && release.links.length) {
+      var links = el('div', 'card__links');
+      release.links.forEach(function (l) {
+        if (l && l.label) links.appendChild(extLink(l.url, l.label));
+      });
+      card.appendChild(links);
     }
     return card;
   }
 
   function renderReleases() {
     var releases = Array.isArray(get('releases')) ? get('releases') : [];
-
-    var strip = $('#latest-strip');
-    if (strip) {
-      strip.textContent = '';
-      releases.slice(0, 4).forEach(function (r) { strip.appendChild(releaseCard(r, true)); });
-    }
-
     var grid = $('#release-grid');
     if (grid) {
       grid.textContent = '';
-      releases.forEach(function (r) { grid.appendChild(releaseCard(r, false)); });
+      releases.forEach(function (r) { grid.appendChild(releaseCard(r)); });
     }
   }
 
@@ -602,27 +593,6 @@
         stagger: .07,
         scrollTrigger: { trigger: section, start: 'top 78%', once: true }
       });
-    });
-
-    /* hero photo parallax */
-    var heroImg = document.querySelector('.hero__img');
-    if (heroImg) {
-      gsap.to(heroImg, {
-        yPercent: 12,
-        ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
-      });
-    }
-
-    /* ghost numbers drift + fade */
-    document.querySelectorAll('[data-parallax]').forEach(function (node) {
-      gsap.fromTo(node,
-        { y: 60, opacity: .25 },
-        {
-          y: -80, opacity: .75, ease: 'none',
-          scrollTrigger: { trigger: node.closest('.section') || node, start: 'top bottom', end: 'bottom top', scrub: true }
-        }
-      );
     });
 
     window.addEventListener('load', function () { window.ScrollTrigger.refresh(); });
