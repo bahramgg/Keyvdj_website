@@ -31,70 +31,67 @@ window.KEYV_CONFIG = {
   },
 
   socials: [
-    { label: "Instagram",  url: "https://instagram.com/",  handle: "@keyvdj" },
-    { label: "SoundCloud", url: "https://soundcloud.com/", handle: "keyvdj"  },
-    { label: "Beatport",   url: "https://beatport.com/",   handle: "KEYV"    },
-    { label: "Spotify",    url: "https://spotify.com/",    handle: "KEYV"    }
+    { label: "SoundCloud", url: "https://soundcloud.com/keyvdj",                    handle: "keyvdj" },
+    { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942",     handle: "KEYV"   },
+    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic", handle: "Tugwave" },
+    { label: "YouTube",    url: "https://youtu.be/qVqKLeuRrA0",                     handle: "KEYV"   }
   ],
 
   /* ---- music ------------------------------------------------------- */
   /* Paste any SoundCloud track/playlist URL — it is wrapped in the
      official embed player automatically. */
-  featuredTrackUrl: "https://soundcloud.com/keyvdj",
-  featuredTrackTitle: "Latest Mix",
+  featuredTrackUrl: "https://soundcloud.com/keyvdj/demonstrator-2",
+  featuredTrackTitle: "DEMONSTRATOR #2",
 
   releases: [
     {
-      title: "Null Sequence",
-      mix: "Original Mix",
-      genre: "Hardgroove",
+      title: "Qryptic",
+      mix: "TUGwave V.A. Vol.01 · A",
+      genre: "Electro",
       year: "2025",
-      cover: "img/releases/release-01.webp",
+      cover: "img/releases/qryptic.webp",
       links: [
-        { label: "Beatport",   url: "https://beatport.com/" },
-        { label: "SoundCloud", url: "https://soundcloud.com/" }
+        { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" },
+        { label: "SoundCloud", url: "https://soundcloud.com/tehran_underground/keyv-qryptic-tugwaveva001a" }
       ]
     },
     {
-      title: "Drift Protocol",
-      mix: "Extended Mix",
+      title: "Demonstrator #2",
+      mix: "Live Mix",
       genre: "Techno",
-      year: "2025",
-      cover: "img/releases/release-02.webp",
+      year: "2023",
+      cover: "img/releases/demonstrator-2.webp",
       links: [
-        { label: "Beatport",   url: "https://beatport.com/" },
-        { label: "SoundCloud", url: "https://soundcloud.com/" }
+        { label: "SoundCloud", url: "https://soundcloud.com/keyvdj/demonstrator-2" }
       ]
     },
     {
-      title: "Static Field",
-      mix: "KEYV Remix",
-      genre: "Industrial",
-      year: "2024",
-      cover: "img/releases/release-03.webp",
+      title: "Demonstrator",
+      mix: "Live Mix",
+      genre: "Techno",
+      year: "2020",
+      cover: "img/releases/demonstrator.webp",
       links: [
-        { label: "Beatport",   url: "https://beatport.com/" },
-        { label: "SoundCloud", url: "https://soundcloud.com/" }
+        { label: "SoundCloud", url: "https://soundcloud.com/keyvdj/demonstrator" }
       ]
     },
     {
-      title: "Oscillate",
-      mix: "Original Mix",
-      genre: "Hardgroove",
-      year: "2024",
-      cover: "img/releases/release-04.webp",
+      title: "Live DJ Set",
+      mix: "Uchiha Mob · Series 01 EP01",
+      genre: "Electro",
+      year: "",
+      cover: "img/releases/live-set.webp",
       links: [
-        { label: "Beatport",   url: "https://beatport.com/" },
-        { label: "SoundCloud", url: "https://soundcloud.com/" }
+        { label: "YouTube", url: "https://youtu.be/qVqKLeuRrA0" }
       ]
     }
   ],
 
   platforms: [
-    { label: "SoundCloud", url: "https://soundcloud.com/" },
-    { label: "Spotify",    url: "https://spotify.com/"    },
-    { label: "Mixcloud",   url: "https://mixcloud.com/"   },
-    { label: "Beatport",   url: "https://beatport.com/"   }
+    { label: "SoundCloud", url: "https://soundcloud.com/keyvdj" },
+    { label: "Beatport",   url: "https://www.beatport.com/artist/keyv/1267942" },
+    { label: "Bandcamp",   url: "https://tugwaverecords.bandcamp.com/track/qryptic" },
+    { label: "YouTube",    url: "https://youtu.be/qVqKLeuRrA0" }
   ],
 
   /* ---- label ------------------------------------------------------- */

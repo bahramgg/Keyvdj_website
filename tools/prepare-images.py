@@ -35,6 +35,9 @@ QUALITY = 82
 # trim     strip uniform black letterbox bars (phone screenshots have them).
 #          Opt-in: a genuinely dark photo edge would otherwise be eaten.
 # lift     exposure multiplier for an underexposed source (1.0 = leave alone)
+# mono     False keeps the source colour — release artwork keeps its identity;
+#          the card CSS shows it grayscale at rest and lets colour through on
+#          hover, so the files stay colour. Photos default to B&W.
 JOBS = [
     # no aspect crop: the hero is close to 5:4, so the full-bleed CSS crops
     # it vertically and both the subject (left) and the windows (right) stay
@@ -50,11 +53,11 @@ JOBS = [
     dict(src="hero-red-burst.jpeg",  out="scene-burst.webp", width=1080),
     dict(src="scene-blue-wall.jpeg", out="scene-blue.webp",  width=1080),
 
-    # release covers — square crops standing in until real artwork exists
-    dict(src="hero-red-burst.jpeg",  out="releases/release-01.webp", width=900, aspect=(1, 1)),
-    dict(src="crowd-booth.jpeg",     out="releases/release-02.webp", width=900, aspect=(1, 1), focus=0.45),
-    dict(src="scene-blue-wall.jpeg", out="releases/release-03.webp", width=900, aspect=(1, 1)),
-    dict(src="crowd-party.jpeg",     out="releases/release-04.webp", width=900, aspect=(1, 1), focus=0.30, trim=True),
+    # release covers — real artwork pulled from SoundCloud / YouTube
+    dict(src="covers/qryptic.png",        out="releases/qryptic.webp",        width=900, aspect=(1, 1), mono=False),
+    dict(src="covers/demonstrator-2.jpg", out="releases/demonstrator-2.webp", width=900, aspect=(1, 1), mono=False),
+    dict(src="covers/demonstrator.jpg",   out="releases/demonstrator.webp",   width=900, aspect=(1, 1), mono=False),
+    dict(src="covers/live-set.jpg",       out="releases/live-set.webp",       width=900, aspect=(1, 1), mono=False),
 ]
 
 LOGO = "oscillator-logo.jpeg"           # circular stamp -> favicon + footer
@@ -218,7 +221,9 @@ def main():
         if job.get("trim"):
             im = trim_letterbox(im)
         im = crop_to(im, job.get("aspect"), job.get("focus", 0.5))
-        save(resize(monochrome(im, job.get("lift", 1.0)), job["width"]), job["out"])
+        if job.get("mono", True):
+            im = monochrome(im, job.get("lift", 1.0))
+        save(resize(im, job["width"]), job["out"])
 
     print("logos (colour):")
     for name, builder in ((LOGO, build_logo), (WORDMARK, build_wordmark)):

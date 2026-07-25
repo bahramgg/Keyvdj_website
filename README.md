@@ -94,12 +94,16 @@ Currently generated:
 img/hero.webp                    from raw/hero-warehouse.jpeg
 img/bio.webp                     from raw/portrait-studio.jpeg
 img/roster/artist-01.webp        from raw/live-beams.jpeg
-img/releases/release-01..04.webp square crops of four live shots
+img/releases/*.webp              real artwork (raw/covers/, from SoundCloud/YouTube)
 img/scene-*.webp                 spares, not referenced by config.js yet
 img/oscillator-wordmark.webp     black on transparent — the label section title
 img/oscillator-logo.webp         circular stamp — footer + favicon source
 img/favicon.png, apple-touch-icon.png
 ```
+
+Release covers are the real artwork and keep their colour in the files
+(`mono=False` in JOBS) — the card CSS shows them grayscale at rest and lets
+the colour through on hover.
 
 The two label marks are handled differently. The **wordmark** ships as
 yellow-on-black, so the script turns luminance into alpha and makes the ink
@@ -108,9 +112,8 @@ stamp** keeps its colour and gets an alpha circle, so on the yellow section the
 disc would disappear and only the artwork read; it is used on black in the
 footer instead.
 
-Two things to replace when you have the assets:
+One thing to extend when you have the assets:
 
-- **Release covers** are square photo crops standing in for real artwork.
 - **Roster** is KEYV only. Add artists to `label.roster` in `config.js`; one
   with `photo: ""` renders as a typographic tile (initial on a striped black
   ground) rather than an empty frame, so the grid still looks deliberate.
