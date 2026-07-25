@@ -62,12 +62,16 @@
 
   function $(sel) { return document.querySelector(sel); }
 
-  /* Only ever build links from http(s)/mailto — config can be edited from
-     the admin panel, so treat its URLs as untrusted. */
+  /* Config can be edited from the admin panel, so treat its URLs as
+     untrusted: relative paths and fragments are fine, but an explicit
+     scheme has to be http(s) or mailto — no javascript:, data:, vbscript:. */
   function safeUrl(url) {
     if (typeof url !== 'string') return '';
     var trimmed = url.trim();
-    return /^(https?:|mailto:|#|\/|\.)/i.test(trimmed) ? trimmed : '';
+    if (!trimmed) return '';
+    var scheme = trimmed.match(/^([a-z][a-z0-9+.-]*):/i);
+    if (scheme && !/^(https?|mailto)$/i.test(scheme[1])) return '';
+    return trimmed;
   }
 
   function extLink(url, label, className) {
@@ -289,14 +293,34 @@
       grid.textContent = '';
       roster.forEach(function (artist) {
         if (!artist || !artist.name) return;
-        var card = el('article', 'roster-card');
+        var photo = safeUrl(artist.photo);
+        var card = el('article', 'roster-card' + (photo ? '' : ' roster-card--text'));
+
         var media = el('div', 'roster-card__media');
-        media.appendChild(img(artist.photo, artist.name));
+        if (photo) {
+          media.appendChild(img(photo, artist.name));
+        } else {
+          /* no photo yet — a typographic tile reads as a design choice,
+             an empty frame reads as a bug */
+          media.appendChild(el('span', 'roster-card__initial', artist.name.charAt(0)));
+        }
         card.appendChild(media);
+
         card.appendChild(el('h4', 'roster-card__name', artist.name));
         if (artist.handle) card.appendChild(el('p', 'roster-card__handle', artist.handle));
         grid.appendChild(card);
       });
+    }
+
+    var logo = $('#label-logo');
+    if (logo) {
+      var logoSrc = safeUrl(get('label.logo'));
+      if (logoSrc) {
+        logo.src = logoSrc;
+        logo.addEventListener('error', function () { logo.remove(); }, { once: true });
+      } else {
+        logo.remove();
+      }
     }
 
     var link = $('#label-link');

@@ -260,7 +260,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   width: 100%;
   height: 118%;          /* headroom for the parallax translate */
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center 50%;
   filter: grayscale(1) contrast(1.12) brightness(.82);
   will-change: transform;
 }
@@ -268,8 +268,8 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 .hero__overlay {
   position: absolute; inset: 0;
   background:
-    linear-gradient(to top, rgba(10,10,10,.96) 0%, rgba(10,10,10,.25) 45%, rgba(10,10,10,.5) 100%),
-    radial-gradient(120% 80% at 50% 20%, transparent 30%, rgba(10,10,10,.7) 100%);
+    linear-gradient(to top, rgba(10,10,10,.9) 0%, rgba(10,10,10,.12) 58%, rgba(10,10,10,.42) 100%),
+    radial-gradient(120% 80% at 50% 20%, transparent 35%, rgba(10,10,10,.62) 100%);
 }
 
 .hero__orbit {
@@ -659,6 +659,14 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   border-top: none;
 }
 .oscillator .display { color: #0A0A0A; }
+
+/* the logo is a yellow disc on yellow — only the black artwork reads,
+   like an ink stamp */
+.oscillator__logo {
+  width: clamp(7rem, 15vw, 12.5rem);
+  height: auto;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
 .oscillator__tagline {
   font-family: var(--font-display);
   font-size: clamp(1.25rem, 3.5vw, 2.5rem);
@@ -703,6 +711,24 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   transition: transform .7s var(--ease);
 }
 .roster-card:hover .roster-card__media img { transform: scale(1.06); }
+
+/* roster entry with no photo yet */
+.roster-card--text .roster-card__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(-45deg, rgba(229,228,24,.07) 0 6px, transparent 6px 12px),
+    #0A0A0A;
+}
+.roster-card__initial {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 9vw, 5rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--accent);
+  text-transform: uppercase;
+}
 .roster-card__name {
   font-family: var(--font-display);
   font-size: 1.5rem;

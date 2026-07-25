@@ -60,38 +60,45 @@ overrides**.
 
 ## Photos
 
-Drop originals in **`raw/`** (any format), then:
+Originals live in **`raw/`** (gitignored). Everything in `img/` is generated:
 
 ```bash
-./tools/optimize-images.sh              # everything in raw/
-./tools/optimize-images.sh raw/hero.jpg # one file
+pip install Pillow
+python3 tools/prepare-images.py
 ```
 
-Needs `ffmpeg` (`sudo apt install ffmpeg`). Each image is desaturated to B&W,
-resized and written to `img/` as WebP at quality 82. Filename decides the width:
+Each photo is desaturated to B&W, contrast-lifted, cropped, resized and written
+as WebP at quality 82. Yellow is a UI accent only — it never appears inside a
+photo. The label logo is the exception: it keeps its colour and gets an alpha
+circle so it can sit on the yellow section.
 
-| name        | width  | used for              |
-|-------------|--------|-----------------------|
-| `hero*`     | 2500px | full-bleed hero       |
-| `bio*`, `scene*` | 1800px | section portraits |
-| anything else | 900px | release / roster cards |
+To add or swap a photo: drop the file in `raw/`, then add a line to the `JOBS`
+list at the top of `tools/prepare-images.py` — source, output path, max width,
+aspect ratio, and a vertical focus point (0 = crop toward the top of the frame,
+1 = toward the bottom). Images are never upscaled past their source size.
 
-Subfolders are preserved: `raw/releases/x.jpg` → `img/releases/x.webp`.
-
-Yellow is a UI accent only — it never appears inside a photo.
-
-The `img/` folder currently holds **generated placeholders** so the layout reads
-correctly before the real shoot. Delete them and re-run the script above.
-(`tools/make-placeholders.py` regenerates them; needs `pip install Pillow`.)
-
-Expected files, per `config.js`:
+Currently generated:
 
 ```
-img/hero.webp
-img/bio.webp
-img/releases/release-01..04.webp
-img/roster/artist-01..04.webp
+img/hero.webp                    from raw/hero-red-burst.jpeg
+img/bio.webp                     from raw/bio-lasers.jpeg
+img/scene-blue.webp              from raw/scene-blue-wall.jpeg  (spare, unused)
+img/roster/artist-01.webp        from raw/live-beams.jpeg
+img/releases/release-01..04.webp square crops of the four photos
+img/oscillator-logo.webp         colour, alpha circle
+img/favicon.png, apple-touch-icon.png
 ```
+
+Two things to replace when you have the assets:
+
+- **Release covers** are square photo crops standing in for real artwork.
+- **Roster photos** — only KEYV has one. An artist with `photo: ""` in
+  `config.js` renders as a typographic tile (initial on a striped black
+  ground) rather than an empty frame, so the grid still looks deliberate.
+
+The hero source is 1080×1080, so on a wide desktop it is upscaled slightly. If
+you have a higher-resolution original of that frame, drop it in and re-run the
+script — nothing else needs to change.
 
 A missing image degrades to an empty dark frame rather than a broken icon.
 
@@ -123,9 +130,9 @@ assets/js/main.js          config merge, rendering, form, GSAP motion
 assets/js/orbital.js       the rotating yellow ring over the hero
 assets/fonts/              Anton + Space Grotesk (self-hosted woff2)
 assets/vendor/             GSAP 3.12.5 + ScrollTrigger (self-hosted)
-img/                       optimised WebP, lazy-loaded
+img/                       generated WebP, lazy-loaded + icons
 raw/                       original photos — gitignored, never deployed
-tools/                     image scripts
+tools/prepare-images.py    raw/ -> img/
 vercel.json
 ```
 
