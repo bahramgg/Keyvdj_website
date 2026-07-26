@@ -20,7 +20,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=5e0ce625">
+<link rel="stylesheet" href="assets/css/style.css?v=e51e27b6">
 </head>
 
 <body>
@@ -43,10 +43,10 @@
 <main>
 
   <!-- ══ 1 · HERO ═══════════════════════════════════════════════════
-       White line-art on transparent, floating over pure black with a
-       faint accent glow. It breathes and drifts; a nested wrapper floats
-       while the image itself breathes, so the two motions never fight.
-       Frozen under prefers-reduced-motion. -->
+       White line-art on transparent over pure black. hero-dissolve.js
+       samples it into thousands of particles that break into droplets and
+       fall away as you scroll down, and reassemble as you scroll back.
+       Static image (no canvas) under prefers-reduced-motion. -->
   <section id="hero" class="hero" aria-label="Intro">
     <p class="hero__tag">
       <em data-config="artist.genreTag">#techno</em>
@@ -190,5 +190,6 @@
 
 <script src="assets/js/config.js?v=90158837"></script>
 <script defer src="assets/js/main.js?v=5ed4b698"></script>
+<script defer src="assets/js/hero-dissolve.js?v=0f324281"></script>
 </body>
 </html>

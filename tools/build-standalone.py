@@ -108,6 +108,7 @@ bundle(
         ("assets/vendor/ScrollTrigger.min.js", "assets/vendor/ScrollTrigger.min.js"),
         ("assets/js/config.js", None),
         ("assets/js/main.js", "assets/js/main.js"),
+        ("assets/js/hero-dissolve.js", "assets/js/hero-dissolve.js"),
     ],
     {"releases.html": releases_name},
 )
