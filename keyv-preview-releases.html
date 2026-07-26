@@ -277,37 +277,78 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 
 
 /* ---- hero ---------------------------------------------------------
-   The photo is capped so it never renders above its native pixel size.
-   Phone: full-width square under the nav, type below it on black.
-   Desktop: type left, a 4:5 photo block right, both vertically centred. */
+   The section is two viewports tall and the stage sticks to the top of
+   the first one, so the artwork dissolves in place (hero-dissolve.js)
+   rather than scrolling out of frame. The image is capped so it never
+   renders above its native pixel size. */
 .hero {
   position: relative;
-  min-height: 100svh;
+  min-height: 200svh;                 /* 1 screen of hero + 1 of pinned scroll */
+}
+
+/* Note: no overflow on .hero — an overflow ancestor would turn the stage's
+   sticky into a no-op. The clipping the glow needs lives on the stage. */
+.hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: clamp(1rem, 2.5vh, 1.75rem);
   padding: 5rem var(--gutter) 2rem;   /* clears the fixed nav */
   text-align: center;
   overflow: hidden;                   /* the glow never widens the page */
 }
 
-.hero__tag {
+/* everything but the artwork fades out as the dissolve finishes, so the
+   stage is empty by the time it unpins — driven by hero-dissolve.js */
+.hero__content,
+.hero__cue,
+.hero__meta { opacity: var(--hero-fade, 1); }
+
+/* ---- edge metadata ------------------------------------------------- */
+.hero__meta {
+  position: absolute;
+  top: 50%;
   display: flex;
-  justify-content: center;
-  gap: .75rem;
+  align-items: center;
+  gap: .9rem;
+  margin: 0;
   font-size: .625rem;
   font-weight: 500;
-  letter-spacing: .3em;
+  letter-spacing: .34em;
   text-transform: uppercase;
+  color: var(--dim);
+  white-space: nowrap;
 }
-.hero__tag em { font-style: normal; color: var(--accent); }
+.hero__meta em { font-style: normal; color: var(--accent); }
+.hero__meta-rule {
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+  opacity: .5;
+}
+/* rotated so they run up the left and right margins */
+.hero__meta--left {
+  left: 0;
+  transform: translate(calc(-50% + 1.25rem), -50%) rotate(-90deg);
+}
+.hero__meta--right {
+  right: 0;
+  flex-direction: row-reverse;
+  transform: translate(calc(50% - 1.25rem), -50%) rotate(90deg);
+}
+@media (max-width: 899px) {
+  /* the artwork already fills a phone screen; edge labels would crowd it */
+  .hero__meta { display: none; }
+}
 
 /* the artwork holds still; scroll dissolves it into particles (hero-dissolve.js).
    A faint static accent glow sits behind it for depth. */
 .hero__art {
   position: relative;
+  z-index: 1;                         /* the wordmark overlaps it, above */
   display: flex;
   justify-content: center;
   margin: 0;
@@ -319,17 +360,27 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   z-index: -1;
   background: radial-gradient(closest-side, rgba(229, 228, 24, .10), transparent 72%);
   filter: blur(18px);
+  /* fades with the particles, or it is left glowing over an empty stage */
+  opacity: var(--art-glow, 1);
 }
 .hero__art-img {
   display: block;
-  height: min(48svh, 440px);
+  height: min(52svh, 470px);
   width: auto;
-  max-width: 82vw;
+  max-width: 88vw;
 }
 /* the particle canvas is positioned and sized entirely by JS */
 .hero__art canvas { display: block; pointer-events: none; }
 
-.hero__content { width: 100%; }
+/* Lifted into the artwork so the two read as one composition instead of
+   two stacked blocks. The foot of the artwork is thin drips fading to
+   black, so the wordmark sits over it cleanly. */
+.hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: clamp(-3.25rem, -5vh, -1.5rem);
+}
 
 .hero__mark {
   font-family: var(--font-display);
@@ -351,8 +402,9 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 
 @media (min-width: 900px) {
-  .hero__art-img { height: min(56svh, 540px); }
-  .hero__mark { font-size: clamp(5rem, 9vw, 8.5rem); }
+  .hero__art-img { height: min(58svh, 560px); }
+  .hero__mark { font-size: clamp(5rem, 10vw, 9.5rem); }
+  .hero__content { margin-top: clamp(-4.5rem, -6vh, -2rem); }
 }
 
 /* ---- ticker: the one moving element ------------------------------- */
@@ -910,18 +962,22 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 /* GSAP drives these directly — the CSS transition would double-animate */
 html.gsap .reveal,
 html.gsap .card,
-html.gsap 
+html.gsap .is-in { transition: none; }
+
 /* ---- reduced motion ----------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  /* no dissolve to play out, so drop the pin rather than make the reader
+     scroll a dead viewport past a frozen hero */
+  .hero { min-height: 100svh; }
+  .hero__stage { position: static; height: auto; min-height: 100svh; }
   *, *::before, *::after {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .001ms !important;
   }
   html.js .reveal,
-  html.js .card,
-  html.js 
+  html.js .card { animation: none; }
   /* the ticker parks instead of snapping to its end frame */
   .ticker__track { animation: none; }
 }

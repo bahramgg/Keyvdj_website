@@ -20,7 +20,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=e51e27b6">
+<link rel="stylesheet" href="assets/css/style.css?v=dd52e6c4">
 </head>
 
 <body>
@@ -48,24 +48,37 @@
        fall away as you scroll down, and reassemble as you scroll back.
        Static image (no canvas) under prefers-reduced-motion. -->
   <section id="hero" class="hero" aria-label="Intro">
-    <p class="hero__tag">
-      <em data-config="artist.genreTag">#techno</em>
-    </p>
+    <!-- the stage pins to the viewport while the section scrolls past it,
+         so the dissolve plays out in place instead of sliding away -->
+    <div class="hero__stage" id="hero-stage">
 
-    <figure class="hero__art">
-      <img class="hero__art-img" src="img/hero-art.webp" alt=""
-           width="1092" height="1192" fetchpriority="high" decoding="async">
-    </figure>
+      <!-- metadata anchored to the edges: fills the wide black margins and
+           breaks the centred stack, the way a record sleeve is laid out -->
+      <p class="hero__meta hero__meta--left">
+        <span class="hero__meta-rule" aria-hidden="true"></span>
+        <span data-config="label.name">Oscillator</span>
+      </p>
+      <p class="hero__meta hero__meta--right">
+        <span class="hero__meta-rule" aria-hidden="true"></span>
+        <em data-config="artist.genreTag">#techno</em>
+      </p>
 
-    <div class="hero__content">
-      <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
-      <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
+      <figure class="hero__art">
+        <img class="hero__art-img" src="img/hero-art.webp" alt=""
+             width="1092" height="1192" fetchpriority="high" decoding="async">
+      </figure>
+
+      <!-- pulled up so the wordmark sits over the foot of the artwork -->
+      <div class="hero__content">
+        <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
+        <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
+      </div>
+
+      <a class="hero__cue" href="#oscillator" aria-label="Scroll down">
+        <span>SCROLL</span>
+        <span class="hero__cue-line" aria-hidden="true"></span>
+      </a>
     </div>
-
-    <a class="hero__cue" href="#oscillator" aria-label="Scroll down">
-      <span>SCROLL</span>
-      <span class="hero__cue-line" aria-hidden="true"></span>
-    </a>
   </section>
 
   <!-- ticker — the one moving element on the page -->
@@ -190,6 +203,6 @@
 
 <script src="assets/js/config.js?v=90158837"></script>
 <script defer src="assets/js/main.js?v=5ed4b698"></script>
-<script defer src="assets/js/hero-dissolve.js?v=03b51339"></script>
+<script defer src="assets/js/hero-dissolve.js?v=4c0aba96"></script>
 </body>
 </html>

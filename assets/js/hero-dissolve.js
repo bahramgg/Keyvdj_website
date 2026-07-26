@@ -16,6 +16,7 @@
   if (reduced.matches) return;               // leave the static image in place
 
   var section = document.getElementById('hero');
+  var stage = document.getElementById('hero-stage') || section;
   var host = img.parentNode;                 // .hero__art
 
   /* ---- sample the artwork into particles -------------------------- */
@@ -34,6 +35,9 @@
   var PAD_BELOW = 0.75;                      // extra canvas height below the art
   var FADE_END = 0.14;                        // real image is shown until here,
                                              // then it hands off to the particles
+  var PIN_SPAN = 0.85;                        // dissolve completes this far into
+                                             // the pin, leaving a beat of black
+  var TYPE_OUT = 0.55, TYPE_GONE = 0.95;      // wordmark / metadata fade window
   var raf = null;
   var current = 0, target = 0;
   var drawn = -1;                             // last progress actually painted
@@ -163,9 +167,10 @@
   function computeTarget() {
     var rect = section.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    /* 0 while the hero sits at the top; fully dissolved only after a full
-       viewport of scrolling, so the break-up feels gradual */
-    return clamp(-rect.top / vh, 0, 1);
+    /* The stage is pinned for exactly one viewport of scrolling, so -top/vh
+       is the progress through the pin. Finishing a little early leaves a
+       beat of empty black before the stage releases. */
+    return clamp(-rect.top / (vh * PIN_SPAN), 0, 1);
   }
 
   /* the crisp image is fully shown at rest and fades out over the first
@@ -175,6 +180,15 @@
     if (p <= 0) return 1;
     if (p >= FADE_END) return 0;
     return 1 - p / FADE_END;
+  }
+
+  /* The wordmark, subtitle and edge labels ride out on the tail of the
+     dissolve, so the pinned stage is empty before it lets go. */
+  function typeOpacity(p) {
+    if (p <= TYPE_OUT) return 1;
+    if (p >= TYPE_GONE) return 0;
+    var t = (p - TYPE_OUT) / (TYPE_GONE - TYPE_OUT);
+    return 1 - t * t;
   }
 
   function frame() {
@@ -193,6 +207,8 @@
     }
     if (current !== drawn) {                  // nothing moved → nothing to redo
       img.style.opacity = imageOpacity(current);
+      stage.style.setProperty('--hero-fade', typeOpacity(current));
+      stage.style.setProperty('--art-glow', 1 - current * current);
       draw(current);
       drawn = current;
     }
