@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oscillator · Techno Label &amp; Mix Series</title>
+<meta name="description" content="Oscillator is an independent techno label from Tehran, founded by KEYV. A numbered mix series introducing the artists around it.">
+<meta name="theme-color" content="#FEED07">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Oscillator · Techno Label &amp; Mix Series">
+<meta property="og:description" content="Raw techno from the edge of the signal. A numbered mix series out of Tehran.">
+<meta property="og:image" content="media/rises-poster.webp">
+
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+<!-- fonts are shared with the main site, already self-hosted -->
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
+
+<link rel="stylesheet" href="assets/css/style.css?v=6de5b027">
+</head>
+
+<body>
+
+<a class="skip-link" href="#series">Skip to the series</a>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════════ -->
+<header class="nav">
+  <a class="nav__mark" href="#top" aria-label="Oscillator, top">
+    <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" decoding="async">
+    <span>Oscillator</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#series">Series</a>
+    <a href="#about">About</a>
+    <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+    <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ══ 1 · HERO ═══════════════════════════════════════════════════
+       The label's own logo animation, looping silently, with the
+       wordmark under it. Poster frame carries the load until it plays. -->
+  <section class="hero" aria-label="Intro">
+    <div class="hero__mark">
+      <video class="hero__video" poster="media/rises-poster.webp"
+             autoplay muted loop playsinline disablepictureinpicture
+             width="720" height="720" aria-hidden="true">
+        <source src="media/rises.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <h1 class="hero__title">
+      <img class="hero__wordmark" src="../img/oscillator-wordmark.webp"
+           alt="Oscillator" width="817" height="241" fetchpriority="high" decoding="async">
+    </h1>
+
+    <p class="hero__tagline">Raw techno from the edge of the signal.</p>
+
+    <ul class="hero__facts">
+      <li><em>Tehran</em></li>
+      <li><em>Est. by KEYV</em></li>
+      <li><em id="hero-count">10 mixes</em></li>
+    </ul>
+  </section>
+
+  <!-- the logo's own rotating ring, unrolled into a marquee -->
+  <div class="ring" aria-hidden="true">
+    <div class="ring__track">
+      <span>OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;</span><span>OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;OSCILLATOR&nbsp;/&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- ══ 2 · SERIES ═════════════════════════════════════════════════ -->
+  <section id="series" class="series" aria-labelledby="series-title">
+    <header class="series__head">
+      <p class="kicker"><span class="bracket">[</span> The Series <span class="bracket">]</span></p>
+      <h2 id="series-title">Every mix, every artist</h2>
+      <p class="series__lede">
+        Oscillator runs as a numbered series. Each entry hands the deck to
+        another artist from the scene around the label.
+      </p>
+    </header>
+
+    <ol class="series__grid" id="series-grid">
+      <!-- filled from assets/js/series.js -->
+    </ol>
+
+    <p class="series__more">
+      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">
+        All mixes on SoundCloud
+      </a>
+    </p>
+  </section>
+
+  <!-- ══ 3 · ABOUT ══════════════════════════════════════════════════ -->
+  <section id="about" class="about" aria-labelledby="about-title">
+    <div class="about__inner">
+      <p class="kicker kicker--dark"><span class="bracket">[</span> The Label <span class="bracket">]</span></p>
+      <h2 id="about-title">Built for the floor first</h2>
+      <p>
+        Oscillator is an independent techno label founded by KEYV. It exists
+        for records that are built for the floor first: stripped, loud and
+        unpolished, and made to be played loud.
+      </p>
+      <p>
+        The mix series is the other half of that: a standing invitation to the
+        artists we want people to hear, numbered and archived, no gatekeeping.
+      </p>
+
+      <div class="about__links">
+        <a class="btn btn--dark" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+        <a class="btn btn--dark" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+        <a class="btn btn--dark" href="https://keyvdj.com/">KEYV</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <img class="footer__stamp" src="../img/oscillator-logo.webp" alt=""
+       width="600" height="600" loading="lazy" decoding="async">
+  <p class="footer__line">Oscillator · Tehran</p>
+  <p class="footer__credit">© <span id="year">2026</span> Oscillator. Founded by <a href="https://keyvdj.com/">KEYV</a>.</p>
+</footer>
+
+<script src="assets/js/series.js?v=e3772ac7"></script>
+<script defer src="assets/js/main.js?v=054570d1"></script>
+</body>
+</html>

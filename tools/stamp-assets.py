@@ -20,15 +20,14 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGES = ("index.html", "releases.html", "admin.html")
+PAGES = ("index.html", "releases.html", "admin.html", "oscillator/index.html")
 
 # href="assets/…" or src="assets/…", with or without an existing ?v=
 PATTERN = re.compile(r'(?P<attr>href|src)="(?P<path>assets/[^"?]+\.(?:css|js))(?:\?v=[0-9a-f]+)?"')
 
 
-def digest(rel_path):
-    full = os.path.join(ROOT, rel_path)
-    with open(full, "rb") as f:
+def digest(full_path):
+    with open(full_path, "rb") as f:
         return hashlib.sha1(f.read()).hexdigest()[:8]
 
 
@@ -37,6 +36,10 @@ def stamp(page):
     if not os.path.exists(path):
         return None
 
+    # asset URLs are relative to the page, not the repo root — the label
+    # site lives in a subfolder and references its own assets/
+    base = os.path.join(ROOT, os.path.dirname(page))
+
     with open(path, encoding="utf-8") as f:
         html = f.read()
 
@@ -44,10 +47,11 @@ def stamp(page):
 
     def replace(match):
         rel = match.group("path")
-        if not os.path.exists(os.path.join(ROOT, rel)):
+        full = os.path.join(base, rel)
+        if not os.path.exists(full):
             missing.append(rel)
             return match.group(0)
-        return f'{match.group("attr")}="{rel}?v={digest(rel)}"'
+        return f'{match.group("attr")}="{rel}?v={digest(full)}"'
 
     stamped, count = PATTERN.subn(replace, html)
 
