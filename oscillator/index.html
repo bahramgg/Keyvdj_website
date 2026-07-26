@@ -3,6 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Every asset below is a page-relative URL, which is what lets this site
+     work both here, under /oscillator/, and later at the root of its own
+     subdomain. The catch: the host serves /oscillator (no trailing slash)
+     with a 200 instead of redirecting, and the browser then resolves those
+     relative URLs against the site root — pulling in the KEYV stylesheet
+     and scripts instead of these. Restoring the slash before the parser
+     reaches the first <link> is what keeps that from happening. On a
+     subdomain the pathname is "/" and this does nothing. -->
+<script>
+  if (location.pathname === '/oscillator') {
+    location.replace('/oscillator/' + location.search + location.hash);
+  }
+</script>
+
 <title>Oscillator · Techno Label &amp; Mix Series</title>
 <meta name="description" content="Oscillator is an independent techno label from Tehran, founded by KEYV. A numbered mix series introducing the artists around it.">
 <meta name="theme-color" content="#FEED07">
