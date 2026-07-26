@@ -72,6 +72,7 @@ JOBS = [
 
 LOGO = "oscillator-logo.jpeg"           # circular stamp -> favicon + footer
 WORDMARK = "oscillator-wordmark.jpeg"   # horizontal lockup -> label section
+HERO_ART = "hero-art.png"               # white line-art on transparent -> hero
 
 
 def trim_letterbox(im, threshold=12):
@@ -221,6 +222,30 @@ def build_wordmark(src):
     save(mark, "oscillator-wordmark.webp", lossless=True)
 
 
+def build_lineart(src):
+    """Hero artwork: already white ink on a transparent background. Clean the
+    faint background noise, crop to the ink, and re-encode lossless so the
+    fine linework and stipple stay crisp on the black page."""
+    im = Image.open(src).convert("RGBA")
+    r, g, b, a = im.split()
+
+    # drop faint background artifacts, keep the real linework's antialiasing
+    a = a.point(lambda v: 0 if v < 26 else v)
+    im.putalpha(a)
+
+    box = a.point(lambda v: 255 if v > 40 else 0).getbbox()
+    if box:
+        pad = int(0.03 * max(box[2] - box[0], box[3] - box[1]))
+        W, H = im.size
+        im = im.crop((max(0, box[0] - pad), max(0, box[1] - pad),
+                      min(W, box[2] + pad), min(H, box[3] + pad)))
+
+    target_w = 1100
+    if im.width > target_w:
+        im = im.resize((target_w, round(im.height * target_w / im.width)), Image.LANCZOS)
+    save(im, "hero-art.webp", lossless=True)
+
+
 def build_icons(logo):
     # favicon + touch icon, flattened on the brand black
     for size, name in ((64, "favicon.png"), (180, "apple-touch-icon.png")):
@@ -258,7 +283,7 @@ def main():
         save(im, job["out"])
 
     print("logos (colour):")
-    for name, builder in ((LOGO, build_logo), (WORDMARK, build_wordmark)):
+    for name, builder in ((LOGO, build_logo), (WORDMARK, build_wordmark), (HERO_ART, build_lineart)):
         path = os.path.join(RAW, name)
         if os.path.exists(path):
             builder(path)

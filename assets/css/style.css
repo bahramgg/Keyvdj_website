@@ -274,27 +274,11 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(1.75rem, 5vh, 3rem);
-  padding-top: 4rem;                 /* clears the fixed nav */
-}
-
-.hero__photo {
-  width: 100%;
-  max-width: 640px;                  /* 1080 native / ~1.7 = never upscaled */
-  margin-inline: auto;
-}
-.hero__img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.hero__content {
-  width: 100%;
-  max-width: var(--wrap);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
+  align-items: center;
+  gap: clamp(1rem, 2.5vh, 1.75rem);
+  padding: 5rem var(--gutter) 2rem;   /* clears the fixed nav */
   text-align: center;
+  overflow: hidden;                   /* the glow never widens the page */
 }
 
 .hero__tag {
@@ -305,14 +289,54 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   font-weight: 500;
   letter-spacing: .3em;
   text-transform: uppercase;
-  margin-bottom: .9rem;
 }
 .hero__tag em { font-style: normal; color: var(--accent); }
+
+/* the animated artwork — this element floats, the image inside breathes,
+   and a faint accent glow sits behind it */
+.hero__art {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  animation: hero-float 9s var(--ease) infinite;
+}
+.hero__art::before {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(229, 228, 24, .12), transparent 72%);
+  filter: blur(18px);
+  animation: hero-glow 6.5s ease-in-out infinite;
+}
+.hero__art-img {
+  height: min(48svh, 440px);
+  width: auto;
+  max-width: 82vw;
+  animation: hero-breathe 7s ease-in-out infinite;
+  transform-origin: center 46%;       /* pivot on the central eye */
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes hero-breathe {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.035) rotate(.6deg); }
+}
+@keyframes hero-glow {
+  0%, 100% { opacity: .55; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.08); }
+}
+
+.hero__content { width: 100%; }
 
 .hero__mark {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(4.5rem, 21vw, 9rem);
+  font-size: clamp(3.5rem, 14vw, 8rem);
   line-height: .84;
   letter-spacing: .02em;
   text-transform: uppercase;
@@ -325,31 +349,17 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   font-weight: 500;
   letter-spacing: .28em;
   text-transform: uppercase;
-  margin-top: 1rem;
+  margin-top: .9rem;
 }
 
-/* desktop: side by side, photo capped at 460px so it stays under native */
 @media (min-width: 900px) {
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: clamp(3rem, 6vw, 6rem);
-    max-width: var(--wrap);
-    margin-inline: auto;
-    padding: 4rem var(--gutter) 0;
-  }
-  /* type reads first, photo sits to its right */
-  .hero__content { grid-column: 1; grid-row: 1; }
-  .hero__photo { grid-column: 2; grid-row: 1; width: 460px; max-width: 100%; margin: 0; }
-  .hero__cue { grid-column: 1 / -1; grid-row: 2; margin-top: clamp(2rem, 5vh, 4rem); }
-  .hero__content {
-    padding-inline: 0;
-    text-align: left;
-    max-width: none;
-  }
-  .hero__tag { justify-content: flex-start; }
-  .hero__mark { font-size: clamp(6rem, 12vw, 11rem); }
+  .hero__art-img { height: min(56svh, 540px); }
+  .hero__mark { font-size: clamp(5rem, 9vw, 8.5rem); }
+}
+
+/* the artwork holds still for anyone who asks for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero__art, .hero__art-img, .hero__art::before { animation: none; }
 }
 
 /* ---- ticker: the one moving element ------------------------------- */

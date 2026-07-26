@@ -20,7 +20,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=146c4006">
+<link rel="stylesheet" href="assets/css/style.css?v=5e0ce625">
 </head>
 
 <body>
@@ -43,24 +43,21 @@
 <main>
 
   <!-- ══ 1 · HERO ═══════════════════════════════════════════════════
-       The source photo is 1080px. Both crops ship at native resolution
-       and the CSS caps how wide each may render, so the browser only
-       ever scales them DOWN — that is what keeps the hero sharp.
-         phone : square, full width   (1080 -> 1170 device px, 1.08x)
-         desk  : 4:5 block, max 460px (864 -> 920 device px, 0.94x)  -->
+       White line-art on transparent, floating over pure black with a
+       faint accent glow. It breathes and drifts; a nested wrapper floats
+       while the image itself breathes, so the two motions never fight.
+       Frozen under prefers-reduced-motion. -->
   <section id="hero" class="hero" aria-label="Intro">
-    <figure class="hero__photo">
-      <picture>
-        <source media="(min-width: 900px)" srcset="img/hero-desk.webp" width="864" height="1080">
-        <img class="hero__img" id="hero-img" src="img/hero-phone.webp" alt="KEYV behind the decks"
-             width="1080" height="1080" fetchpriority="high" decoding="async">
-      </picture>
+    <p class="hero__tag">
+      <em data-config="artist.genreTag">#techno</em>
+    </p>
+
+    <figure class="hero__art">
+      <img class="hero__art-img" src="img/hero-art.webp" alt=""
+           width="1092" height="1192" fetchpriority="high" decoding="async">
     </figure>
 
     <div class="hero__content">
-      <p class="hero__tag">
-        <em data-config="artist.genreTag">#techno</em>
-      </p>
       <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
       <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
     </div>
