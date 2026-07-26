@@ -196,8 +196,6 @@ def build_logo(src):
     logo.putalpha(mask)
     save(logo, "oscillator-logo.webp", lossless=True)
 
-    build_icons(logo)
-
 
 def build_wordmark(src):
     """The horizontal lockup ships as yellow-on-black. The site is dark, so
@@ -245,16 +243,47 @@ def build_lineart(src):
         im = im.resize((target_w, round(im.height * target_w / im.width)), Image.LANCZOS)
     save(im, "hero-art.webp", lossless=True)
 
+    build_icons(im)
 
-def build_icons(logo):
-    # favicon + touch icon, flattened on the brand black
+
+def build_icons(art):
+    """Site icons carry the hero artwork on the page black.
+
+    The moth is taller than it is wide and full of fine linework, so it is
+    fitted into the square with a margin rather than cropped, and the ink is
+    lifted before the downscale — at 32px the thin strokes otherwise average
+    into a flat grey smudge.
+    """
+    art = art.convert("RGBA")
+    box = art.getchannel("A").point(lambda v: 255 if v > 40 else 0).getbbox()
+    if box:
+        art = art.crop(box)
+
+    def square(size):
+        inner = round(size * 0.88)                  # margin: iOS masks the corners
+        fitted = art.copy()
+        fitted.thumbnail((inner, inner), Image.LANCZOS)
+        # lift the ink so thin strokes survive the downscale
+        gain = 1.0 if size >= 120 else (1.55 if size <= 32 else 1.3)
+        if gain > 1.0:
+            fitted.putalpha(fitted.getchannel("A").point(
+                lambda v: min(255, round(v * gain))))
+        icon = Image.new("RGB", (size, size), "#000000")
+        icon.paste(fitted, ((size - fitted.width) // 2,
+                            (size - fitted.height) // 2), fitted)
+        return icon
+
     for size, name in ((64, "favicon.png"), (180, "apple-touch-icon.png")):
-        icon = Image.new("RGB", (size, size), "#0A0A0A")
-        small = logo.resize((size, size), Image.LANCZOS)
-        icon.paste(small, (0, 0), small)
         path = os.path.join(IMG, name)
-        icon.save(path, "PNG", optimize=True)
+        square(size).save(path, "PNG", optimize=True)
         print(f"  {name:32s} {size:>5}x{size:<5} {os.path.getsize(path)/1024:7.1f} KB")
+
+    # Browsers probe /favicon.ico at the site root whatever the markup says,
+    # and Safari falls back to the generic globe when that 404s.
+    ico = os.path.join(ROOT, "favicon.ico")
+    square(48).save(ico, "ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+    print(f"  {'favicon.ico (site root)':32s} {'16/32/48':>11s} "
+          f"{os.path.getsize(ico)/1024:7.1f} KB")
 
 
 def main():
