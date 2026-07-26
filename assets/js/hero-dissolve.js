@@ -22,10 +22,10 @@
   /* ---- sample the artwork into particles -------------------------- */
   /* Sampled at a fixed internal resolution and stored as normalised
      coordinates, so the same particle set works at any display size / DPR. */
-  var SAMPLE_W = 420;                         // internal sampling width (set below)
+  var SAMPLE_W = 560;                         // internal sampling width (set below)
   var STRIDE = 2;                             // px between samples
   var ALPHA_MIN = 40;                         // ignore near-transparent pixels
-  var SPACING = 2.2;                          // target gap between droplets, CSS px
+  var SPACING = 1.5;                          // target gap between droplets, CSS px
 
   var particles = null;                       // {nx,ny,r,g,b,a, dx,dy, t0}
   var canvas, ctx, dpr = 1;
@@ -35,9 +35,10 @@
   var PAD_BELOW = 0.75;                      // extra canvas height below the art
   var FADE_END = 0.14;                        // real image is shown until here,
                                              // then it hands off to the particles
-  var PIN_SPAN = 0.85;                        // dissolve completes this far into
-                                             // the pin, leaving a beat of black
-  var TYPE_OUT = 0.55, TYPE_GONE = 0.95;      // wordmark / metadata fade window
+  var PIN_SPAN = 0.95;                        // dissolve completes this far into
+                                             // the pin
+  var LIFT_FROM = 0.5;                        // wordmark starts rising here
+  var LIFT_RATIO = 0.42;                      // ...by this much of the art height
   var raf = null;
   var current = 0, target = 0;
   var drawn = -1;                             // last progress actually painted
@@ -127,7 +128,9 @@
     canW = boxW * (1 + PAD_X);
     canH = boxH * (1 + PAD_BELOW);
     artX = boxW * PAD_X / 2;                  // art sits centred, at the top
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    /* Full device resolution: capping this below the screen's own ratio
+       makes the droplets soft, which is the whole point of the effect. */
+    dpr = Math.min(window.devicePixelRatio || 1, 3);
     canvas.style.width = canW + 'px';
     canvas.style.height = canH + 'px';
     canvas.width = Math.round(canW * dpr);
@@ -166,11 +169,13 @@
   /* ---- scroll → target progress ----------------------------------- */
   function computeTarget() {
     var rect = section.getBoundingClientRect();
-    var vh = window.innerHeight || document.documentElement.clientHeight;
-    /* The stage is pinned for exactly one viewport of scrolling, so -top/vh
-       is the progress through the pin. Finishing a little early leaves a
-       beat of empty black before the stage releases. */
-    return clamp(-rect.top / (vh * PIN_SPAN), 0, 1);
+    /* The stage stays pinned for however much taller the section is than the
+       stage itself, so that distance — not the viewport — is what progress
+       is measured against. Read from the DOM so changing the section's
+       height in CSS cannot desynchronise the dissolve from the pin. */
+    var pinDistance = section.offsetHeight - stage.offsetHeight;
+    if (pinDistance <= 0) return 0;
+    return clamp(-rect.top / (pinDistance * PIN_SPAN), 0, 1);
   }
 
   /* the crisp image is fully shown at rest and fades out over the first
@@ -182,14 +187,14 @@
     return 1 - p / FADE_END;
   }
 
-  /* The wordmark, subtitle and edge labels ride out on the tail of the
-     dissolve, so the pinned stage is empty before it lets go. */
-  function typeOpacity(p) {
-    if (p <= TYPE_OUT) return 1;
-    if (p >= TYPE_GONE) return 0;
-    var t = (p - TYPE_OUT) / (TYPE_GONE - TYPE_OUT);
-    return 1 - t * t;
+  /* How far the wordmark rises into the space the artwork is vacating.
+     Starts once the artwork is mostly gone, so the two do not collide. */
+  function lift(p) {
+    if (p <= LIFT_FROM) return 0;
+    var t = (p - LIFT_FROM) / (1 - LIFT_FROM);
+    return -Math.round(easeOut(t) * boxH * LIFT_RATIO);
   }
+
 
   function frame() {
     target = computeTarget();
@@ -207,8 +212,8 @@
     }
     if (current !== drawn) {                  // nothing moved → nothing to redo
       img.style.opacity = imageOpacity(current);
-      stage.style.setProperty('--hero-fade', typeOpacity(current));
       stage.style.setProperty('--art-glow', 1 - current * current);
+      stage.style.setProperty('--hero-lift', lift(current) + 'px');
       draw(current);
       drawn = current;
     }
@@ -231,7 +236,7 @@
        at ~370 CSS px, and particles finer than SPACING there are invisible
        work. Measured before building, so the count suits the device. */
     var shown = img.getBoundingClientRect().width;
-    if (shown) SAMPLE_W = clamp(Math.round(shown * STRIDE / SPACING), 240, 420);
+    if (shown) SAMPLE_W = clamp(Math.round(shown * STRIDE / SPACING), 320, 560);
 
     if (!buildParticles(img)) return;         // sampling failed → keep image
 

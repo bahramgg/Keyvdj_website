@@ -20,7 +20,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=dd52e6c4">
+<link rel="stylesheet" href="assets/css/style.css?v=180d77b4">
 </head>
 
 <body>
@@ -63,12 +63,17 @@
         <em data-config="artist.genreTag">#techno</em>
       </p>
 
+      <!-- phones have no room for the rotated edge labels, so the genre tag
+           sits above the artwork there instead -->
+      <p class="hero__tag">
+        <em data-config="artist.genreTag">#techno</em>
+      </p>
+
       <figure class="hero__art">
         <img class="hero__art-img" src="img/hero-art.webp" alt=""
              width="1092" height="1192" fetchpriority="high" decoding="async">
       </figure>
 
-      <!-- pulled up so the wordmark sits over the foot of the artwork -->
       <div class="hero__content">
         <h1 class="hero__mark" data-config="artist.wordmark">KEYV</h1>
         <p class="hero__sub" data-config="artist.bioShort">DJ · Producer · Founder of Oscillator.</p>
@@ -203,6 +208,6 @@
 
 <script src="assets/js/config.js?v=90158837"></script>
 <script defer src="assets/js/main.js?v=5ed4b698"></script>
-<script defer src="assets/js/hero-dissolve.js?v=4c0aba96"></script>
+<script defer src="assets/js/hero-dissolve.js?v=f2055923"></script>
 </body>
 </html>

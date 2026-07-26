@@ -271,7 +271,7 @@ h1, h2, h3, h4, p, figure { margin: 0; }
    renders above its native pixel size. */
 .hero {
   position: relative;
-  min-height: 200svh;                 /* 1 screen of hero + 1 of pinned scroll */
+  min-height: 150svh;                 /* 1 screen of hero + half of pinned scroll */
 }
 
 /* Note: no overflow on .hero — an overflow ancestor would turn the stage's
@@ -284,16 +284,25 @@ h1, h2, h3, h4, p, figure { margin: 0; }
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: clamp(.75rem, 2vh, 1.5rem);
   padding: 5rem var(--gutter) 2rem;   /* clears the fixed nav */
   text-align: center;
   overflow: hidden;                   /* the glow never widens the page */
 }
 
-/* everything but the artwork fades out as the dissolve finishes, so the
-   stage is empty by the time it unpins — driven by hero-dissolve.js */
-.hero__content,
-.hero__cue,
-.hero__meta { opacity: var(--hero-fade, 1); }
+/* the genre tag rides above the artwork on phones; on wider screens the
+   rotated edge labels carry it instead */
+.hero__tag {
+  margin: 0;
+  font-size: .625rem;
+  font-weight: 500;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+}
+.hero__tag em { font-style: normal; color: var(--accent); }
+@media (min-width: 900px) {
+  .hero__tag { display: none; }
+}
 
 /* ---- edge metadata ------------------------------------------------- */
 .hero__meta {
@@ -353,21 +362,23 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 .hero__art-img {
   display: block;
-  height: min(52svh, 470px);
+  height: min(46svh, 420px);
   width: auto;
   max-width: 88vw;
 }
 /* the particle canvas is positioned and sized entirely by JS */
 .hero__art canvas { display: block; pointer-events: none; }
 
-/* Lifted into the artwork so the two read as one composition instead of
-   two stacked blocks. The foot of the artwork is thin drips fading to
-   black, so the wordmark sits over it cleanly. */
+/* As the artwork dissolves it leaves a hole above the type; the wordmark
+   rises to close it, so the stage ends composed instead of half empty.
+   Driven by hero-dissolve.js, on the compositor. */
+.hero__content,
+.hero__cue { transform: translateY(var(--hero-lift, 0px)); }
+
 .hero__content {
   position: relative;
   z-index: 2;
   width: 100%;
-  margin-top: clamp(-3.25rem, -5vh, -1.5rem);
 }
 
 .hero__mark {
@@ -390,9 +401,8 @@ h1, h2, h3, h4, p, figure { margin: 0; }
 }
 
 @media (min-width: 900px) {
-  .hero__art-img { height: min(58svh, 560px); }
-  .hero__mark { font-size: clamp(5rem, 10vw, 9.5rem); }
-  .hero__content { margin-top: clamp(-4.5rem, -6vh, -2rem); }
+  .hero__art-img { height: min(50svh, 480px); }
+  .hero__mark { font-size: clamp(5rem, 9vw, 8.5rem); }
 }
 
 /* ---- ticker: the one moving element ------------------------------- */
