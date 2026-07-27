@@ -135,44 +135,104 @@ body::before {
 }
 .nav__set a:hover, .nav__set a[aria-current] { color: var(--acid); }
 
-/* ---- hero ----------------------------------------------------------
-   The newest mix, full bleed. The artwork is the picture, the name is
-   set over it, and nothing else is on the screen. */
-.hero {
+/* ---- cover ---------------------------------------------------------
+   A title page, not a photograph. The label is set to the full measure
+   of the screen with the facts ranged beneath it — the one thing an
+   Instagram grid cannot show you is the label itself, at this size. */
+.cover {
   position: relative;
   min-height: 100svh;
   display: flex;
-  align-items: flex-end;
-  padding: 6rem var(--gutter) clamp(3.5rem, 9vh, 5.5rem);
-  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem var(--gutter) clamp(4rem, 11vh, 6.5rem);
 }
-.hero__art { position: absolute; inset: 0; margin: 0; background: var(--black); }
-.hero__art img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Left in colour on purpose. These covers are posters — the acid panel
-     and the artist's name are part of them, and greyscaling threw away
-     the one piece of brand colour on the screen. Only knocked back far
-     enough that the foot of the frame can carry type. */
-  filter: contrast(1.06) brightness(.88);
+.cover__word {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* sized in vw so the word always runs the full measure, edge to edge */
+  font-size: 17.4vw;
+  line-height: .82;
+  letter-spacing: -.005em;
+  text-transform: uppercase;
+  color: var(--paper);
+  white-space: nowrap;
 }
-/* and a gradient at the foot, where the type actually sits */
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.55) 38%, rgba(0,0,0,.15) 70%);
+.cover__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .55rem 2rem;
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--soft);
 }
-.hero__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+@media (min-width: 820px) { .cover__facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cover__facts a { color: var(--acid); }
+.cover__scroll { position: absolute; right: var(--gutter); bottom: clamp(1.5rem, 4vh, 2.5rem); }
 
-.hero__scroll {
-  position: absolute;
-  right: var(--gutter);
-  bottom: clamp(3.5rem, 9vh, 5.5rem);
-  z-index: 1;
+/* ---- catalogue -----------------------------------------------------
+   The sessions are a list, not a grid of squares. A grid of the covers
+   is the Instagram feed with a header on it; set as type, the archive
+   reads as a catalogue and the artwork arrives only when asked for. */
+.cat { position: relative; }
+@media (min-width: 1080px) {
+  .cat { display: grid; grid-template-columns: 1fr 300px; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
 }
+.cat__list { border-top: 1px solid var(--line); }
+
+.row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: clamp(.9rem, 2.4vh, 1.5rem) 0;
+  border-bottom: 1px solid var(--line);
+  transition: color .25s var(--ease), padding-left .35s var(--ease);
+}
+.row:hover, .row:focus-within { color: var(--acid); padding-left: .75rem; }
+.row__no { font-size: .6875rem; font-weight: 700; letter-spacing: .2em; color: var(--soft); }
+.row:hover .row__no, .row:focus-within .row__no { color: var(--acid); }
+.row__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 4.6vw, 3rem);
+  line-height: 1;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.row__go { font-size: .625rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; }
+.row a { display: contents; }
+
+/* the artwork, held to one side and swapped as the cursor moves down */
+.cat__peek {
+  display: none;
+  /* sticky rather than absolute: pinned below the fixed bar, it follows
+     the list down instead of sitting underneath the navigation */
+  position: sticky;
+  top: 5.5rem;
+  width: 100%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s var(--ease), transform .45s var(--ease);
+  transform: translateY(12px);
+}
+.cat__peek img { width: 100%; height: 100%; object-fit: cover; }
+.cat__peek.is-on { opacity: 1; transform: none; }
+@media (min-width: 1080px) { .cat__peek { display: block; } }
+
+/* ---- prose ----------------------------------------------------------- */
+.prose { max-width: 46rem; }
+.prose p { margin: 0 0 1.1rem; max-width: 52ch; color: var(--soft); font-size: 1rem; }
+.prose p:last-child { margin-bottom: 0; }
+.contact__links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem !important; }
 
 /* ---- section furniture ---------------------------------------------- */
 .section { padding: clamp(3.5rem, 10vh, 7rem) var(--gutter); }
@@ -192,67 +252,6 @@ body::before {
   text-transform: uppercase;
 }
 .after { display: flex; flex-wrap: wrap; gap: .75rem; margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; }
-
-/* ---- the archive -----------------------------------------------------
-   The covers are posters and already carry the artist's name and number,
-   so they are shown whole and large and left to do the work. */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(.6rem, 1.6vw, 1.1rem);
-}
-@media (min-width: 760px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1180px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-
-.tile { position: relative; display: block; overflow: hidden; background: #0C0C09; }
-.tile__art { aspect-ratio: 1; margin: 0; }
-.tile__art img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .55s var(--ease), filter .35s var(--ease);
-}
-.tile:hover .tile__art img,
-.tile:focus-visible .tile__art img { transform: scale(1.05); filter: brightness(.55); }
-
-/* the name is in the artwork already — this is only for the hover state */
-.tile__over {
-  position: absolute;
-  inset: auto 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: .75rem;
-  padding: .8rem .9rem;
-  background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity .3s var(--ease), transform .3s var(--ease);
-}
-.tile:hover .tile__over,
-.tile:focus-visible .tile__over { opacity: 1; transform: none; }
-.tile__name { font-family: var(--font-display); font-size: 1.05rem; text-transform: uppercase; letter-spacing: .01em; }
-.tile__play { color: var(--acid); }
-
-/* ---- about -----------------------------------------------------------
-   One paragraph, set at size. There is no manifesto to pad it out with. */
-.about__inner { max-width: 46rem; }
-.about__lead {
-  margin: .9rem 0 1.25rem;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.5rem, 3.6vw, 2.6rem);
-  line-height: 1.16;
-  letter-spacing: .005em;
-}
-.about__lead a { color: var(--acid); }
-.about__lead a:hover { text-decoration: underline; }
-.about__note { margin: 0; max-width: 44ch; color: var(--soft); }
-
-/* ---- contact ---------------------------------------------------------- */
-.contact { max-width: 46rem; }
-.contact__note { margin: 0 0 1.5rem; max-width: 48ch; color: var(--soft); }
-.contact__links { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
 
 /* ---- roster (artists page) --------------------------------------------- */
 .roster { border-top: 1px solid var(--line); }

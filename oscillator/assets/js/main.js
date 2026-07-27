@@ -53,43 +53,62 @@
     return a;
   }
 
-  /* ---- hero: the newest mix ---------------------------------------- */
-  function renderHero() {
-    var art = document.getElementById('hero-art');
-    var name = document.getElementById('hero-name');
-    var kicker = document.getElementById('hero-kicker');
-    var go = document.getElementById('hero-go');
-    var artist = ARTISTS[0];
-    if (!art || !artist) return;
-
-    var img = cover(artist, 'hero__art-inner', true).firstChild;
-    if (img) art.appendChild(img);
-
-    if (kicker && artist.number) kicker.textContent = 'Latest — ' + artist.number;
-    if (name) name.textContent = artist.name || 'Oscillator';
-
-    var url = safeUrl(artist.url);
-    if (go && url) go.appendChild(externalLink('btn btn--acid', 'Listen', url, listenLabel(artist)));
+  /* ---- catalogue -----------------------------------------------------
+     Each session is a row of type. The artwork is not laid out with the
+     rows — it is held to one side and swapped in as the cursor moves, so
+     the archive reads as a list rather than as a wall of squares. */
+  function peekAt(peek, artist) {
+    if (!peek || !artist.cover) return;
+    var img = peek.firstChild;
+    if (!img) {
+      img = new Image();
+      img.alt = '';
+      img.decoding = 'async';
+      peek.appendChild(img);
+    }
+    img.src = artist.cover;
+    peek.classList.add('is-on');
   }
 
-  /* ---- archive: every mix ------------------------------------------ */
-  function tileNode(artist) {
+  function rowNode(artist, peek) {
     var item = el('li');
     var url = safeUrl(artist.url);
-    var tile = url ? externalLink('tile', null, url, listenLabel(artist)) : el('div', 'tile');
+    var row = el(url ? 'a' : 'div', 'row');
+    if (url) {
+      row.href = url;
+      row.target = '_blank';
+      row.rel = 'noopener';
+      row.setAttribute('aria-label', listenLabel(artist));
+    }
 
-    tile.appendChild(cover(artist, 'tile__art'));
+    row.appendChild(el('span', 'row__no', artist.number || ''));
+    row.appendChild(el('h3', 'row__name', artist.name || ''));
+    row.appendChild(el('span', 'row__go', 'Listen'));
 
-    /* The covers already carry the name and the number, so this only
-       appears on hover — it is a target, not a caption. */
-    var over = el('div', 'tile__over');
-    over.setAttribute('aria-hidden', 'true');
-    over.appendChild(el('span', 'tile__name', artist.name || ''));
-    over.appendChild(el('span', 'tile__play tag', 'Play'));
-    tile.appendChild(over);
+    if (peek) {
+      row.addEventListener('mouseenter', function () { peekAt(peek, artist); });
+      row.addEventListener('focus', function () { peekAt(peek, artist); });
+    }
 
-    item.appendChild(tile);
+    item.appendChild(row);
     return item;
+  }
+
+  function renderSessions() {
+    var list = document.getElementById('session-list');
+    var peek = document.getElementById('session-peek');
+    if (!list || !ARTISTS.length) return;
+
+    var frag = document.createDocumentFragment();
+    ARTISTS.forEach(function (a) { frag.appendChild(rowNode(a, peek)); });
+    list.appendChild(frag);
+
+    if (peek) {
+      list.addEventListener('mouseleave', function () { peek.classList.remove('is-on'); });
+    }
+
+    var count = document.getElementById('cover-count');
+    if (count) count.textContent = ARTISTS.length + ' sessions';
   }
 
   /* ---- roster (artists page) ---------------------------------------- */
@@ -192,8 +211,7 @@
   }
 
   function boot() {
-    renderHero();
-    fill(document.getElementById('archive-grid'), ARTISTS, tileNode);
+    renderSessions();
     fill(document.getElementById('roster'), ARTISTS, rosterNode);
     setUpContact();
 

@@ -18,12 +18,12 @@
 </script>
 
 <title>Oscillator · Techno Label</title>
-<meta name="description" content="Oscillator is an independent techno label founded by KEYV. A numbered archive of mixes, one artist at a time.">
+<meta name="description" content="Oscillator is an independent techno label founded by KEYV. A numbered archive of sessions, one artist at a time.">
 <meta name="theme-color" content="#000000">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Oscillator · Techno Label">
-<meta property="og:description" content="A numbered archive of mixes, one artist at a time.">
+<meta property="og:description" content="A numbered archive of sessions, one artist at a time.">
 <meta property="og:image" content="img/covers/030.webp">
 
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
@@ -32,19 +32,19 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=3b5d451c">
+<link rel="stylesheet" href="assets/css/style.css?v=ed7eeb0d">
 </head>
 
 <body>
 
-<a class="skip-link" href="#archive">Skip to the archive</a>
+<a class="skip-link" href="#sessions">Skip to the sessions</a>
 
 <header class="nav">
   <a class="nav__mark" href="#top" aria-label="Oscillator, top">
     <img src="img/mark.webp" alt="" width="677" height="508" decoding="async">
   </a>
   <nav class="nav__set" aria-label="Primary">
-    <a href="#archive">Archive</a>
+    <a href="#sessions">Sessions</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
   </nav>
@@ -52,50 +52,58 @@
 
 <main id="top">
 
-  <!-- ══ HERO — the newest mix, full bleed ═══════════════════════════
-       The hero is the most recent thing the label put out, not a logo:
-       the artwork fills the screen and the artist is named over it. -->
-  <section class="hero" id="hero" aria-labelledby="hero-name">
-    <figure class="hero__art" id="hero-art"></figure>
-    <div class="hero__body">
-      <p class="tag tag--acid" id="hero-kicker">Latest</p>
-      <!-- the cover is a poster and already sets the artist's name at that
-           size; repeating it over the top only fought with the artwork -->
-      <h1 class="sr-only" id="hero-name">Oscillator</h1>
-      <div class="hero__go" id="hero-go"></div>
-    </div>
-    <p class="tag tag--soft hero__scroll">Scroll</p>
+  <!-- ══ COVER — type only ═══════════════════════════════════════════
+       No photograph. The artwork is square, and cropping a square to a
+       widescreen band slices its own composition apart — which is what
+       made the last hero look like a stretched Instagram post. This is
+       the label set as a title page instead. -->
+  <section class="cover" aria-labelledby="cover-title">
+    <h1 class="cover__word" id="cover-title">Oscillator</h1>
+
+    <ul class="cover__facts">
+      <li>Independent techno label</li>
+      <li>Tehran</li>
+      <li>Founded by <a href="https://keyvdj.com/">KEYV</a></li>
+      <li id="cover-count">Sessions</li>
+    </ul>
+
+    <p class="tag tag--soft cover__scroll">Scroll</p>
   </section>
 
-  <!-- ══ ARCHIVE — every mix, which is the whole of the label ═══════ -->
-  <section id="archive" class="section" aria-labelledby="archive-title">
+  <!-- ══ SESSIONS — a catalogue, not a feed ═════════════════════════ -->
+  <section id="sessions" class="section" aria-labelledby="sessions-title">
     <div class="head">
-      <p class="tag tag--soft">Every session, numbered</p>
-      <h2 class="title" id="archive-title">The archive</h2>
+      <p class="tag tag--soft">Every session, in order</p>
+      <h2 class="title" id="sessions-title">The archive</h2>
     </div>
 
-    <ul class="grid" id="archive-grid"></ul>
+    <div class="cat">
+      <ol class="cat__list" id="session-list"></ol>
+      <!-- the artwork follows whichever row you are on; desktop only -->
+      <div class="cat__peek" id="session-peek" aria-hidden="true"></div>
+    </div>
 
     <p class="after">
-      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">
-        Listen on SoundCloud
-      </a>
+      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen on SoundCloud</a>
       <a class="btn" href="artists.html">Artist index</a>
     </p>
   </section>
 
   <!-- ══ ABOUT ══════════════════════════════════════════════════════ -->
-  <section id="about" class="section about" aria-labelledby="about-title">
-    <div class="about__inner">
-      <p class="tag tag--acid">The label</p>
-      <h2 class="about__lead" id="about-title">
-        Oscillator is an independent techno label founded by
-        <a href="https://keyvdj.com/">KEYV</a>. Every entry hands the deck to
-        another artist, and the archive is the record of it.
-      </h2>
-      <p class="about__note">
-        Based in Tehran. Mixes go out numbered, in order, with no schedule
-        to fill.
+  <section id="about" class="section" aria-labelledby="about-title">
+    <div class="head">
+      <p class="tag tag--soft">The label</p>
+      <h2 class="title" id="about-title">About</h2>
+    </div>
+    <div class="prose">
+      <p>
+        Oscillator is an independent techno label founded by KEYV. Every
+        session hands the deck to another artist, and the archive is the
+        record of it.
+      </p>
+      <p>
+        Based in Tehran. Sessions go out numbered, in order, with no
+        schedule to fill.
       </p>
     </div>
   </section>
@@ -106,16 +114,14 @@
       <p class="tag tag--soft">Demos, bookings, press</p>
       <h2 class="title" id="contact-title">Get in touch</h2>
     </div>
-
-    <div class="contact">
-      <p class="contact__note">
+    <div class="prose">
+      <p>
         We listen to everything that comes in. Send a private link with a
         line about who you are — no attachments, no zip files.
       </p>
       <p class="contact__links">
         <button class="btn btn--acid" type="button" id="contact-open">Email us</button>
         <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-        <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
       </p>
     </div>
   </section>
@@ -123,9 +129,6 @@
 </main>
 
 <footer class="footer">
-  <p class="footer__mark">
-    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-  </p>
   <div class="footer__rows">
     <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
     <span class="footer__set">
@@ -163,6 +166,6 @@
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=be9bf4f8"></script>
+<script defer src="assets/js/main.js?v=3ed1bb44"></script>
 </body>
 </html>
