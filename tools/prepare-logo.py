@@ -70,12 +70,53 @@ def save(image, name, mode="RGBA"):
     print(f"  {name:<14} {image.width}x{image.height}  {out.stat().st_size // 1024}KB")
 
 
+def split(lockup):
+    """Emblem and wordmark, as two images the same width as the lockup.
+
+    The reel turns the emblem on its own axis, which it can only do as a
+    separate element. Cropping by rows and keeping the full width means
+    the two pieces stay at the scale they were drawn at relative to each
+    other — set them both to the same width in CSS and the lockup
+    reassembles itself.
+
+    They are parted by a band of rows that is completely transparent, so
+    the split is measured off the artwork rather than typed in.
+    """
+    alpha = lockup.getchannel("A")
+    rows = [max(alpha.crop((0, y, lockup.width, y + 1)).getextrema()) for y in range(lockup.height)]
+
+    runs, start = [], None
+    for y, value in enumerate(rows + [255]):
+        if value == 0 and start is None:
+            start = y
+        elif value != 0 and start is not None:
+            runs.append((start, y))
+            start = None
+
+    if not runs:
+        return None, None
+    gap = max(runs, key=lambda r: r[1] - r[0])
+    if gap[1] - gap[0] < lockup.height * 0.01:
+        return None, None
+
+    return (lockup.crop((0, 0, lockup.width, gap[0])),
+            lockup.crop((0, gap[1], lockup.width, lockup.height)))
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
     OUT.mkdir(parents=True, exist_ok=True)
 
-    save(key(sys.argv[1]), "lockup.webp")
+    lockup = key(sys.argv[1])
+    save(lockup, "lockup.webp")
+
+    emblem, wordmark = split(lockup)
+    if emblem is None:
+        print("  ! no transparent band between emblem and wordmark; not split")
+    else:
+        save(emblem, "emblem.webp")
+        save(wordmark, "wordmark-lit.webp")
 
     if len(sys.argv) > 2:
         # the disc is yellow-on-black by design — keep its black, only

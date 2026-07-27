@@ -213,7 +213,28 @@
     });
   }
 
+  /* ---- the intro ---------------------------------------------------------
+     The badge turns in and the frame cuts to inverse twice, which is how
+     the reel opens. It runs from a class the page ships with, so it
+     happens with or without this file; touching the badge plays it
+     again. */
+  function setUpBadge() {
+    var badge = document.getElementById('badge');
+    if (!badge) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    badge.addEventListener('click', function () {
+      document.body.classList.remove('is-in');
+      /* reading a layout property forces the style change to land;
+         without it the class goes off and on inside one frame and the
+         animations never restart */
+      void document.body.offsetWidth;
+      document.body.classList.add('is-in');
+    });
+  }
+
   function boot() {
+    setUpBadge();
     renderLatest();
     renderArchive();
     renderRoster();

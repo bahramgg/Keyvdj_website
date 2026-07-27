@@ -31,12 +31,16 @@
 
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
-<link rel="preload" as="image" href="img/lockup.webp" fetchpriority="high">
+<link rel="preload" as="image" href="img/emblem.webp" fetchpriority="high">
+<link rel="preload" as="image" href="img/wordmark-lit.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="assets/css/style.css?v=5b018708">
+<link rel="stylesheet" href="assets/css/style.css?v=c0ee8898">
 </head>
 
-<body>
+<body class="is-in">
+
+<!-- the reel cuts the whole frame to its inverse twice on the way in -->
+<span class="flash" aria-hidden="true"></span>
 
 <a class="skip-link" href="#latest">Skip to the latest session</a>
 
@@ -57,7 +61,7 @@
   <div class="hero__mid">
     <h1 class="sr-only">Oscillator — independent techno label, Tehran</h1>
 
-    <div class="badge glow">
+    <div class="badge glow" id="badge">
       <svg class="badge__ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
         <defs>
           <!-- one full circle, started at the top and running clockwise,
@@ -76,8 +80,14 @@
         </g>
       </svg>
 
-      <img class="badge__mark" src="img/lockup.webp" alt=""
-           width="1400" height="1052" fetchpriority="high" decoding="async">
+      <!-- two pieces, so the emblem can turn on its own axis; they are
+           cut at the master's full width and reassemble at this one -->
+      <span class="badge__core">
+        <img class="badge__emblem" src="img/emblem.webp" alt=""
+             width="1400" height="607" fetchpriority="high" decoding="async">
+        <img class="badge__word" src="img/wordmark-lit.webp" alt=""
+             width="1400" height="412" fetchpriority="high" decoding="async">
+      </span>
     </div>
 
     <p class="hero__we lit">We are Oscillator</p>
@@ -233,6 +243,6 @@
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=b25072c6"></script>
+<script defer src="assets/js/main.js?v=b42e3a85"></script>
 </body>
 </html>
