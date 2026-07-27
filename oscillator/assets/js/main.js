@@ -281,23 +281,7 @@
     if (year) year.textContent = new Date().getFullYear();
   }
 
-  /* The hero loop is decoration. Autoplay can be refused (low power mode,
-     data saver); it is muted, so a rejection is not an error. */
-  function primeVideo() {
-    var video = document.querySelector('.hero__video');
-    if (!video) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      video.removeAttribute('autoplay');
-      video.pause();
-      return;
-    }
-    /* the clip races through its own states — slowing it lets each be read */
-    try { video.playbackRate = 0.72; } catch (err) { /* not supported */ }
-    var attempt = video.play();
-    if (attempt && attempt.catch) attempt.catch(function () {});
-  }
-
-  function boot() { render(); primeVideo(); }
+  function boot() { render(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

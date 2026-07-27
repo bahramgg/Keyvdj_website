@@ -32,7 +32,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=aa76af3c">
+<link rel="stylesheet" href="assets/css/style.css?v=872421c6">
 </head>
 
 <body>
@@ -55,14 +55,32 @@
 
 <main id="top">
 
-  <!-- ══ HERO — the label's own logo animation, at full size ═════════ -->
+  <!-- ══ HERO — the mark, drawn rather than filmed ════════════════
+       The logo clip is a 720px square, so filling a screen with it meant
+       upscaling it into mush. This is the same idea built as vector: a
+       ring of type turning around the stamp, lit like the original. It is
+       crisp at any size and a fraction of the weight. -->
   <section class="hero" aria-label="Intro">
     <h1 class="hero__title">
-      <video class="hero__video" poster="media/rises-poster.webp"
-             autoplay muted loop playsinline disablepictureinpicture
-             width="720" height="720" aria-label="Oscillator">
-        <source src="media/rises.mp4" type="video/mp4">
-      </video>
+      <span class="sr-only">Oscillator</span>
+      <span class="emblem" aria-hidden="true">
+        <svg class="emblem__ring" viewBox="0 0 400 400" focusable="false">
+          <defs>
+            <path id="ring-path" fill="none"
+                  d="M200,200 m-158,0 a158,158 0 1,1 316,0 a158,158 0 1,1 -316,0"/>
+          </defs>
+          <text class="emblem__ring-text">
+            <!-- textLength pins the run to the exact circumference, so the
+                 sentence closes on itself instead of overlapping at the seam -->
+            <textPath href="#ring-path" startOffset="0"
+                      textLength="993" lengthAdjust="spacing">
+              OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR /
+            </textPath>
+          </text>
+        </svg>
+        <img class="emblem__stamp" src="../img/oscillator-logo.webp" alt=""
+             width="600" height="600" fetchpriority="high" decoding="async">
+      </span>
     </h1>
 
     <p class="hero__line">An independent techno label. We put artists forward and let the work speak.</p>
@@ -198,19 +216,13 @@
     </div>
   </section>
 
-  <!-- ══ CLOSING CALL ═══════════════════════════════════════════════ -->
-  <section class="call" aria-label="Listen">
-    <div class="call__inner">
-      <p class="statement statement--sm">
-        Step into the <em class="mark">signal</em>.
-      </p>
-      <a class="btn btn--acid" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen now</a>
-    </div>
-  </section>
 
 </main>
 
 <footer class="footer">
+  <p class="footer__mark">
+    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+  </p>
   <div class="footer__rows">
     <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
     <span class="footer__set">
@@ -219,14 +231,11 @@
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
     </span>
   </div>
-  <p class="footer__mark">
-    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-  </p>
 </footer>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=4ec1b0e6"></script>
+<script defer src="assets/js/main.js?v=69e624a5"></script>
 <dialog class="modal" id="contact-modal" aria-labelledby="modal-title">
   <form class="modal__in" id="contact-form" novalidate>
     <div class="modal__head">

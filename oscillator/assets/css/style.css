@@ -61,6 +61,16 @@ a { color: inherit; text-decoration: none; }
 .skip-link { position: absolute; left: -9999px; top: 0; background: var(--acid); color: var(--ink); padding: .7rem 1rem; z-index: 100; }
 .skip-link:focus { left: 0; }
 
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 
 /* ---- the wall --------------------------------------------------------
    Spray paint, not draughtsman's lines: the strokes are gestural and run
@@ -74,7 +84,7 @@ body::before {
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  opacity: .16;
+  opacity: .28;
   background-image: url("../../img/wall.svg");
   background-repeat: repeat;
   background-size: 1600px 1200px;
@@ -175,21 +185,54 @@ body::after {
   height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  gap: .9rem;
-  padding: 5rem var(--gutter) clamp(3rem, 8vh, 4.5rem);
+  gap: clamp(1.25rem, 4vh, 2.25rem);
+  padding: 5rem var(--gutter) clamp(3.5rem, 9vh, 5rem);
   text-align: center;
   overflow: hidden;
 }
-.hero__video {
+/* ---- the mark ------------------------------------------------------
+   A ring of type turning around the stamp. The ring is SVG text on a
+   circular path, so it stays sharp at any size; the stamp is held well
+   under its own pixel size for the same reason. The glow is the one
+   thing carried straight over from the clip. */
+.emblem {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(74vw, 480px);
+  aspect-ratio: 1;
+  filter: drop-shadow(0 0 14px rgba(254, 237, 7, .38))
+          drop-shadow(0 0 42px rgba(254, 237, 7, .22));
+}
+.emblem__ring {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  mix-blend-mode: screen;             /* drops the clip's own black field */
-  pointer-events: none;
+  animation: emblem-turn 26s linear infinite;
+}
+.emblem__ring-text {
+  fill: var(--acid);
+  font-family: var(--font-body);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: .34em;
+}
+.emblem__stamp {
+  position: relative;
+  width: 46%;
+  height: auto;
+  animation: emblem-breathe 7s ease-in-out infinite;
+}
+@keyframes emblem-turn {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes emblem-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.035); }
 }
 .hero__foot {
   position: absolute;
@@ -440,13 +483,13 @@ body::after {
 .duo-col__links { display: flex; flex-wrap: wrap; gap: .75rem; }
 
 /* ---- footer ------------------------------------------------------------- */
-.footer { padding: clamp(2.5rem, 6vh, 4rem) var(--gutter) 0; border-top: 1px solid var(--line); }
+.footer { padding: clamp(3rem, 9vh, 6rem) var(--gutter) clamp(2rem, 5vh, 3rem); border-top: 1px solid var(--line); }
 .footer__rows { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; font-size: .625rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); }
 .footer__rows a:hover { color: var(--acid); }
 .footer__set { display: flex; flex-wrap: wrap; gap: 1.25rem; }
 
 /* the label's own lockup, poster-sized, closing the page */
-.footer__mark { margin: clamp(1.5rem, 5vh, 3rem) 0 0; }
+.footer__mark { margin: 0 0 clamp(1.25rem, 4vh, 2.25rem); }
 .footer__mark img { width: 100%; height: auto; }
 
 /* ---- contact dialog ---------------------------------------------------
@@ -484,6 +527,7 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .emblem__ring, .emblem__stamp { animation: none; }
   *, *::before, *::after {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
