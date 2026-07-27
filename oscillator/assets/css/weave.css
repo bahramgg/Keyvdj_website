@@ -1,0 +1,67 @@
+/* =============================================================
+   OSCILLATOR — the weave
+
+   Flat acid yellow across a whole page is exhausting to read against, so
+   no band is left flat: every one carries a low-contrast lattice of
+   angular strokes borrowed from the logo's own construction — long bars,
+   right-angle turns, notched terminals. It reads as texture rather than
+   pattern, and it lets the yellow bands and the black bands alternate
+   without either feeling like a slab.
+
+   Two tiles, because a data URI cannot take currentColor: dark strokes
+   for the yellow ground, yellow strokes for the black one.
+   ============================================================= */
+
+:root {
+  /* black strokes — sits on the yellow bands */
+  --weave-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23000' stroke-width='5' opacity='.14'%3E%3Cpath d='M0 22h58v14h26'/%3E%3Cpath d='M104 22h76'/%3E%3Cpath d='M24 58h132'/%3E%3Cpath d='M156 58v22h-36'/%3E%3Cpath d='M0 96h44V80h52v16h84'/%3E%3Cpath d='M0 132h74v-16'/%3E%3Cpath d='M96 132h84'/%3E%3Cpath d='M120 158h60'/%3E%3Cpath d='M0 168h84'/%3E%3C/g%3E%3Cg fill='%23000' opacity='.14'%3E%3Crect x='88' y='52' width='12' height='12'/%3E%3Crect x='40' y='126' width='12' height='12'/%3E%3Crect x='150' y='90' width='12' height='12'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* yellow strokes — sits on the black bands */
+  --weave-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%23FEED07' stroke-width='5' opacity='.07'%3E%3Cpath d='M0 22h58v14h26'/%3E%3Cpath d='M104 22h76'/%3E%3Cpath d='M24 58h132'/%3E%3Cpath d='M156 58v22h-36'/%3E%3Cpath d='M0 96h44V80h52v16h84'/%3E%3Cpath d='M0 132h74v-16'/%3E%3Cpath d='M96 132h84'/%3E%3Cpath d='M120 158h60'/%3E%3Cpath d='M0 168h84'/%3E%3C/g%3E%3Cg fill='%23FEED07' opacity='.07'%3E%3Crect x='88' y='52' width='12' height='12'/%3E%3Crect x='40' y='126' width='12' height='12'/%3E%3Crect x='150' y='90' width='12' height='12'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ---- the two grounds ------------------------------------------------ */
+/* The weave is pinned behind the content rather than painted on the band
+   itself, so text never sits directly on a stroke at full strength. */
+.band { position: relative; isolation: isolate; }
+.band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  pointer-events: none;
+}
+.band > * { position: relative; }
+
+.band--sun {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.band--sun::before { background-image: var(--weave-dark); }
+
+.band--ink {
+  background: var(--black);
+  color: var(--paper);
+}
+.band--ink::before { background-image: var(--weave-light); }
+
+/* A band reading against the weave needs its own quiet patch behind long
+   copy, or the strokes fight the text at small sizes. */
+.band__clear {
+  background: inherit;
+  box-shadow: 0 0 0 1.15rem var(--band-clear, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* the weave drifts a hair on the yellow bands, so the page has one
+     living surface without anything actually moving in the reader's way */
+  .band--sun::before {
+    animation: weave-drift 90s linear infinite;
+  }
+}
+@keyframes weave-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 180px 180px; }
+}

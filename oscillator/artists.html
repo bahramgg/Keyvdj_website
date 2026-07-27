@@ -19,7 +19,8 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=74234b80">
+<link rel="stylesheet" href="assets/css/style.css?v=e4bd5efc">
+<link rel="stylesheet" href="assets/css/weave.css?v=9654077a">
 </head>
 
 <body>
@@ -33,11 +34,14 @@
   </a>
   <nav class="nav__links" aria-label="Primary">
     <a href="artists.html" aria-current="page">Artists</a>
+    <a href="index.html#listen">Listen</a>
     <a href="index.html#about">About</a>
+    <a href="index.html#demos">Demos</a>
   </nav>
 </header>
 
 <main>
+  <div class="band band--sun">
   <section class="section" aria-labelledby="roster-title">
     <p class="kicker">Artists</p>
     <h1 class="title" id="roster-title">Everyone we have put forward</h1>
@@ -50,9 +54,10 @@
       <a class="link" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
     </p>
   </section>
+  </div>
 </main>
 
-<footer class="footer">
+<footer class="footer band band--ink">
   <p>© <span id="year">2026</span> Oscillator. Founded by <a href="https://keyvdj.com/">KEYV</a>.</p>
   <p class="footer__links">
     <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
@@ -60,7 +65,8 @@
   </p>
 </footer>
 
+<script src="assets/js/info.js?v=4dde8eaf"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
-<script defer src="assets/js/main.js?v=bcc8059b"></script>
+<script defer src="assets/js/main.js?v=d682c08b"></script>
 </body>
 </html>
