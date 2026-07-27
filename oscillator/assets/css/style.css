@@ -162,11 +162,14 @@ body::after {
   background: radial-gradient(circle at 50% 47%, rgba(254, 237, 7, .1), rgba(254, 237, 7, .025) 34%, transparent 62%);
 }
 
-/* the beam, behind everything — see assets/js/scope.js */
+/* The beam, behind the whole site rather than behind the first screen —
+   fixed to the window, so it keeps running as the page moves over it.
+   See assets/js/scope.js. The root's background paints behind even a
+   negative z-index, so this still sits on black. */
 .scope {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: -2;
+  z-index: -1;
   width: 100%;
   height: 100%;
   display: block;
@@ -345,6 +348,9 @@ body::after {
 .sect + .sect { border-top: 1px solid var(--line); }
 
 .head { display: grid; gap: .9rem; margin-bottom: clamp(2rem, 5vh, 3rem); }
+/* h1 as well as h2: the artists page's title is the page's own heading,
+   and on h2 alone it fell back to the body face at body size */
+.head h1,
 .head h2 {
   margin: 0;
   font-family: var(--font-display);
@@ -396,10 +402,14 @@ body::after {
 /* ---- the archive -------------------------------------------------------
    The sleeves are the strongest thing the label owns, so the archive is
    them, at size, and the page keeps out of the way. */
+/* Three of them, so auto-fill would lay out seven columns on a wide
+   screen and leave four empty. auto-fit collapses the empty tracks and
+   the max-width stops the three that remain from becoming posters. */
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: clamp(.9rem, 2vw, 1.5rem);
+  max-width: 66rem;
 }
 .tile { display: grid; gap: .75rem; color: inherit; }
 .tile__shot { position: relative; margin: 0; overflow: hidden; }

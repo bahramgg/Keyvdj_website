@@ -18,12 +18,12 @@
 </script>
 
 <title>Oscillator · Techno Label</title>
-<meta name="description" content="We are Oscillator — an independent techno label from Tehran. A numbered archive of sessions, one artist at a time.">
+<meta name="description" content="We are Oscillator — an independent techno label from Tehran. One artist at a time, numbered and kept in order.">
 <meta name="theme-color" content="#050504">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Oscillator · Techno Label">
-<meta property="og:description" content="We are Oscillator. A numbered archive of sessions, one artist at a time.">
+<meta property="og:description" content="We are Oscillator. One artist at a time, numbered and kept in order.">
 <meta property="og:image" content="img/disc.webp">
 
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
@@ -34,7 +34,7 @@
 <link rel="preload" as="image" href="img/emblem.webp" fetchpriority="high">
 <link rel="preload" as="image" href="img/wordmark-lit.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="assets/css/style.css?v=9e8355ee">
+<link rel="stylesheet" href="assets/css/style.css?v=cb653765">
 </head>
 
 <body class="is-in">
@@ -42,22 +42,21 @@
 <!-- the reel cuts the whole frame to its inverse twice on the way in -->
 <span class="flash" aria-hidden="true"></span>
 
-<a class="skip-link" href="#latest">Skip to the latest session</a>
+<!-- An oscilloscope in XY mode draws a Lissajous figure: two
+     oscillators, one per axis. The label is named after the thing, so
+     this is the picture of it — see assets/js/scope.js. Fixed to the
+     window and behind every section, not only the first screen. -->
+<canvas class="scope" id="scope" aria-hidden="true"></canvas>
+
+<a class="skip-link" href="#artists">Skip to the artists</a>
 
 <!-- ══ THE FIRST SCREEN ═══════════════════════════════════════════════
      The badge from the identity reel: a thin ring with the name running
      around it, turning, and the lockup lit at its centre. Everything
      yellow on this page glows — see .glow and .lit in the stylesheet. -->
 <header class="hero" id="top">
-  <!-- an oscilloscope in XY mode draws a Lissajous figure: two
-       oscillators, one per axis. The label is called Oscillator, so this
-       is the picture of the thing it is named after — see scope.js -->
-  <canvas class="scope" id="scope" aria-hidden="true"></canvas>
-
   <nav class="hero__nav" aria-label="Primary">
-    <a href="#latest">Latest</a>
-    <a href="#archive">Archive</a>
-    <a href="artists.html">Artists</a>
+    <a href="#artists">Artists</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
   </nav>
@@ -104,55 +103,26 @@
       X <b id="scope-x">3.00</b> : Y <b id="scope-y">2.00</b> &middot; &phi; <b id="scope-p">0.00</b>
     </p>
     <p class="tag">Independent techno · Tehran</p>
-    <p class="tag"><a href="#latest">Scroll <span aria-hidden="true">↓</span></a></p>
+    <p class="tag"><a href="#artists">Scroll <span aria-hidden="true">↓</span></a></p>
   </div>
 </header>
 
 <main>
 
-  <!-- ══ THE LATEST SESSION ═══════════════════════════════════════════ -->
-  <section class="sect" id="latest" aria-labelledby="latest-title">
+  <!-- ══ ARTISTS ══════════════════════════════════════════════════════
+       There is no separate archive: an artist and their session are the
+       same entry. Three of them here, the rest on artists.html. -->
+  <section class="sect" id="artists" aria-labelledby="artists-title">
     <div class="head">
-      <p class="tag">The newest session</p>
-      <h2 id="latest-title">Out now</h2>
-    </div>
-
-    <div class="latest">
-      <figure class="latest__shot">
-        <img id="latest-shot" src="img/covers/030.webp" alt=""
-             width="1100" height="1100" decoding="async">
-      </figure>
-
-      <div>
-        <p class="latest__no lit" id="latest-no">030</p>
-        <p class="latest__name" id="latest-name">—</p>
-        <div class="prose">
-          <p>
-            Every session hands the deck to another artist for its whole
-            length. Nothing is compiled and nothing is cut together from
-            parts.
-          </p>
-        </div>
-        <p class="actions">
-          <a class="btn btn--acid" id="latest-link" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen</a>
-          <a class="btn" href="#archive">The archive</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ THE ARCHIVE ══════════════════════════════════════════════════ -->
-  <section class="sect" id="archive" aria-labelledby="archive-title">
-    <div class="head">
-      <p class="tag">Every session, in order</p>
-      <h2 id="archive-title">The archive</h2>
+      <p class="tag">One artist at a time</p>
+      <h2 id="artists-title">Artists</h2>
     </div>
 
     <ol class="tiles" id="tiles"></ol>
 
     <p class="actions">
-      <a class="btn" href="artists.html">The artist index</a>
-      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">All of it on SoundCloud</a>
+      <a class="btn btn--acid" href="artists.html">All <span id="all-count">10</span> artists</a>
+      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
     </p>
   </section>
 
@@ -168,7 +138,7 @@
           <p>
             An independent techno label founded by KEYV, putting one
             artist forward at a time. Sessions go out numbered and stay
-            up — the archive is kept whole, oldest as long as newest.
+            up — the catalogue is kept whole, oldest as long as newest.
           </p>
           <p>
             Sound and artwork are made together and released together.
@@ -216,7 +186,6 @@
       <img src="img/lockup.webp" alt="Oscillator" width="1400" height="1052" loading="lazy" decoding="async">
     </p>
     <p class="foot__set">
-      <a href="#archive">Archive</a>
       <a href="artists.html">Artists</a>
       <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
@@ -250,9 +219,9 @@
   </form>
 </dialog>
 
-<script defer src="assets/js/scope.js?v=4ae6c6c3"></script>
+<script defer src="assets/js/scope.js?v=d815190f"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=79dc6135"></script>
+<script defer src="assets/js/main.js?v=b8ee9be4"></script>
 </body>
 </html>

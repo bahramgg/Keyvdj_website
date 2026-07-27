@@ -36,17 +36,23 @@
   var ACID = '254, 237, 7';
   var GROUND = '5, 5, 4';        /* --black; the decay has to match it */
 
-  /* the beam */
-  var SEGS = 70;                 /* segments drawn per frame */
-  var DT = 0.006;                /* radians of sweep per segment */
-  var DECAY = 0.075;             /* how fast the phosphor gives up */
+  /* The beam.
 
-  /* Ratios worth landing on. Small integers close into a figure that
-     holds still; anything else tumbles, which is what the drift between
-     them is for. */
+     Slow, and the tail short enough that the figure reads as one line
+     being drawn rather than as a ball of wire. At 0.042 radians a frame
+     a full period takes about two and a half seconds, and the phosphor
+     gives out after roughly two thirds of one — so there is always a
+     head, a tail, and nothing older than that on screen. */
+  var SEGS = 12;                 /* segments drawn per frame */
+  var DT = 0.0035;               /* radians of sweep per segment */
+  var DECAY = 0.016;             /* how fast the phosphor gives up */
+
+  /* Small integers only. The ratio is how many lobes the figure has, so
+     7:5 is a thicket and 3:2 is a shape — and this now sits behind the
+     whole site rather than in a box on the first screen, where a thicket
+     would fight everything set over it. */
   var RATIOS = [
-    [1, 2], [2, 3], [3, 2], [3, 4], [4, 3],
-    [5, 4], [5, 3], [1, 3], [4, 5], [5, 6], [2, 1], [7, 5]
+    [1, 2], [2, 3], [3, 2], [1, 1], [3, 4], [4, 3], [2, 1], [1, 3]
   ];
 
   var w = 0, h = 0, dpr = 1, cx = 0, cy = 0, radius = 0;
@@ -55,7 +61,7 @@
   var t = 0;                     /* beam position along the figure */
   var a = 3, b = 2;              /* live frequency ratio */
   var aTo = 3, bTo = 2;          /* where it is heading */
-  var phase = 0, phaseRate = 0.055;
+  var phase = 0, phaseRate = 0.02;
   var hold = 0;                  /* frames left before the next ratio */
 
   /* the pointer nudges the phase, so the figure leans toward the cursor
@@ -70,7 +76,9 @@
     }
     aTo = next[0];
     bTo = next[1];
-    hold = 260 + ((Math.random() * 200) | 0);
+    /* long enough to hold a closed figure still for a while before it
+       slides to the next one */
+    hold = 620 + ((Math.random() * 420) | 0);
   }
 
   /* ---- sizing ----------------------------------------------------------- */
@@ -86,9 +94,12 @@
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+    /* The canvas is fixed to the viewport rather than to the first
+       screen, so the beam runs behind the whole site. It stays centred
+       on the window as the page moves under it. */
     cx = w / 2;
-    cy = h * 0.47;               /* sits with the badge, not with the box */
-    radius = Math.min(w, h) * 0.42;
+    cy = h * 0.47;               /* sits with the badge on the first screen */
+    radius = Math.min(w, h) * 0.4;
 
     /* a resize wipes the buffer, so lay the ground back down */
     ctx.fillStyle = 'rgb(' + GROUND + ')';
@@ -138,18 +149,20 @@
     ctx.fillRect(0, 0, w, h);
 
     if (--hold <= 0) pickRatio();
-    a += (aTo - a) * 0.012;
-    b += (bTo - b) * 0.012;
+    a += (aTo - a) * 0.004;
+    b += (bTo - b) * 0.004;
     phase += phaseRate * 0.016;
     lean += (leanTo - lean) * 0.05;
 
-    /* additive, so the crossings burn rather than merely overlap */
+    /* Additive, so the crossings burn rather than merely overlap. Dimmer
+       than it was: this is behind every section now, not only behind the
+       first screen, and it has to stay under the type set over it. */
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    sweep(0.05, 7);              /* bloom */
-    sweep(0.12, 3);              /* halo */
-    sweep(0.55, 1.2);            /* the beam itself */
+    sweep(0.035, 7);             /* bloom */
+    sweep(0.09, 3);              /* halo */
+    sweep(0.42, 1.2);            /* the beam itself */
 
     /* No dot marks the head. One was drawn here and it left a speck at
        every frame's position; once the ratio drifted, those specks were
@@ -176,9 +189,9 @@
     var whole = SEGS;
     SEGS = Math.ceil(6.28318 / DT);       /* one entire period */
     t = 0;
-    sweep(0.05, 7);
-    sweep(0.12, 3);
-    sweep(0.55, 1.2);
+    sweep(0.035, 7);
+    sweep(0.09, 3);
+    sweep(0.42, 1.2);
     SEGS = whole;
   }
 

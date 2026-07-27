@@ -19,12 +19,14 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=9e8355ee">
+<link rel="stylesheet" href="assets/css/style.css?v=cb653765">
 </head>
 
 <body>
 
 <a class="skip-link" href="#roster">Skip to the list</a>
+
+<canvas class="scope" id="scope" aria-hidden="true"></canvas>
 
 <main>
   <section class="sect" aria-labelledby="roster-title">
@@ -32,7 +34,10 @@
       <p class="tag"><a href="index.html"><span aria-hidden="true">←</span> Oscillator</a></p>
       <h1 id="roster-title">Artists</h1>
       <div class="prose">
-        <p>Everyone the label has put forward, newest first.</p>
+        <p>
+          Every artist the label has put forward, newest first. An artist
+          and their session are one entry — there is no separate archive.
+        </p>
       </div>
     </div>
 
@@ -49,7 +54,6 @@
     </p>
     <p class="foot__set">
       <a href="index.html">The label</a>
-      <a href="index.html#archive">Archive</a>
       <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
     </p>
@@ -57,8 +61,9 @@
   </div>
 </footer>
 
+<script defer src="assets/js/scope.js?v=d815190f"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=79dc6135"></script>
+<script defer src="assets/js/main.js?v=b8ee9be4"></script>
 </body>
 </html>

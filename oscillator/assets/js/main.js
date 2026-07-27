@@ -1,8 +1,9 @@
 /* =============================================================
    OSCILLATOR — builds the pages from artists.js and info.js
 
-   The sleeves are the strongest thing the label owns, so the archive is
-   just them at size with the number struck in the corner. Nothing here
+   An artist and their session are one entry — there is no separate
+   archive. The sleeves are the strongest thing the label owns, so the
+   list is them at size with the number beside the name. Nothing here
    invents artwork; it places what exists.
 
    No framework, no build step.
@@ -43,7 +44,7 @@
     return img;
   }
 
-  /* ---- the archive ------------------------------------------------------ */
+  /* ---- the tile ---------------------------------------------------------- */
   function tileNode(artist) {
     var item = el('li');
     var url = safeUrl(artist.url);
@@ -68,12 +69,19 @@
     return item;
   }
 
-  function renderArchive() {
+  /* Three on the home page and the whole list on artists.html — the
+     home page is a taster, that page is the reference. */
+  var SHOWN = 3;
+
+  function renderTiles() {
     var list = document.getElementById('tiles');
     if (!list || !ARTISTS.length) return;
     var frag = document.createDocumentFragment();
-    ARTISTS.forEach(function (a) { frag.appendChild(tileNode(a)); });
+    ARTISTS.slice(0, SHOWN).forEach(function (a) { frag.appendChild(tileNode(a)); });
     list.appendChild(frag);
+
+    var all = document.getElementById('all-count');
+    if (all) all.textContent = ARTISTS.length;
   }
 
   /* ---- the roster (artists page) ----------------------------------------- */
@@ -122,21 +130,7 @@
       var node = document.getElementById(id);
       if (node) node.textContent = text;
     }
-    put('latest-no', newest.number || '');
-    put('latest-name', newest.name || '');
     put('fact-latest', (newest.number ? newest.number + ' — ' : '') + (newest.name || ''));
-
-    var shot = document.getElementById('latest-shot');
-    if (shot && newest.cover) shot.src = newest.cover;
-
-    /* the button falls back to the label's own page in the markup, so it
-       is only moved when this session has a link we trust */
-    var link = document.getElementById('latest-link');
-    var url = safeUrl(newest.url);
-    if (link && url) {
-      link.href = url;
-      link.setAttribute('aria-label', listenLabel(newest));
-    }
   }
 
   /* ---- contact dialog ----------------------------------------------------
@@ -264,7 +258,7 @@
   function boot() {
     setUpBadge();
     renderLatest();
-    renderArchive();
+    renderTiles();
     renderRoster();
     setUpContact();
 
