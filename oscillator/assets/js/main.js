@@ -85,10 +85,14 @@
     row.appendChild(el('h3', 'row__name', artist.name || ''));
     row.appendChild(el('span', 'row__go', 'Listen'));
 
-    if (peek) {
-      row.addEventListener('mouseenter', function () { peekAt(peek, artist); });
-      row.addEventListener('focus', function () { peekAt(peek, artist); });
+    /* the field behind the cover retunes to this artist's own frequency */
+    function enter() {
+      if (peek) peekAt(peek, artist);
+      var scope = window.OSCILLATOR_SCOPE;
+      if (scope) scope.retune(artist.number || artist.slug || artist.name);
     }
+    row.addEventListener('mouseenter', enter);
+    row.addEventListener('focus', enter);
 
     item.appendChild(row);
     return item;
@@ -103,9 +107,11 @@
     ARTISTS.forEach(function (a) { frag.appendChild(rowNode(a, peek)); });
     list.appendChild(frag);
 
-    if (peek) {
-      list.addEventListener('mouseleave', function () { peek.classList.remove('is-on'); });
-    }
+    list.addEventListener('mouseleave', function () {
+      if (peek) peek.classList.remove('is-on');
+      var scope = window.OSCILLATOR_SCOPE;
+      if (scope) scope.retune(null);          /* back to the label's own */
+    });
 
     var count = document.getElementById('spec-count');
     if (count) count.textContent = ARTISTS.length + ' sessions';

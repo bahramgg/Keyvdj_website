@@ -111,131 +111,74 @@ body::before {
 .btn--acid { background: var(--acid); border-color: var(--acid); color: var(--ink); }
 .btn--acid:hover { background: transparent; color: var(--acid); }
 
-/* ---- cover ---------------------------------------------------------
-   Built to the reference. A field of drawn line-work fills the window,
-   a panel is laid over it, and the name runs straight across the panel's
-   edges — set twice, so the same word is light where it crosses the
-   panel and dark where it crosses the field.
-
-   The panel's inset lives in these variables because the clip that
-   inverts the word has to use exactly the same numbers. */
+/* ---- cover ----------------------------------------------------------
+   The field is a canvas, so the type only has to stay out of its way and
+   stay readable over it. Nothing is loaded for it — see oscilloscope.js. */
 .cover {
-  --pad-x: clamp(1rem, 6vw, 6.5rem);
-  --pad-top: clamp(5rem, 12vh, 8rem);
-  --pad-bot: clamp(3.5rem, 9vh, 5.5rem);
-
   position: relative;
   min-height: 100svh;
-  background: var(--acid) url("../../img/ribbons.svg") repeat center / 1600px 1100px;
-  color: var(--ink);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  padding: clamp(1.1rem, 3vh, 2rem) var(--gutter) clamp(1.5rem, 4vh, 2.5rem);
+  background: var(--black);
   overflow: hidden;
   isolation: isolate;
 }
-
-/* the panel the composition is laid on */
-.cover__panel {
-  position: absolute;
-  inset: var(--pad-top) var(--pad-x) var(--pad-bot);
-  background: var(--black);
-}
-
-/* ---- nav: separate boxes pinned along the panel's top edge ---------- */
-.cover__nav {
-  position: absolute;
-  top: calc(var(--pad-top) - .85rem);
-  left: var(--pad-x);
-  right: var(--pad-x);
-  z-index: 3;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: .5rem;
-  padding: 0 clamp(.5rem, 3vw, 3rem);
-}
-.cover__nav a {
-  border: 1px solid var(--ink);
-  background: var(--acid);
-  color: var(--ink);
-  padding: .4rem .75rem;
-  font-size: .5625rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: background .2s var(--ease), color .2s var(--ease);
-}
-.cover__nav a:hover { background: var(--ink); color: var(--acid); }
-/* the little stalks that drop each box onto the panel */
-.cover__nav a[data-drop="1"] { margin-top: 1.6rem; }
-.cover__nav a[data-drop="2"] { margin-top: .6rem; }
-.cover__nav a[data-drop="3"] { margin-top: 2.2rem; }
-
-/* ---- the card of copy, top left ------------------------------------ */
-.cover__card {
-  position: absolute;
-  top: calc(var(--pad-top) + 2.5rem);
-  left: var(--pad-x);
-  z-index: 3;
-  width: min(34rem, 62vw);
-  padding: .9rem 1.1rem 1.1rem;
-  background: rgba(239, 239, 230, .93);
-  color: var(--ink);
-  font-size: .8125rem;
-  line-height: 1.5;
-}
-.cover__card p { margin: 0 0 .55rem; }
-.cover__card p:last-child { margin-bottom: 0; }
-.cover__card-no { font-size: .5625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; opacity: .55; }
-
-/* ---- the word -------------------------------------------------------
-   Two layers, identical in every way but colour, so they register on the
-   same pixels. The clip on the second is measured against the cover, not
-   against the text, which is the only way its edges can line up with the
-   panel's. */
-.cover__word {
+.cover__scope {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  color: var(--ink);
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-.cover__word span {
+.cover > *:not(.cover__scope) { position: relative; z-index: 2; }
+
+.cover__nav { display: flex; flex-wrap: wrap; gap: clamp(.9rem, 2.6vw, 2rem); align-self: start; }
+.cover__nav a {
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--paper);
+  transition: color .2s var(--ease);
+}
+.cover__nav a:hover { color: var(--acid); }
+
+/* the name sits on the quiet band the waves leave across the middle */
+.cover__mid { align-self: center; text-align: center; }
+.cover__word {
+  margin: 0;
   font-family: var(--font-body);
   font-weight: 700;
-  /* Must be wider than the panel or the inversion never shows: the panel
-     is ~88vw, so the word is set to run past it and off the window. */
-  font-size: 25vw;
-  line-height: .9;
-  letter-spacing: -.035em;
-  white-space: nowrap;
-}
-.cover__word--in {
-  clip-path: inset(var(--pad-top) var(--pad-x) var(--pad-bot));
+  font-size: clamp(2.4rem, 11vw, 9rem);
+  line-height: .95;
+  letter-spacing: -.04em;
   color: var(--paper);
+  /* the field runs behind it, so the letters carry their own darkness */
+  text-shadow: 0 0 clamp(1.5rem, 5vw, 4rem) rgba(0, 0, 0, .95),
+               0 0 clamp(.6rem, 2vw, 1.5rem) rgba(0, 0, 0, .9);
+}
+.cover__sub {
+  margin: .9rem 0 0;
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--acid);
+  text-shadow: 0 0 1.5rem rgba(0, 0, 0, .95);
 }
 
-/* ---- the specification, bottom right -------------------------------- */
 .cover__spec {
-  position: absolute;
-  right: calc(var(--pad-x) + clamp(.5rem, 3vw, 3rem));
-  bottom: calc(var(--pad-bot) + 2rem);
-  z-index: 3;
+  align-self: end;
   margin: 0;
-  width: min(28rem, 68vw);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem clamp(1.5rem, 5vw, 4rem);
   color: var(--paper);
 }
-.cover__spec > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: .5rem 0;
-  border-bottom: 1px solid rgba(239, 239, 230, .22);
-}
+.cover__spec > div { display: flex; align-items: baseline; gap: .6rem; }
 .cover__spec dt {
   font-size: .5625rem;
   font-weight: 700;
@@ -243,67 +186,23 @@ body::before {
   text-transform: uppercase;
   color: var(--soft);
 }
-.cover__spec dd { margin: 0; font-size: .75rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; text-align: right; }
+.cover__spec dd { margin: 0; font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 .cover__spec a { color: var(--acid); }
-
-.cover__scroll {
+/* Two classes deep on purpose: the blanket rule above is also two classes,
+   and a plain `.cover__scroll` would lose to it — leaving this `relative`,
+   which turns `right` into a leftward shift off the edge of the page. */
+.cover .cover__scroll {
   position: absolute;
-  left: calc(var(--pad-x) + clamp(.5rem, 3vw, 3rem));
-  bottom: calc(var(--pad-bot) + 2rem);
-  z-index: 3;
+  right: var(--gutter);
+  bottom: clamp(1.5rem, 4vh, 2.5rem);
+  z-index: 2;
+  margin: 0;
   color: var(--soft);
 }
 
-/* On a phone the composition cannot hold — the word has nowhere to hang
-   off and the boxes cannot spread across a top edge. But the field and
-   the panel are the design, so they stay: the panel simply wraps the
-   content in flow instead of being a stage things are placed on, and
-   the cover takes its height from what is in it rather than reserving a
-   whole screen it cannot fill. */
 @media (max-width: 720px) {
-  .cover {
-    --pad-x: .7rem;
-    --pad-top: .7rem;
-    --pad-bot: .7rem;
-    min-height: auto;
-    display: block;
-    padding: var(--pad-top) var(--pad-x) var(--pad-bot);
-  }
-  /* The panel is positioned, so it paints above anything static no matter
-     what z-index the static thing claims. The content is therefore set
-     relative — which lays out identically to static but lets z-index
-     actually apply — rather than static. */
-  .cover__panel { position: absolute; z-index: 0; }
-  .cover__nav, .cover__card, .cover__word, .cover__spec, .cover__scroll {
-    position: relative;
-    /* relative keeps the desktop offsets as displacements, so they are
-       cleared here or every block sits shifted off its own margin */
-    inset: auto;
-    z-index: 3;
-  }
-
-  .cover__nav {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding: 1.15rem 1.1rem 0;
-    gap: .4rem;
-  }
-  .cover__nav a { margin-top: 0 !important; }
-
-  .cover__card {
-    width: auto;
-    margin: 1.15rem 1.1rem 0;
-    padding: .85rem .95rem;
-  }
-
-  /* no inversion here: with the layers in flow they cannot be stacked,
-     so the word simply sits on the panel */
-  .cover__word { display: block; margin: 1.4rem 0 0; padding: 0 1.1rem; color: var(--paper); }
-  .cover__word span { font-size: 19.4vw; letter-spacing: -.03em; }
-  .cover__word--in { display: none; }
-
-  .cover__spec { width: auto; margin: 1.5rem 1.1rem 0; }
-  .cover__scroll { margin: 1.75rem 1.1rem 1.25rem; }
+  .cover__scroll { display: none; }
+  .cover__spec { gap: .3rem 1.25rem; }
 }
 
 /* ---- catalogue -----------------------------------------------------

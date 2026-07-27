@@ -32,7 +32,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=3303c80e">
+<link rel="stylesheet" href="assets/css/style.css?v=ebc61be8">
 </head>
 
 <body>
@@ -41,44 +41,29 @@
 
 <main id="top">
 
-  <!-- ══ COVER ═══════════════════════════════════════════════════════
-       Built to the reference: a field of drawn line-work, a panel laid
-       over it, and the name run right across the panel's edges so the
-       same word is light inside it and dark outside. The nav sits as
-       separate boxes pinned along the panel's top edge. -->
+  <!-- ══ COVER — the label, running ══════════════════════════════════
+       There is no image here. The field is a set of standing waves
+       solved every frame in assets/js/oscilloscope.js: the label is
+       called Oscillator, so the page is one. It answers the cursor, and
+       the archive below retunes it to whichever artist you are on. -->
   <section class="cover" aria-labelledby="cover-title">
-    <div class="cover__panel" aria-hidden="true"></div>
+    <canvas class="cover__scope" id="scope" aria-hidden="true"></canvas>
 
     <nav class="cover__nav" aria-label="Primary">
-      <a href="#top" data-drop="0">Home</a>
-      <a href="#about" data-drop="1">About</a>
-      <a href="#sessions" data-drop="2">Sessions</a>
-      <a href="artists.html" data-drop="1">Artists</a>
-      <a href="#contact" data-drop="3">Contact</a>
+      <a href="#sessions">Sessions</a>
+      <a href="artists.html">Artists</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
     </nav>
 
-    <div class="cover__card">
-      <p class="cover__card-no">/ 01</p>
-      <p>
-        Oscillator is an independent techno label founded by KEYV. Every
-        session hands the deck to another artist.
-      </p>
-      <p>Numbered, in order, with no schedule to fill.</p>
+    <div class="cover__mid">
+      <h1 class="cover__word" id="cover-title">Oscillator</h1>
+      <p class="cover__sub">Independent techno label · Tehran</p>
     </div>
 
-    <!-- The word is set twice as two identical full-size layers. Both are
-         centred on the same box, so they land on exactly the same pixels;
-         the second is clipped to the panel's rectangle, which is why the
-         letters invert precisely on its edges. Clipping has to happen on a
-         layer the size of the cover — clipping the text's own box just
-         trims the text. -->
-    <h1 class="cover__word" id="cover-title"><span>Oscillator</span></h1>
-    <div class="cover__word cover__word--in" aria-hidden="true"><span>Oscillator</span></div>
-
     <dl class="cover__spec">
+      <div><dt>Signal</dt><dd id="spec-latest">—</dd></div>
       <div><dt>Output</dt><dd id="spec-count">Sessions</dd></div>
-      <div><dt>Latest</dt><dd id="spec-latest">—</dd></div>
-      <div><dt>Based in</dt><dd>Tehran</dd></div>
       <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
     </dl>
 
@@ -179,8 +164,9 @@
   </form>
 </dialog>
 
+<script defer src="assets/js/oscilloscope.js?v=43388eac"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=2b632096"></script>
+<script defer src="assets/js/main.js?v=e8624e3c"></script>
 </body>
 </html>
