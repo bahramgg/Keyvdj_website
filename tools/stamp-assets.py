@@ -20,7 +20,8 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGES = ("index.html", "releases.html", "admin.html", "oscillator/index.html")
+PAGES = ("index.html", "releases.html", "admin.html",
+         "oscillator/index.html", "oscillator/artists.html")
 
 # href="assets/…" or src="assets/…", with or without an existing ?v=
 PATTERN = re.compile(r'(?P<attr>href|src)="(?P<path>assets/[^"?]+\.(?:css|js))(?:\?v=[0-9a-f]+)?"')

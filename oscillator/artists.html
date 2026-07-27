@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Artists · Oscillator</title>
+<meta name="description" content="Every artist Oscillator has put forward, with their work.">
+<meta name="theme-color" content="#FEED07">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Artists · Oscillator">
+<meta property="og:description" content="Every artist Oscillator has put forward, with their work.">
+<meta property="og:image" content="media/rises-poster.webp">
+
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
+
+<link rel="stylesheet" href="assets/css/style.css?v=74234b80">
+</head>
+
+<body>
+
+<a class="skip-link" href="#roster">Skip to the list</a>
+
+<header class="nav">
+  <a class="nav__mark" href="index.html" aria-label="Oscillator, home">
+    <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" decoding="async">
+    <span>Oscillator</span>
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="artists.html" aria-current="page">Artists</a>
+    <a href="index.html#about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="section" aria-labelledby="roster-title">
+    <p class="kicker">Artists</p>
+    <h1 class="title" id="roster-title">Everyone we have put forward</h1>
+
+    <ol class="roster" id="roster">
+      <!-- filled from assets/js/artists.js -->
+    </ol>
+
+    <p class="artists__after">
+      <a class="link" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
+    </p>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>© <span id="year">2026</span> Oscillator. Founded by <a href="https://keyvdj.com/">KEYV</a>.</p>
+  <p class="footer__links">
+    <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+    <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+  </p>
+</footer>
+
+<script src="assets/js/artists.js?v=9cd33205"></script>
+<script defer src="assets/js/main.js?v=bcc8059b"></script>
+</body>
+</html>

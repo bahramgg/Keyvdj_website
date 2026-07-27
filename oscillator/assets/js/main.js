@@ -1,15 +1,17 @@
 /* =============================================================
-   OSCILLATOR — renders the mix series from series.js
-   No framework, no build step, same as the main site.
+   OSCILLATOR — renders the artists from artists.js
+   The home page shows a few; artists.html shows all of them with
+   their bios. No framework, no build step.
    ============================================================= */
 
 (function () {
   'use strict';
 
-  var SERIES = Array.isArray(window.OSCILLATOR_SERIES) ? window.OSCILLATOR_SERIES : [];
+  var ARTISTS = Array.isArray(window.OSCILLATOR_ARTISTS) ? window.OSCILLATOR_ARTISTS : [];
+  var FEATURED = 4;                     // one row on desktop, two on a phone
 
-  /* Only ever build links we generated ourselves — the data file is
-     regenerated from SoundCloud, so treat its URLs as untrusted input. */
+  /* The data file is regenerated from SoundCloud, so treat its URLs as
+     untrusted input and only ever build links to hosts we expect. */
   function safeUrl(value) {
     if (typeof value !== 'string') return '';
     return /^https:\/\/(soundcloud\.com|www\.instagram\.com)\//.test(value) ? value : '';
@@ -22,68 +24,93 @@
     return node;
   }
 
-  function episodeNode(ep) {
-    var item = el('li', 'ep');
-    var url = safeUrl(ep.url);
+  function cover(artist, cls) {
+    var shot = el('div', cls);
+    if (!artist.cover) return shot;
+    var img = new Image();
+    img.src = artist.cover;
+    img.alt = '';                       // the name sits next to it
+    img.width = 700;
+    img.height = 700;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    shot.appendChild(img);
+    return shot;
+  }
 
-    var link = el(url ? 'a' : 'div', 'ep__link');
+  function listenLabel(artist) {
+    return 'Listen to ' + (artist.name || 'this artist') + ' on SoundCloud';
+  }
+
+  /* ---- home page: a few, as tiles ---------------------------------- */
+  function featuredNode(artist) {
+    var item = el('li', 'artist');
+    var url = safeUrl(artist.url);
+    var link = el(url ? 'a' : 'div', 'artist__link');
     if (url) {
       link.href = url;
       link.target = '_blank';
       link.rel = 'noopener';
-      link.setAttribute('aria-label',
-        'Listen to Oscillator ' + (ep.number ? '#' + ep.number + ' ' : '') + ep.artist + ' on SoundCloud');
+      link.setAttribute('aria-label', listenLabel(artist));
     }
+    link.appendChild(cover(artist, 'artist__shot'));
 
-    var frame = el('div', 'ep__frame');
-    if (ep.cover) {
-      var img = new Image();
-      img.src = ep.cover;
-      img.alt = '';                       // the artist name is next to it
-      img.width = 700;
-      img.height = 700;
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      frame.appendChild(img);
-    }
-    var play = el('div', 'ep__play');
-    play.setAttribute('aria-hidden', 'true');
-    play.appendChild(el('span', null, 'Listen'));
-    frame.appendChild(play);
+    var name = el('h3', 'artist__name', artist.name || '');
+    link.appendChild(name);
+    if (artist.number) link.appendChild(el('span', 'artist__no', artist.number));
 
-    /* The number is already set into the cover artwork, so it goes beside
-       the name rather than on top of it — repeating it over the image only
-       fought with the layout the covers already have. */
-    var meta = el('div', 'ep__meta');
-    if (ep.number) meta.appendChild(el('span', 'ep__no', ep.number));
-    meta.appendChild(el('h3', 'ep__artist', ep.artist || ''));
-
-    link.appendChild(frame);
-    link.appendChild(meta);
     item.appendChild(link);
     return item;
   }
 
-  function render() {
-    var grid = document.getElementById('series-grid');
-    if (grid && SERIES.length) {
-      var frag = document.createDocumentFragment();
-      SERIES.forEach(function (ep) { frag.appendChild(episodeNode(ep)); });
-      grid.appendChild(frag);
+  /* ---- artists page: all of them, with bios ------------------------ */
+  function rosterNode(artist) {
+    var row = el('li', 'roster__row');
+    var url = safeUrl(artist.url);
+
+    row.appendChild(cover(artist, 'roster__shot'));
+
+    var body = el('div', 'roster__body');
+    if (artist.number) body.appendChild(el('span', 'roster__no', artist.number));
+    body.appendChild(el('h2', 'roster__name', artist.name || ''));
+
+    /* Bios are written by hand and may not be filled in yet — an empty one
+       simply leaves the row as name plus link rather than showing a gap. */
+    if (artist.bio) body.appendChild(el('p', 'roster__bio', artist.bio));
+
+    if (url) {
+      var go = el('p', 'roster__go');
+      var link = el('a', 'link', 'Listen');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.setAttribute('aria-label', listenLabel(artist));
+      go.appendChild(link);
+      body.appendChild(go);
     }
 
-    var count = document.getElementById('hero-count');
-    if (count && SERIES.length) {
-      count.textContent = SERIES.length + ' mixes';
-    }
+    row.appendChild(body);
+    return row;
+  }
+
+  function fill(node, list, build) {
+    if (!node || !list.length) return;
+    var frag = document.createDocumentFragment();
+    list.forEach(function (artist) { frag.appendChild(build(artist)); });
+    node.appendChild(frag);
+  }
+
+  function render() {
+    fill(document.getElementById('featured-artists'), ARTISTS.slice(0, FEATURED), featuredNode);
+    fill(document.getElementById('roster'), ARTISTS, rosterNode);
 
     var year = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
   }
 
   /* The hero loop is decoration. Autoplay can be refused (low power mode,
-     data saver), and it is muted anyway, so a rejection is not an error —
-     the poster frame stays and the page is unaffected. */
+     data saver); it is muted, so a rejection is not an error — the poster
+     frame stays and nothing else is affected. */
   function primeVideo() {
     var video = document.querySelector('.hero__video');
     if (!video) return;
@@ -96,10 +123,11 @@
     if (attempt && attempt.catch) attempt.catch(function () {});
   }
 
+  function boot() { render(); primeVideo(); }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { render(); primeVideo(); });
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    render();
-    primeVideo();
+    boot();
   }
 })();
