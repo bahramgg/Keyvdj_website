@@ -218,18 +218,46 @@
      the reel opens. It runs from a class the page ships with, so it
      happens with or without this file; touching the badge plays it
      again. */
+  /* Take the intro off once it has played. A finished animation with
+     fill:both holds its subtree on a compositing layer, and the glow
+     above it is then re-blurred every frame forever — see the note by
+     .is-done in the stylesheet. */
+  function settle() {
+    document.body.classList.add('is-done');
+  }
+
+  function armIntro() {
+    document.body.classList.remove('is-done');
+    if (typeof document.getAnimations !== 'function') {
+      setTimeout(settle, 2700);
+      return;
+    }
+    /* the ring's turn runs forever, so its finished promise never
+       resolves — waiting on it would mean never settling */
+    var running = document.getAnimations().filter(function (an) {
+      var timing = an.effect && an.effect.getTiming();
+      return timing && timing.iterations !== Infinity;
+    });
+    if (!running.length) { settle(); return; }
+    Promise.all(running.map(function (an) { return an.finished; })).then(settle, settle);
+  }
+
   function setUpBadge() {
     var badge = document.getElementById('badge');
     if (!badge) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { settle(); return; }
+
+    armIntro();
 
     badge.addEventListener('click', function () {
       document.body.classList.remove('is-in');
+      document.body.classList.remove('is-done');
       /* reading a layout property forces the style change to land;
          without it the class goes off and on inside one frame and the
          animations never restart */
       void document.body.offsetWidth;
       document.body.classList.add('is-in');
+      armIntro();
     });
   }
 

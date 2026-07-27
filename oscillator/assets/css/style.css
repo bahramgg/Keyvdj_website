@@ -159,8 +159,31 @@ body::after {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(circle at 50% 46%, rgba(254, 237, 7, .12), rgba(254, 237, 7, .03) 34%, transparent 62%);
+  background: radial-gradient(circle at 50% 47%, rgba(254, 237, 7, .1), rgba(254, 237, 7, .025) 34%, transparent 62%);
 }
+
+/* the beam, behind everything — see assets/js/scope.js */
+.scope {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* A scope with no readout is a screensaver. This is the live frequency
+   ratio the beam is tracing, at the foot of the screen. */
+.readout {
+  margin: 0;
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--soft);
+  font-variant-numeric: tabular-nums;
+}
+.readout b { color: var(--acid); font-weight: 700; }
 
 .hero__nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem clamp(1rem, 3vw, 2.25rem); align-self: start; }
 .hero__nav a {
@@ -186,10 +209,23 @@ body::after {
   width: min(78vw, 30rem, 58svh);
   aspect-ratio: 1;
 }
+/* The ring's glow is drawn as geometry, not as a filter.
+
+   A CSS drop-shadow here wraps the turning text, so the browser has to
+   re-run the blur every single frame — three stacked shadows over this
+   box cost about forty frames a second on their own. A wide translucent
+   stroke under a narrow bright one costs nothing and, at this size,
+   reads the same. The filter is kept for the lockup, which holds still
+   once it has arrived and is therefore rasterised once. */
 .badge__ring { position: absolute; inset: 0; width: 100%; height: 100%; }
-.badge__ring circle { fill: none; stroke: var(--acid); stroke-width: .8; opacity: .85; }
+.badge__ring circle { fill: none; }
+.badge__ring .ring-bloom { stroke: rgba(254, 237, 7, .17); stroke-width: 3.6; }
+.badge__ring .ring-line { stroke: var(--acid); stroke-width: .8; opacity: .9; }
 .badge__ring text {
   fill: var(--acid);
+  stroke: rgba(254, 237, 7, .22);
+  stroke-width: 2.2;
+  paint-order: stroke;
   font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
@@ -218,6 +254,11 @@ body::after {
   width: 53%;
   transform: translate(-50%, -50%);
   perspective: 900px;
+  /* the lockup only, so the blur is rasterised once and not per frame */
+  filter:
+    drop-shadow(0 0 .10em rgba(254, 237, 7, .70))
+    drop-shadow(0 0 .45em rgba(254, 237, 7, .38))
+    drop-shadow(0 0 1.3em rgba(254, 237, 7, .18));
 }
 .badge__core img { width: 100%; height: auto; }
 /* a percentage margin resolves against the inline size, which is the
@@ -258,6 +299,19 @@ body::after {
 .is-in .hero__we      { animation: word-in .7s var(--ease) 1.85s both; }
 .is-in .badge__ring   { animation: ring-in 1.1s var(--ease) .75s both; transform-origin: 50% 50%; }
 .is-in .flash         { animation: flash 2.3s steps(1, end) both; }
+
+/* A finished animation with fill:both keeps its subtree on a live
+   compositing layer, and the drop-shadow above then gets re-blurred on
+   every frame for the rest of the page's life — it cost about fifteen
+   frames a second, permanently. So the intro is taken off once it has
+   played. Every base style below already is the resting state, so
+   removing the animation changes nothing on screen. The ring's turn is
+   deliberately not in this list; it never finishes, and it is cheap. */
+.is-done .badge__emblem,
+.is-done .badge__word,
+.is-done .hero__we,
+.is-done .badge__ring,
+.is-done .flash { animation: none; }
 
 /* The whole page cut to its own inverse: difference against the label's
    yellow maps black to yellow and yellow to black, so this is the

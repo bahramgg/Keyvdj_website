@@ -34,7 +34,7 @@
 <link rel="preload" as="image" href="img/emblem.webp" fetchpriority="high">
 <link rel="preload" as="image" href="img/wordmark-lit.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="assets/css/style.css?v=c0ee8898">
+<link rel="stylesheet" href="assets/css/style.css?v=9e8355ee">
 </head>
 
 <body class="is-in">
@@ -49,6 +49,10 @@
      around it, turning, and the lockup lit at its centre. Everything
      yellow on this page glows — see .glow and .lit in the stylesheet. -->
 <header class="hero" id="top">
+  <!-- an oscilloscope in XY mode draws a Lissajous figure: two
+       oscillators, one per axis. The label is called Oscillator, so this
+       is the picture of the thing it is named after — see scope.js -->
+  <canvas class="scope" id="scope" aria-hidden="true"></canvas>
 
   <nav class="hero__nav" aria-label="Primary">
     <a href="#latest">Latest</a>
@@ -61,15 +65,17 @@
   <div class="hero__mid">
     <h1 class="sr-only">Oscillator — independent techno label, Tehran</h1>
 
-    <div class="badge glow" id="badge">
+    <div class="badge" id="badge">
       <svg class="badge__ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
         <defs>
           <!-- one full circle, started at the top and running clockwise,
                so the type sets the right way up -->
           <path id="ring" d="M100,100 m0,-82 a82,82 0 1,1 -0.1,0" />
         </defs>
-        <circle cx="100" cy="100" r="93" />
-        <circle cx="100" cy="100" r="70.5" />
+        <circle class="ring-bloom" cx="100" cy="100" r="93" />
+        <circle class="ring-line"  cx="100" cy="100" r="93" />
+        <circle class="ring-bloom" cx="100" cy="100" r="70.5" />
+        <circle class="ring-line"  cx="100" cy="100" r="70.5" />
         <g class="badge__spin">
           <!-- textLength is the circle's own circumference, so the
                repeats close the loop exactly instead of leaving a gap or
@@ -94,6 +100,9 @@
   </div>
 
   <div class="hero__foot">
+    <p class="readout" aria-hidden="true">
+      X <b id="scope-x">3.00</b> : Y <b id="scope-y">2.00</b> &middot; &phi; <b id="scope-p">0.00</b>
+    </p>
     <p class="tag">Independent techno · Tehran</p>
     <p class="tag"><a href="#latest">Scroll <span aria-hidden="true">↓</span></a></p>
   </div>
@@ -241,8 +250,9 @@
   </form>
 </dialog>
 
+<script defer src="assets/js/scope.js?v=4ae6c6c3"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=b42e3a85"></script>
+<script defer src="assets/js/main.js?v=79dc6135"></script>
 </body>
 </html>
