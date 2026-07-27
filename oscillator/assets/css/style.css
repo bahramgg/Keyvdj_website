@@ -111,70 +111,164 @@ body::before {
 .btn--acid { background: var(--acid); border-color: var(--acid); color: var(--ink); }
 .btn--acid:hover { background: transparent; color: var(--acid); }
 
-/* ---- nav ------------------------------------------------------------ */
-.nav {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: .85rem var(--gutter);
-  background: linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,0));
-}
-.nav__mark img { height: 26px; width: auto; }
-.nav__set { display: flex; gap: clamp(1rem, 3vw, 2rem); }
-.nav__set a {
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: color .2s var(--ease);
-}
-.nav__set a:hover, .nav__set a[aria-current] { color: var(--acid); }
-
 /* ---- cover ---------------------------------------------------------
-   A title page, not a photograph. The label is set to the full measure
-   of the screen with the facts ranged beneath it — the one thing an
-   Instagram grid cannot show you is the label itself, at this size. */
+   Built to the reference. A field of drawn line-work fills the window,
+   a panel is laid over it, and the name runs straight across the panel's
+   edges — set twice, so the same word is light where it crosses the
+   panel and dark where it crosses the field.
+
+   The panel's inset lives in these variables because the clip that
+   inverts the word has to use exactly the same numbers. */
 .cover {
+  --pad-x: clamp(1rem, 6vw, 6.5rem);
+  --pad-top: clamp(5rem, 12vh, 8rem);
+  --pad-bot: clamp(3.5rem, 9vh, 5.5rem);
+
   position: relative;
   min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 6rem var(--gutter) clamp(4rem, 11vh, 6.5rem);
+  background: var(--acid) url("../../img/ribbons.svg") repeat center / 1600px 1100px;
+  color: var(--ink);
+  overflow: hidden;
+  isolation: isolate;
 }
-.cover__word {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  /* sized in vw so the word always runs the full measure, edge to edge */
-  font-size: 17.4vw;
-  line-height: .82;
-  letter-spacing: -.005em;
+
+/* the panel the composition is laid on */
+.cover__panel {
+  position: absolute;
+  inset: var(--pad-top) var(--pad-x) var(--pad-bot);
+  background: var(--black);
+}
+
+/* ---- nav: separate boxes pinned along the panel's top edge ---------- */
+.cover__nav {
+  position: absolute;
+  top: calc(var(--pad-top) - .85rem);
+  left: var(--pad-x);
+  right: var(--pad-x);
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: 0 clamp(.5rem, 3vw, 3rem);
+}
+.cover__nav a {
+  border: 1px solid var(--ink);
+  background: var(--acid);
+  color: var(--ink);
+  padding: .4rem .75rem;
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--paper);
+  white-space: nowrap;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.cover__nav a:hover { background: var(--ink); color: var(--acid); }
+/* the little stalks that drop each box onto the panel */
+.cover__nav a[data-drop="1"] { margin-top: 1.6rem; }
+.cover__nav a[data-drop="2"] { margin-top: .6rem; }
+.cover__nav a[data-drop="3"] { margin-top: 2.2rem; }
+
+/* ---- the card of copy, top left ------------------------------------ */
+.cover__card {
+  position: absolute;
+  top: calc(var(--pad-top) + 2.5rem);
+  left: var(--pad-x);
+  z-index: 3;
+  width: min(34rem, 62vw);
+  padding: .9rem 1.1rem 1.1rem;
+  background: rgba(239, 239, 230, .93);
+  color: var(--ink);
+  font-size: .8125rem;
+  line-height: 1.5;
+}
+.cover__card p { margin: 0 0 .55rem; }
+.cover__card p:last-child { margin-bottom: 0; }
+.cover__card-no { font-size: .5625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; opacity: .55; }
+
+/* ---- the word -------------------------------------------------------
+   Two layers, identical in every way but colour, so they register on the
+   same pixels. The clip on the second is measured against the cover, not
+   against the text, which is the only way its edges can line up with the
+   panel's. */
+.cover__word {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: var(--ink);
+}
+.cover__word span {
+  font-family: var(--font-body);
+  font-weight: 700;
+  /* Must be wider than the panel or the inversion never shows: the panel
+     is ~88vw, so the word is set to run past it and off the window. */
+  font-size: 25vw;
+  line-height: .9;
+  letter-spacing: -.035em;
   white-space: nowrap;
 }
-.cover__facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .55rem 2rem;
-  margin-top: clamp(1.5rem, 4vh, 2.5rem);
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--line);
-  font-size: .625rem;
+.cover__word--in {
+  clip-path: inset(var(--pad-top) var(--pad-x) var(--pad-bot));
+  color: var(--paper);
+}
+
+/* ---- the specification, bottom right -------------------------------- */
+.cover__spec {
+  position: absolute;
+  right: calc(var(--pad-x) + clamp(.5rem, 3vw, 3rem));
+  bottom: calc(var(--pad-bot) + 2rem);
+  z-index: 3;
+  margin: 0;
+  width: min(28rem, 68vw);
+  color: var(--paper);
+}
+.cover__spec > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid rgba(239, 239, 230, .22);
+}
+.cover__spec dt {
+  font-size: .5625rem;
   font-weight: 700;
-  letter-spacing: .24em;
+  letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--soft);
 }
-@media (min-width: 820px) { .cover__facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.cover__facts a { color: var(--acid); }
-.cover__scroll { position: absolute; right: var(--gutter); bottom: clamp(1.5rem, 4vh, 2.5rem); }
+.cover__spec dd { margin: 0; font-size: .75rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; text-align: right; }
+.cover__spec a { color: var(--acid); }
+
+.cover__scroll {
+  position: absolute;
+  left: calc(var(--pad-x) + clamp(.5rem, 3vw, 3rem));
+  bottom: calc(var(--pad-bot) + 2rem);
+  z-index: 3;
+  color: var(--soft);
+}
+
+/* On a phone there is no room for a panel with a word hanging off both
+   sides — the field goes, and the cover becomes the panel. */
+@media (max-width: 720px) {
+  .cover { --pad-x: 0rem; --pad-top: 0rem; --pad-bot: 0rem; background: var(--black); }
+  .cover__panel { display: none; }
+  .cover__nav { position: static; flex-wrap: wrap; padding: 1rem var(--gutter) 0; gap: .4rem; }
+  .cover__nav a { margin-top: 0 !important; background: transparent; border-color: rgba(239,239,230,.35); color: var(--paper); }
+  .cover__nav a:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+  .cover__card { position: static; width: auto; margin: 1.5rem var(--gutter) 0; background: none; color: var(--soft); padding: 0; }
+  .cover__word { position: static; display: block; padding: 1.5rem var(--gutter) 0; color: var(--paper); }
+  .cover__word span { font-size: 21vw; }
+  .cover__word--in { display: none; }
+  .cover__spec { position: static; width: auto; margin: 1.75rem var(--gutter) 0; }
+  .cover__scroll { position: static; margin: 2rem var(--gutter) 2.5rem; }
+}
 
 /* ---- catalogue -----------------------------------------------------
    The sessions are a list, not a grid of squares. A grid of the covers

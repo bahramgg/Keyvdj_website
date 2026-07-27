@@ -32,42 +32,57 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=ed7eeb0d">
+<link rel="stylesheet" href="assets/css/style.css?v=8d3db019">
 </head>
 
 <body>
 
 <a class="skip-link" href="#sessions">Skip to the sessions</a>
 
-<header class="nav">
-  <a class="nav__mark" href="#top" aria-label="Oscillator, top">
-    <img src="img/mark.webp" alt="" width="677" height="508" decoding="async">
-  </a>
-  <nav class="nav__set" aria-label="Primary">
-    <a href="#sessions">Sessions</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </nav>
-</header>
-
 <main id="top">
 
-  <!-- ══ COVER — type only ═══════════════════════════════════════════
-       No photograph. The artwork is square, and cropping a square to a
-       widescreen band slices its own composition apart — which is what
-       made the last hero look like a stretched Instagram post. This is
-       the label set as a title page instead. -->
+  <!-- ══ COVER ═══════════════════════════════════════════════════════
+       Built to the reference: a field of drawn line-work, a panel laid
+       over it, and the name run right across the panel's edges so the
+       same word is light inside it and dark outside. The nav sits as
+       separate boxes pinned along the panel's top edge. -->
   <section class="cover" aria-labelledby="cover-title">
-    <h1 class="cover__word" id="cover-title">Oscillator</h1>
+    <div class="cover__panel" aria-hidden="true"></div>
 
-    <ul class="cover__facts">
-      <li>Independent techno label</li>
-      <li>Tehran</li>
-      <li>Founded by <a href="https://keyvdj.com/">KEYV</a></li>
-      <li id="cover-count">Sessions</li>
-    </ul>
+    <nav class="cover__nav" aria-label="Primary">
+      <a href="#top" data-drop="0">Home</a>
+      <a href="#about" data-drop="1">About</a>
+      <a href="#sessions" data-drop="2">Sessions</a>
+      <a href="artists.html" data-drop="1">Artists</a>
+      <a href="#contact" data-drop="3">Contact</a>
+    </nav>
 
-    <p class="tag tag--soft cover__scroll">Scroll</p>
+    <div class="cover__card">
+      <p class="cover__card-no">/ 01</p>
+      <p>
+        Oscillator is an independent techno label founded by KEYV. Every
+        session hands the deck to another artist.
+      </p>
+      <p>Numbered, in order, with no schedule to fill.</p>
+    </div>
+
+    <!-- The word is set twice as two identical full-size layers. Both are
+         centred on the same box, so they land on exactly the same pixels;
+         the second is clipped to the panel's rectangle, which is why the
+         letters invert precisely on its edges. Clipping has to happen on a
+         layer the size of the cover — clipping the text's own box just
+         trims the text. -->
+    <h1 class="cover__word" id="cover-title"><span>Oscillator</span></h1>
+    <div class="cover__word cover__word--in" aria-hidden="true"><span>Oscillator</span></div>
+
+    <dl class="cover__spec">
+      <div><dt>Output</dt><dd id="spec-count">Sessions</dd></div>
+      <div><dt>Latest</dt><dd id="spec-latest">—</dd></div>
+      <div><dt>Based in</dt><dd>Tehran</dd></div>
+      <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
+    </dl>
+
+    <p class="tag cover__scroll">Scroll</p>
   </section>
 
   <!-- ══ SESSIONS — a catalogue, not a feed ═════════════════════════ -->
@@ -166,6 +181,6 @@
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=3ed1bb44"></script>
+<script defer src="assets/js/main.js?v=2b632096"></script>
 </body>
 </html>

@@ -107,8 +107,14 @@
       list.addEventListener('mouseleave', function () { peek.classList.remove('is-on'); });
     }
 
-    var count = document.getElementById('cover-count');
+    var count = document.getElementById('spec-count');
     if (count) count.textContent = ARTISTS.length + ' sessions';
+
+    var latest = document.getElementById('spec-latest');
+    var newest = ARTISTS[0];
+    if (latest && newest) {
+      latest.textContent = (newest.number ? newest.number + ' — ' : '') + (newest.name || '');
+    }
   }
 
   /* ---- roster (artists page) ---------------------------------------- */
