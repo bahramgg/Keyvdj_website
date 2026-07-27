@@ -19,7 +19,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=328d7f81">
+<link rel="stylesheet" href="assets/css/style.css?v=aa76af3c">
 </head>
 
 <body>
@@ -31,16 +31,18 @@
     <a href="index.html#about">About</a>
     <a href="artists.html" aria-current="page">Artists</a>
   </div>
-  <div class="nav__set">
+  <a class="nav__mark" href="index.html" aria-label="Oscillator, home">
+    <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" decoding="async">
+  </a>
+  <div class="nav__set nav__set--end">
     <a href="index.html#listen">Listen</a>
-    <a href="index.html#demos">Contact</a>
+    <a href="index.html#contact">Contact</a>
   </div>
 </header>
 
 <main>
   <section class="section" aria-labelledby="roster-title">
     <div class="head">
-      <p class="tag tag--soft">The roster</p>
       <h1 class="title" id="roster-title">Artists</h1>
     </div>
 
@@ -63,7 +65,9 @@
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
     </span>
   </div>
-  <p class="footer__mark" aria-hidden="true">Oscillator</p>
+  <p class="footer__mark">
+    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+  </p>
 </footer>
 
 <script src="assets/js/info.js?v=55f4d261"></script>

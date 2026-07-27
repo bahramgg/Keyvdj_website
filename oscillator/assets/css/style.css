@@ -62,21 +62,34 @@ a { color: inherit; text-decoration: none; }
 .skip-link:focus { left: 0; }
 
 
-/* ---- the ground ------------------------------------------------------
-   Not flat black: a few long, loose strokes drawn across it, thin and
-   barely lit. They are deliberately hand-shaped rather than a geometric
-   tile — a tile at this scale reads as wallpaper, which is exactly what
-   went wrong the first time. The sheet is large and fixed, so the marks
-   sit behind the page like paint on a wall instead of scrolling with it. */
+/* ---- the wall --------------------------------------------------------
+   Spray paint, not draughtsman's lines: the strokes are gestural and run
+   through a turbulence displacement so their edges are eaten the way an
+   aerosol edge is, with drips off the heavy ones and a haze of overspray.
+   Fixed behind the page, so it sits still like paint on a wall while the
+   content moves over it. */
 body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: .16;
+  background-image: url("../../img/wall.svg");
+  background-repeat: repeat;
+  background-size: 1600px 1200px;
+  background-position: center;
+}
+/* the wall is lit unevenly, so the type never sits on a bright patch */
+body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1000' viewBox='0 0 1400 1000'%3E%3Cg fill='none' stroke='%23FEED07' stroke-width='2' stroke-linecap='round' opacity='.13'%3E%3Cpath d='M-40 210c180-70 300 40 470-10s250-120 430-70 320 10 480-60'/%3E%3Cpath d='M-30 250c150-40 250 60 420 30s280-90 450-50 340 30 500-30'/%3E%3Cpath d='M120 640c210 90 330-60 520-20s300 130 470 60'/%3E%3Cpath d='M90 690c230 70 350-70 540-30s290 120 460 50'/%3E%3Cpath d='M-20 880c260-120 420 60 640 10s380-90 620-30'/%3E%3Cpath d='M300 40c60 130-40 200 30 320'/%3E%3Cpath d='M1080 120c-70 150 30 230-40 340'/%3E%3Cpath d='M660 430c90 80 20 170 90 250'/%3E%3C/g%3E%3Cg fill='none' stroke='%23FEED07' stroke-width='1.2' stroke-linecap='round' opacity='.1'%3E%3Cpath d='M-40 430c200-50 330 30 520-10s280-70 470-30 330 40 490-20'/%3E%3Cpath d='M160 60c220 40 300 150 520 130s330-70 500-20'/%3E%3Cpath d='M-30 1010c240-110 400 40 620 0s360-80 600-20'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 1400px 1000px;
-  background-position: center;
+  background:
+    radial-gradient(120% 90% at 50% 0%, transparent 30%, rgba(0,0,0,.55) 100%),
+    radial-gradient(90% 70% at 20% 100%, transparent 20%, rgba(0,0,0,.5) 100%);
 }
 
 /* ---- small technical labels ---------------------------------------- */
@@ -152,28 +165,31 @@ body::before {
 }
 .nav__set a:hover, .nav__set a[aria-current] { opacity: .55; }
 
-/* ---- hero: the logo animation, at full size ------------------------ */
+/* ---- hero ----------------------------------------------------------
+   Full bleed and exactly one screen: at anything less the next section
+   showed underneath and the two ran together. The clip covers the whole
+   frame rather than sitting in the middle of it — it is a square of mark
+   on black, so cropping it costs nothing and buys the scale. */
 .hero {
   position: relative;
-  min-height: 82svh;                  /* a screenful, not a screen and a half */
+  height: 100svh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;            /* the mark sits on the optical centre */
-  gap: clamp(1rem, 3vh, 1.75rem);
-  padding: 6rem var(--gutter) 4.5rem;
+  gap: .9rem;
+  padding: 5rem var(--gutter) clamp(3rem, 8vh, 4.5rem);
   text-align: center;
+  overflow: hidden;
 }
 .hero__video {
-  width: min(64vw, 440px);
-  /* The element's height attribute is a presentational hint, which counts
-     as a used height — and aspect-ratio is ignored unless one dimension is
-     auto. Without this the clip stayed 720px tall and pushed the strapline
-     and the scroll cue off the bottom of the screen. */
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: contain;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   mix-blend-mode: screen;             /* drops the clip's own black field */
+  pointer-events: none;
 }
 .hero__foot {
   position: absolute;
@@ -184,8 +200,8 @@ body::before {
 }
 .hero__scroll { color: var(--soft); }
 /* the strapline belongs with the mark, not pinned to a corner */
-.hero__line { margin: 0; max-width: 34ch; color: var(--soft); font-size: .875rem; }
-.hero__title { margin: 0; line-height: 0; }
+.hero__line { position: relative; margin: 0; max-width: 34ch; color: var(--soft); font-size: .875rem; }
+.hero__title { margin: 0; line-height: 0; position: static; }
 .hero__foot p { margin: 0; }
 
 .after { margin: clamp(1.5rem, 4vh, 2.5rem) 0 0; }
@@ -392,44 +408,24 @@ body::before {
 }
 .room__frame { border: 0; width: 100%; height: 320px; display: block; }
 
-/* ---- closing call ----------------------------------------------------- */
-.call { position: relative; min-height: 62svh; display: grid; place-items: center; text-align: center; overflow: hidden; }
-.call .duo { position: absolute; inset: 0; }
-/* graded right down so the panel reads dark and the type on top of it
-   stays legible — the marker blocks need a dark field to register at all */
-.call .duo img { filter: grayscale(1) contrast(1.5) brightness(.34); }
-/* the closing panel carries the mark rather than someone's portrait, so it
-   is contained and centred instead of cropped to fill */
-.call__mark { background: var(--black); display: grid; place-items: center; }
-.call__mark img {
-  width: min(56vw, 420px);
-  height: auto;
-  object-fit: contain;
-  mix-blend-mode: normal;
-  filter: none;
-  opacity: .16;
-}
-.call__inner { position: relative; padding: clamp(2.5rem, 8vh, 5rem) var(--gutter); }
-.call .statement { color: var(--paper); }
-
-/* ---- events ----------------------------------------------------------- */
-.events { border-top: 1px solid var(--line); }
-.event { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
-.event__date { font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--acid); flex: none; }
-.event__what { font-family: var(--font-display); font-size: 1.25rem; text-transform: uppercase; }
-.event__where { color: var(--soft); font-size: .8125rem; }
-.is-empty { display: none; }
-
-/* ---- roster (artists page) --------------------------------------------- */
-.roster { border-top: 1px solid var(--line); }
-.roster__row {
+/* ---- closing call ----------------------------------------------------
+   A flat acid block. A faded mark behind type was neither one thing nor
+   the other; the panel does more work as a plain field of colour. */
+.call {
+  position: relative;
   display: grid;
-  grid-template-columns: 76px 1fr;
-  gap: clamp(1rem, 3vw, 2rem);
-  align-items: center;
-  padding: clamp(.9rem, 2.5vh, 1.5rem) 0;
-  border-bottom: 1px solid var(--line);
+  place-items: center;
+  text-align: center;
+  padding: clamp(3.5rem, 12vh, 7rem) var(--gutter);
+  background: var(--acid);
+  color: var(--ink);
 }
+.call .statement { color: var(--ink); }
+/* on the accent the marker blocks invert, or they vanish into the ground */
+.call .mark { color: var(--acid); }
+.call .mark::before { background: var(--ink); }
+.call .btn { border-color: var(--ink); color: var(--ink); }
+.call .btn:hover { background: var(--ink); color: var(--acid); }
 @media (min-width: 720px) { .roster__row { grid-template-columns: 120px 1fr auto; } }
 .roster__shot { aspect-ratio: 1; }
 .roster__name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.35rem, 4vw, 2.2rem); line-height: 1; text-transform: uppercase; }
