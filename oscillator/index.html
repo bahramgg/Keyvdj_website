@@ -32,7 +32,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=2d7a5656">
+<link rel="stylesheet" href="assets/css/style.css?v=328d7f81">
 </head>
 
 <body>
@@ -44,9 +44,12 @@
     <a href="#about">About</a>
     <a href="artists.html">Artists</a>
   </div>
-  <div class="nav__set">
+  <a class="nav__mark" href="#top" aria-label="Oscillator, top">
+    <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" decoding="async">
+  </a>
+  <div class="nav__set nav__set--end">
     <a href="#listen">Listen</a>
-    <a href="#demos">Contact</a>
+    <a href="#contact">Contact</a>
   </div>
 </header>
 
@@ -62,8 +65,9 @@
       </video>
     </h1>
 
+    <p class="hero__line">An independent techno label. We put artists forward and let the work speak.</p>
+
     <div class="hero__foot">
-      <p class="tag tag--acid">Independent techno label</p>
       <p class="tag tag--soft hero__scroll">Scroll</p>
     </div>
   </section>
@@ -88,7 +92,6 @@
   <!-- ══ ARTISTS ════════════════════════════════════════════════════ -->
   <section id="artists" class="section" aria-labelledby="artists-title">
     <div class="head">
-      <p class="tag tag--soft">The roster</p>
       <h2 class="title" id="artists-title">Artists</h2>
     </div>
 
@@ -111,7 +114,7 @@
   <section id="about" class="section" aria-labelledby="about-title">
     <div class="head">
       <p class="tag tag--soft">The label</p>
-      <h2 class="title" id="about-title">Built for the floor first</h2>
+      <h2 class="title" id="about-title">Built for the floor&nbsp;first</h2>
     </div>
 
     <div class="manifest">
@@ -165,27 +168,30 @@
     </div>
   </section>
 
-  <!-- ══ DEMOS + CONTACT ════════════════════════════════════════════ -->
-  <section id="demos" class="section" aria-labelledby="demos-title">
+  <!-- ══ CONTACT — demos and everything else, one way in ═══════════ -->
+  <section id="contact" class="section" aria-labelledby="contact-title">
     <div class="head">
       <p class="tag tag--soft">Get in touch</p>
-      <h2 class="title" id="demos-title">Send us something</h2>
+      <h2 class="title" id="contact-title">Send us something</h2>
     </div>
 
     <div class="duo-col">
       <div>
-        <h3>Demos</h3>
+        <h3>Demos &amp; enquiries</h3>
         <p>
           We listen to everything that comes in. Send a private link with a
-          line about who you are — no attachments, no zip files.
+          line about who you are — no attachments, no zip files. Bookings and
+          press go to the same place.
         </p>
-        <p class="duo-col__links" id="demo-links"></p>
+        <p class="duo-col__links">
+          <button class="btn btn--acid" type="button" id="contact-open">Email us</button>
+          <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+        </p>
       </div>
       <div>
-        <h3>Contact</h3>
-        <p>Bookings, press and anything else about the label.</p>
+        <h3>Elsewhere</h3>
+        <p>Every mix the label has put out, numbered and archived.</p>
         <p class="duo-col__links">
-          <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
           <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
         </p>
       </div>
@@ -194,8 +200,8 @@
 
   <!-- ══ CLOSING CALL ═══════════════════════════════════════════════ -->
   <section class="call" aria-label="Listen">
-    <figure class="duo">
-      <img src="img/covers/030.webp" alt="" width="700" height="700" loading="lazy" decoding="async">
+    <figure class="duo call__mark">
+      <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" loading="lazy" decoding="async">
     </figure>
     <div class="call__inner">
       <p class="statement statement--sm">
@@ -216,11 +222,38 @@
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
     </span>
   </div>
-  <p class="footer__mark" aria-hidden="true">Oscillator</p>
+  <p class="footer__mark">
+    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+  </p>
 </footer>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
-<script src="assets/js/info.js?v=4dde8eaf"></script>
-<script defer src="assets/js/main.js?v=9a580ced"></script>
+<script src="assets/js/info.js?v=55f4d261"></script>
+<script defer src="assets/js/main.js?v=4ec1b0e6"></script>
+<dialog class="modal" id="contact-modal" aria-labelledby="modal-title">
+  <form class="modal__in" id="contact-form" novalidate>
+    <div class="modal__head">
+      <h2 id="modal-title">Get in touch</h2>
+      <button class="modal__x" type="button" id="contact-close" aria-label="Close">&times;</button>
+    </div>
+
+    <label class="field">
+      <span>Name</span>
+      <input type="text" name="name" autocomplete="name" required>
+    </label>
+    <label class="field">
+      <span>Email</span>
+      <input type="email" name="email" autocomplete="email" required>
+    </label>
+    <label class="field">
+      <span>Message</span>
+      <textarea name="message" rows="5" required placeholder="Demo link, booking, press…"></textarea>
+    </label>
+
+    <button class="btn btn--acid" type="submit">Send</button>
+    <p class="modal__note" id="contact-note" role="status" aria-live="polite"></p>
+  </form>
+</dialog>
+
 </body>
 </html>

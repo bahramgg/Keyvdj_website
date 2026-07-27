@@ -10,7 +10,6 @@
   var ARTISTS = Array.isArray(window.OSCILLATOR_ARTISTS) ? window.OSCILLATOR_ARTISTS : [];
   var INFO = window.OSCILLATOR_INFO || {};
   var FEATURED = 6;                     // two rows of three on a wide screen
-  var INSTAGRAM = 'https://www.instagram.com/oscillator__';
 
   /* The data file is regenerated from SoundCloud, so treat its URLs as
      untrusted input and only ever build links to hosts we expect. */
@@ -64,12 +63,12 @@
 
     var spec = el('div', 'spec');
     /* Only facts we actually hold — the reference lists runtime and a
-       pressing date, neither of which exists for these. */
+       pressing date, neither of which exists for these. Where it lives is
+       not a fact worth a row of its own; the Listen button says it. */
     [
       ['Artist', artist.name || ''],
       ['Mix', artist.number ? 'No. ' + artist.number : ''],
-      ['Format', 'DJ mix · digital'],
-      ['Where', 'SoundCloud']
+      ['Format', 'DJ mix · digital']
     ].forEach(function (pair) {
       if (!pair[1]) return;
       var row = el('div', 'spec__row');
@@ -86,8 +85,8 @@
       left.appendChild(go);
     }
 
+    host.appendChild(duotone(artist, 'release__shot'));   /* artwork leads */
     host.appendChild(left);
-    host.appendChild(duotone(artist, 'release__shot'));
   }
 
   /* ---- artist cards ------------------------------------------------- */
@@ -95,6 +94,10 @@
     var item = el('li');
     var url = safeUrl(artist.url);
     var card = url ? externalLink('card', null, url, listenLabel(artist)) : el('div', 'card');
+
+    /* the cover sits behind the card, knocked back — the name is what
+       should be read, the picture is there as texture */
+    card.appendChild(duotone(artist, 'card__shot'));
 
     var top = el('div', 'card__top');
     top.appendChild(el('span', 'tag', artist.number ? '— ' + artist.number : '—'));
@@ -181,20 +184,82 @@
     band.classList.remove('is-empty');
   }
 
-  /* ---- demos --------------------------------------------------------- */
-  function renderDemos() {
-    var host = document.getElementById('demo-links');
-    if (!host) return;
+  /* ---- contact dialog -------------------------------------------------
+     One button for demos, bookings and press alike. The form composes a
+     message and hands it to whichever route is configured: a Formspree
+     endpoint if there is one, otherwise the mail client. With neither
+     set it says so instead of pretending to have sent anything. */
+  function isEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
 
-    /* Only print an address if there is one — otherwise point at the DMs,
-       which always reach someone. */
-    var email = typeof INFO.demoEmail === 'string' ? INFO.demoEmail.trim() : '';
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      var mail = el('a', 'btn btn--acid', email);
-      mail.href = 'mailto:' + email + '?subject=' + encodeURIComponent('Demo — Oscillator');
-      host.appendChild(mail);
+  function setUpContact() {
+    var open = document.getElementById('contact-open');
+    var modal = document.getElementById('contact-modal');
+    var form = document.getElementById('contact-form');
+    var note = document.getElementById('contact-note');
+    var close = document.getElementById('contact-close');
+    if (!open || !modal || !form) return;
+
+    var endpoint = typeof INFO.formspreeEndpoint === 'string' ? INFO.formspreeEndpoint.trim() : '';
+    var address = typeof INFO.contactEmail === 'string' ? INFO.contactEmail.trim() : '';
+
+    function say(text, bad) {
+      if (!note) return;
+      note.textContent = text;
+      note.setAttribute('data-state', bad ? 'bad' : 'ok');
     }
-    host.appendChild(externalLink('btn', 'Instagram DM', INSTAGRAM));
+
+    open.addEventListener('click', function () {
+      say('');
+      if (typeof modal.showModal === 'function') modal.showModal();
+      else modal.setAttribute('open', '');       /* very old browsers */
+    });
+
+    if (close) {
+      close.addEventListener('click', function () {
+        if (typeof modal.close === 'function') modal.close();
+        else modal.removeAttribute('open');
+      });
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var data = new FormData(form);
+      var name = (data.get('name') || '').toString().trim();
+      var email = (data.get('email') || '').toString().trim();
+      var message = (data.get('message') || '').toString().trim();
+
+      if (!name || !message) { say('Add your name and a message.', true); return; }
+      if (!isEmail(email)) { say('That email does not look right.', true); return; }
+
+      if (/^https:\/\/formspree\.io\//.test(endpoint)) {
+        say('Sending…');
+        fetch(endpoint, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: data
+        }).then(function (res) {
+          if (!res.ok) throw new Error('rejected');
+          form.reset();
+          say('Sent. We will come back to you.');
+        }).catch(function () {
+          say('That did not send. Try Instagram instead.', true);
+        });
+        return;
+      }
+
+      if (isEmail(address)) {
+        var body = 'From: ' + name + ' <' + email + '>\n\n' + message;
+        window.location.href = 'mailto:' + address +
+          '?subject=' + encodeURIComponent('Oscillator — ' + name) +
+          '&body=' + encodeURIComponent(body);
+        say('Opening your mail app…');
+        return;
+      }
+
+      say('No address is set yet — reach us on Instagram for now.', true);
+    });
   }
 
   function fill(node, list, build) {
@@ -210,7 +275,7 @@
     renderRelease();
     renderRoom();
     renderEvents();
-    renderDemos();
+    setUpContact();
 
     var year = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();

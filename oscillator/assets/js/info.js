@@ -5,10 +5,13 @@
 
 window.OSCILLATOR_INFO = {
 
-  /* Where demos should go. Leave the address empty and the demo section
-     falls back to pointing people at the Instagram DMs, which always
-     works — better than printing an address that does not exist. */
-  demoEmail: "",
+  /* Where the contact form goes. Set ONE of these:
+       formspreeEndpoint — create a form at https://formspree.io and paste
+         the endpoint; the message is posted without leaving the page.
+       contactEmail — the form opens the sender's mail client instead.
+     With neither set the form says so rather than pretending to send. */
+  formspreeEndpoint: "",
+  contactEmail: "",
 
   /* Add shows here and the Events section appears. Leave it empty and the
      whole section removes itself rather than sitting there saying "no
