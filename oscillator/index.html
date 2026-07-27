@@ -32,7 +32,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=ef09b1b9">
+<link rel="stylesheet" href="assets/css/style.css?v=06759809">
 </head>
 
 <body>
@@ -50,64 +50,70 @@
 </svg>
 
 <!-- ══ THE FIRST SCREEN ═══════════════════════════════════════════════
-     A sleeve at the size of the window. Registration brackets on the
-     frame, the rail down the right with its type on its side, the
-     wordmark as large as it will go with its own reflection beneath it —
-     which is the move the sleeves make with every artist's name. -->
+     The sleeve formula at the size of the window, nothing invented: a
+     hard vertical split, the newest session's artwork bled to the edge
+     on the left, and a slab of acid on the right carrying black type —
+     the name against its own mirror, the emblem and the number in cut
+     boxes at the foot, the wordmark beneath them. -->
 <section class="hero" id="top" aria-labelledby="hero-title">
-  <span class="frame frame--in marks" aria-hidden="true"></span>
 
-  <nav class="hero__nav" aria-label="Primary">
-    <a href="#archive">Archive</a>
-    <a href="artists.html">Artists</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </nav>
+  <div class="hero__plate">
+    <img class="hero__cover" id="hero-cover" src="img/plates/030.webp" alt=""
+         width="1100" height="1100" fetchpriority="high" decoding="async">
+    <span class="frame frame--in marks" aria-hidden="true"></span>
 
-  <div class="hero__rail">
-    <p class="hero__spine">Independent techno label · Tehran · EST. KEYV</p>
+    <nav class="hero__nav" aria-label="Primary">
+      <a href="#archive">Archive</a>
+      <a href="artists.html">Artists</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
 
-    <!-- the label's emblem: the chamfered bar and its four dotted nodes,
-         redrawn so it can be set at any size without going soft -->
-    <svg class="hero__node" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
-      <path d="M8 30 L14 24 H106 L112 30 V50 L106 56 H14 L8 50 Z"
-            fill="none" stroke="#FEED07" stroke-width="7"/>
-      <g fill="#FEED07">
-        <circle cx="52" cy="32" r="15"/><circle cx="68" cy="32" r="15"/>
-        <circle cx="52" cy="60" r="15"/><circle cx="68" cy="60" r="15"/>
-      </g>
-      <g fill="#000000">
-        <circle cx="52" cy="32" r="9"/><circle cx="68" cy="32" r="9"/>
-        <circle cx="52" cy="60" r="9"/><circle cx="68" cy="60" r="9"/>
-      </g>
-      <g fill="#FEED07">
-        <circle cx="52" cy="32" r="2.6"/><circle cx="68" cy="32" r="2.6"/>
-        <circle cx="52" cy="60" r="2.6"/><circle cx="68" cy="60" r="2.6"/>
-      </g>
-    </svg>
+    <!-- the number is struck once, in the slab's box, exactly as the
+         sleeves do it — so this carries only who it is -->
+    <p class="hero__cred">
+      <b>Latest</b> <span id="hero-name">—</span>
+    </p>
   </div>
 
-  <div class="hero__stage">
-    <p class="hero__say">A label from Tehran that puts forward <b>one artist at a time</b>.</p>
-    <h1 class="hero__word" id="hero-title">
+  <aside class="rail">
+    <span class="frame frame--in marks marks--ink" aria-hidden="true"></span>
+
+    <h1 class="rail__name" id="hero-title">
       <span class="sr-only">Oscillator</span>
-      <span class="hero__wordin">
-        <img src="img/wordmark.webp" alt="" width="1600" height="470" fetchpriority="high" decoding="async">
-        <span class="hero__echo" aria-hidden="true">
-          <img src="img/wordmark.webp" alt="" width="1600" height="470" decoding="async">
-        </span>
+      <span class="rail__set" aria-hidden="true">
+        <span>Oscillator</span>
+        <span class="rail__mirror">Oscillator</span>
       </span>
     </h1>
-  </div>
 
-  <div class="hero__foot">
-    <span class="hero__latest">
-      <span class="tag">Latest</span>
-      <span class="notch"><span id="hero-no">030</span></span>
-      <strong id="hero-name">—</strong>
-    </span>
-    <a class="tag hero__scroll" href="#archive">Scroll <span aria-hidden="true">↓</span></a>
-  </div>
+    <div class="rail__foot">
+      <span class="rail__set--boxes">
+        <span class="notch notch--ink"><span>
+          <svg class="rail__emblem" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
+            <path d="M8 30 L14 24 H106 L112 30 V50 L106 56 H14 L8 50 Z"
+                  fill="none" stroke="#000" stroke-width="7"/>
+            <g fill="#000">
+              <circle cx="52" cy="32" r="15"/><circle cx="68" cy="32" r="15"/>
+              <circle cx="52" cy="60" r="15"/><circle cx="68" cy="60" r="15"/>
+            </g>
+            <g fill="#FFFD01">
+              <circle cx="52" cy="32" r="9"/><circle cx="68" cy="32" r="9"/>
+              <circle cx="52" cy="60" r="9"/><circle cx="68" cy="60" r="9"/>
+            </g>
+            <g fill="#000">
+              <circle cx="52" cy="32" r="2.6"/><circle cx="68" cy="32" r="2.6"/>
+              <circle cx="52" cy="60" r="2.6"/><circle cx="68" cy="60" r="2.6"/>
+            </g>
+          </svg>
+        </span></span>
+        <span class="notch notch--ink"><span id="hero-count">030</span></span>
+      </span>
+
+      <img class="rail__mark" src="img/wordmark.webp" alt=""
+           width="1600" height="470" decoding="async">
+    </div>
+  </aside>
 </section>
 
 <main>
@@ -138,12 +144,12 @@
   </section>
 
   <!-- ══ ABOUT ═══════════════════════════════════════════════════════ -->
-  <section class="plate" id="about" aria-labelledby="about-title">
-    <span class="frame marks" aria-hidden="true"></span>
+  <section class="plate plate--acid" id="about" aria-labelledby="about-title">
+    <span class="frame marks marks--ink" aria-hidden="true"></span>
 
     <div class="plate__head">
       <p class="tag">The label</p>
-      <h2 class="ttl ttl--acid echo" id="about-title" data-echo="About">About</h2>
+      <h2 class="ttl echo" id="about-title" data-echo="About">About</h2>
     </div>
 
     <div class="prose">
@@ -231,6 +237,6 @@
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=24e539e6"></script>
+<script defer src="assets/js/main.js?v=552fb01c"></script>
 </body>
 </html>

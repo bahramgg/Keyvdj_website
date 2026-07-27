@@ -21,14 +21,20 @@
    ============================================================= */
 
 :root {
-  --acid: #FEED07;            /* sampled from the label's own wordmark */
+  /* Two yellows, both measured off the artwork. The wordmark is drawn in
+     the first; the slabs are flooded with the second, which is hotter
+     and purer. Using the wordmark's yellow for a whole field reads dull
+     next to the real thing. */
+  --acid: #FEED07;            /* the wordmark's own */
+  --flood: #FFFD01;           /* the slabs */
   --black: #000000;
-  --ink: #0A0A00;             /* type on the accent */
+  --ink: #000000;             /* type on a slab */
   --paper: #EFEFE6;
   --soft: #74746A;
   --line: #212119;
 
   --gutter: clamp(1.1rem, 3.5vw, 3.25rem);
+  --rail: clamp(6.5rem, 21vw, 15rem);
   --font-display: "Anton", "Arial Narrow", sans-serif;
   --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -116,13 +122,16 @@ body::after {
 .frame--in { inset: clamp(.7rem, 1.8vh, 1.25rem); }
 
 .marks {
-  --arm: clamp(13px, 2vw, 24px);
-  --gauge: 2px;
+  /* thick, the way they are struck on the sleeves — a hairline bracket
+     reads as a browser artefact rather than as a mark */
+  --arm: clamp(16px, 2.4vw, 30px);
+  --gauge: 3px;
+  --mark: var(--acid);
   background-image:
-    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid)),
-    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid)),
-    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid)),
-    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid));
+    linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark)),
+    linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark)),
+    linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark)),
+    linear-gradient(var(--mark), var(--mark)), linear-gradient(var(--mark), var(--mark));
   background-size:
     var(--gauge) var(--arm), var(--arm) var(--gauge),
     var(--gauge) var(--arm), var(--arm) var(--gauge),
@@ -135,6 +144,8 @@ body::after {
     right bottom, right bottom;
   background-repeat: no-repeat;
 }
+/* on a slab the brackets are struck in black, as they are on the rails */
+.marks--ink { --mark: var(--black); }
 
 /* ---- a box with its corners cut -------------------------------------
    Two layers: clip-path takes the border with it, so the outline has to
@@ -156,6 +167,9 @@ body::after {
   font-variant-numeric: tabular-nums;
   color: var(--acid);
 }
+/* the same box struck on a slab: black outline, slab showing through */
+.notch--ink { background: var(--black); }
+.notch--ink > * { background: var(--flood); color: var(--ink); }
 
 /* ---- the mirrored name ----------------------------------------------
    The move that runs through every sleeve: the name, then the name
@@ -230,127 +244,119 @@ body::after {
 .btn--acid:hover > span { background: var(--black); color: var(--acid); }
 
 /* =============================================================
-   THE FIRST SCREEN — a sleeve at the size of the window
+   THE FIRST SCREEN — the sleeve formula, at the size of the window
 
-   Everything the sleeves do, at full scale: brackets on the frame, the
-   rail down the right with its type on its side, the wordmark set as
-   large as it will go with its own reflection under it, and the number
-   of the newest session in a cut box.
+   Every sleeve is the same composition and this is that composition,
+   nothing invented: a hard vertical split, the artwork bled to the edge
+   on the left, and on the right a slab of acid carrying black type —
+   the name set vertically and mirrored against itself, the emblem and
+   the number in cut boxes at its foot, the wordmark under them.
+
+   Measured off the artwork: the slab takes about a quarter of the
+   width, the two panels are parted by a black gutter, and nothing is
+   inset from the edge of the sheet.
    ============================================================= */
 .hero {
-  position: relative;
-  min-height: 100svh;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) var(--rail);
+  gap: 5px;                      /* the black parting on every sleeve */
+  min-height: 100svh;
+  background: var(--black);
+}
+
+/* ---- the artwork ------------------------------------------------------ */
+.hero__plate {
+  position: relative;
+  overflow: hidden;
+  display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: clamp(1rem, 3vh, 2rem);
-  padding: clamp(1rem, 2.6vh, 1.75rem) var(--gutter);
+  gap: 1rem;
+  padding: clamp(1rem, 2.6vw, 2rem);
+}
+.hero__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+/* the artwork is busy, so the type over it gets its own ground rather
+   than a shadow — the sleeves never soften an edge */
+.hero__plate > *:not(.hero__cover) { position: relative; z-index: 2; }
+
+.hero__nav { display: flex; flex-wrap: wrap; gap: 3px; align-self: start; }
+.hero__nav a {
+  padding: .5rem .8rem;
+  background: var(--black);
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--paper);
+  transition: background .16s var(--ease), color .16s var(--ease);
+}
+.hero__nav a:hover, .hero__nav a[aria-current] { background: var(--flood); color: var(--ink); }
+
+.hero__cred {
+  align-self: end;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0;
+  padding: .55rem .8rem;
+  background: var(--black);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.hero__cred b { color: var(--acid); font-variant-numeric: tabular-nums; }
+
+/* ---- the slab --------------------------------------------------------- */
+.rail {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: .75rem;
+  padding: clamp(.75rem, 1.6vw, 1.25rem) clamp(.4rem, 1vw, .85rem);
+  background: var(--flood);
+  color: var(--ink);
   overflow: hidden;
 }
-.hero__nav { grid-column: 1; display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; align-self: start; }
-.hero__nav a {
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--paper);
-  transition: color .18s var(--ease);
-}
-.hero__nav a:hover, .hero__nav a[aria-current] { color: var(--acid); }
 
-/* ---- the rail --------------------------------------------------------
-   Reads bottom-to-top like the name on a spine, and like the rail on
-   every sleeve it ends with the emblem. */
-.hero__rail {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  display: grid;
-  justify-items: center;
-  align-content: space-between;
-  gap: 1rem;
-  padding-left: clamp(.75rem, 2vw, 1.5rem);
-  border-left: 1px solid var(--line);
-}
-.hero__spine {
+/* the name and its mirror, two columns of vertical type set against
+   each other — the move on every sleeve in the catalogue */
+.rail__name { margin: 0; display: grid; place-items: center; min-height: 0; }
+.rail__set { display: flex; justify-content: center; }
+.rail__set span {
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  margin: 0;
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .34em;
+  transform: rotate(180deg);     /* so it reads from the foot upward */
+  font-family: var(--font-display);
+  /* Taken from the slab rather than picked, so the pair always fits it.
+     A third each and not a half: set on its side, a line box is wider
+     than the nominal size, and at .42 the two columns ran over the
+     slab's edges and into each other. */
+  font-size: calc(var(--rail) * .33);
+  line-height: 1;
+  letter-spacing: .01em;
   text-transform: uppercase;
-  color: var(--acid);
   white-space: nowrap;
 }
-.hero__node {
-  width: clamp(1.5rem, 3vw, 2.25rem);
-  aspect-ratio: 1;
-  opacity: .85;
-}
+.rail__set .rail__mirror { transform: rotate(180deg) scaleX(-1); }
 
-/* ---- the wordmark ---------------------------------------------------- */
-.hero__stage {
-  grid-column: 1;
-  grid-row: 2;
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: clamp(1rem, 3vh, 2rem);
-  min-height: 0;
-}
-/* The reflection is taken out of flow, so the block reserves its room
-   here — the wordmark is 1600x470, so a full-height mirror is another
-   29% of the width, and the mask leaves about two thirds of it visible.
-   Without this the strapline printed straight over the reflection. */
-.hero__word { width: min(100%, 60rem); padding-bottom: 19%; }
-.hero__wordin { position: relative; display: block; }
-.hero__word img { width: 100%; height: auto; }
-/* the reflection, exactly as the sleeves set it under a name */
-.hero__echo {
-  position: absolute;
-  top: 100%;
-  left: 0;
+.rail__foot { display: grid; justify-items: center; gap: .55rem; }
+.rail__set--boxes { display: flex; gap: .4rem; align-items: center; }
+.rail__emblem { display: block; width: 1.6rem; height: auto; }
+.rail__mark {
   width: 100%;
-  opacity: .3;
-  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 62%);
-  mask-image: linear-gradient(to bottom, #000, transparent 62%);
-  pointer-events: none;
+  height: auto;
+  /* the wordmark ships in its own yellow; on a slab it has to be black,
+     and brightness(0) takes every opaque pixel there without needing a
+     second file */
+  filter: brightness(0);
 }
-.hero__echo img { transform: scaleY(-1); }
-
-.hero__say {
-  margin: 0;
-  max-width: 26ch;
-  font-size: clamp(.9375rem, 1.5vw, 1.25rem);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -.01em;
-  color: var(--paper);
-}
-.hero__say b { color: var(--acid); font-weight: 700; }
-
-/* ---- the foot of the first screen ------------------------------------ */
-.hero__foot {
-  grid-column: 1;
-  grid-row: 3;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .75rem clamp(1rem, 3vw, 2.5rem);
-  align-self: end;
-}
-.hero__latest { display: flex; align-items: center; gap: .75rem; }
-.hero__latest .tag { color: var(--soft); }
-.hero__latest strong { font-size: .8125rem; font-weight: 700; letter-spacing: .04em; }
-.hero__scroll { margin-left: auto; }
-.hero__back:hover { color: var(--acid); }
-
-/* the artists page has a list to get to, so its first screen is cut to
-   the frame, the rail and the title */
-.hero--short { min-height: 52svh; }
-/* the title's reflection lands in this gap, so it is set from the
-   reflection's height rather than picked to look right */
-.hero--short .hero__stage { gap: clamp(2.5rem, 6vh, 4rem); }
 
 /* =============================================================
    SECTIONS — each one a framed plate, the way each sleeve is
@@ -360,6 +366,24 @@ body::after {
   margin: clamp(2rem, 6vh, 4.5rem) var(--gutter);
   padding: clamp(1.75rem, 5vh, 3.25rem) clamp(1.25rem, 3.5vw, 3rem);
 }
+/* A slab, the way a sleeve floods its rail: acid ground, black type. The
+   grid alternates black plates and acid ones and the site has to as
+   well, or the yellow reads as trim rather than as a ground. */
+.plate--acid {
+  background: var(--flood);
+  color: var(--ink);
+}
+.plate--acid .ttl,
+.plate--acid .tag,
+.plate--acid .prose { color: var(--ink); }
+.plate--acid .facts { background: var(--ink); border-color: var(--ink); }
+.plate--acid .facts > div { background: var(--flood); }
+.plate--acid .facts dt { color: #4A4700; }
+.plate--acid .facts a { color: var(--ink); text-decoration: underline; }
+.plate--acid .btn { background: var(--ink); }
+.plate--acid .btn > span { background: var(--flood); color: var(--ink); }
+.plate--acid .btn:hover > span { background: var(--ink); color: var(--flood); }
+
 .plate__head { margin-bottom: clamp(1.75rem, 5vh, 3rem); }
 .plate__head .tag { margin-bottom: .9rem; }
 .ttl {
@@ -503,23 +527,21 @@ body::after {
    NARROW — the rail cannot survive, so the sleeve moves into the rows
    ============================================================= */
 @media (max-width: 860px) {
-  .hero { grid-template-columns: minmax(0, 1fr); }
-  .hero__rail {
-    grid-column: 1;
-    grid-row: 3;
-    grid-auto-flow: column;
-    justify-content: space-between;
-    align-items: center;
-    justify-items: stretch;
-    padding-left: 0;
-    padding-top: 1rem;
-    border-left: 0;
-    border-top: 1px solid var(--line);
-  }
-  /* on its side it would be a column of one letter per line at 320px */
-  .hero__spine { writing-mode: horizontal-tb; transform: none; letter-spacing: .22em; font-size: .5625rem; white-space: normal; }
-  .hero__foot { grid-row: 4; }
-  .hero__scroll { display: none; }
+  /* The split stays. A phone held upright is closer to a sleeve's own
+     proportions than a desktop window is, so collapsing the slab into a
+     band underneath — which is what this used to do — threw away the
+     one composition the label actually has. */
+  .hero { --rail: clamp(5rem, 26vw, 8rem); }
+  .hero__plate { padding: clamp(.7rem, 2.4vw, 1.1rem); }
+  .hero__nav { flex-direction: column; align-items: flex-start; }
+  .hero__nav a { padding: .4rem .6rem; font-size: .5625rem; letter-spacing: .16em; }
+  .hero__cred { font-size: .5625rem; padding: .45rem .6rem; }
+  .rail__emblem { width: 1.1rem; }
+
+  /* Side by side the emblem and the number are wider than a slab this
+     narrow, and the slab clips rather than scrolls, so the overrun is
+     silent — they stack instead. */
+  .rail__set--boxes { flex-direction: column; }
 
   .cat { grid-template-columns: minmax(0, 1fr); }
   .cat__sleeve { display: none; }

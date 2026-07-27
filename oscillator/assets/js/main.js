@@ -59,6 +59,13 @@
     return 'Listen to ' + (artist.name || 'this artist') + ' on SoundCloud';
   }
 
+  /* The first screen is the sleeve composition rebuilt in HTML, so it
+     needs the photograph without the sleeve's own rail — tools/crop-
+     plates.py cuts those and leaves them alongside the covers. */
+  function plateFor(artist) {
+    return (artist.cover || '').replace('/covers/', '/plates/');
+  }
+
   /* the outlined button is two nested clipped boxes, so its label has to
      live one level down rather than directly on the element */
   function button(tag, cls, text) {
@@ -180,14 +187,16 @@
     var newest = ARTISTS[0];
     var count = document.getElementById('fact-count');
     var latest = document.getElementById('fact-latest');
-    var heroNo = document.getElementById('hero-no');
     var heroName = document.getElementById('hero-name');
+    var heroCount = document.getElementById('hero-count');
+    var heroCover = document.getElementById('hero-cover');
 
     if (count) count.textContent = ARTISTS.length || '—';
     if (!newest) return;
 
-    if (heroNo) heroNo.textContent = newest.number || '';
+    if (heroCount) heroCount.textContent = newest.number || '';
     if (heroName) heroName.textContent = newest.name || '';
+    if (heroCover && newest.cover) heroCover.src = plateFor(newest);
     if (latest) {
       latest.textContent = (newest.number ? newest.number + ' — ' : '') + (newest.name || '');
     }
