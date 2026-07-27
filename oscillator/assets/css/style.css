@@ -43,8 +43,8 @@
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 body {
   margin: 0;
-  background: var(--yellow);
-  color: var(--ink);
+  background: var(--black);
+  color: var(--paper);
   font-family: var(--font-body);
   font-size: .9375rem;
   line-height: 1.6;
@@ -169,6 +169,16 @@ a { color: inherit; }
 /* two sections sharing one band would otherwise stack their padding into
    an obvious hole between them */
 .band > .section + .section { padding-top: 0; }
+
+/* ---- the two grounds ------------------------------------------------
+   Flat, both of them. The yellow is loud enough that using it as the
+   page's ground is tiring to read against, so it is kept for a single
+   band and for small type, and the artwork carries the page instead. */
+.band--ink { background: var(--black); color: var(--paper); }
+.band--sun { background: var(--yellow); color: var(--ink); }
+.band--sun .artist__no,
+.band--sun .roster__no,
+.band--sun .roster__bio { color: var(--ink-soft); }
 
 .kicker {
   margin: 0 0 .6rem;
