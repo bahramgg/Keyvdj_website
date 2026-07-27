@@ -254,20 +254,56 @@ body::before {
   color: var(--soft);
 }
 
-/* On a phone there is no room for a panel with a word hanging off both
-   sides — the field goes, and the cover becomes the panel. */
+/* On a phone the composition cannot hold — the word has nowhere to hang
+   off and the boxes cannot spread across a top edge. But the field and
+   the panel are the design, so they stay: the panel simply wraps the
+   content in flow instead of being a stage things are placed on, and
+   the cover takes its height from what is in it rather than reserving a
+   whole screen it cannot fill. */
 @media (max-width: 720px) {
-  .cover { --pad-x: 0rem; --pad-top: 0rem; --pad-bot: 0rem; background: var(--black); }
-  .cover__panel { display: none; }
-  .cover__nav { position: static; flex-wrap: wrap; padding: 1rem var(--gutter) 0; gap: .4rem; }
-  .cover__nav a { margin-top: 0 !important; background: transparent; border-color: rgba(239,239,230,.35); color: var(--paper); }
-  .cover__nav a:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
-  .cover__card { position: static; width: auto; margin: 1.5rem var(--gutter) 0; background: none; color: var(--soft); padding: 0; }
-  .cover__word { position: static; display: block; padding: 1.5rem var(--gutter) 0; color: var(--paper); }
-  .cover__word span { font-size: 21vw; }
+  .cover {
+    --pad-x: .7rem;
+    --pad-top: .7rem;
+    --pad-bot: .7rem;
+    min-height: auto;
+    display: block;
+    padding: var(--pad-top) var(--pad-x) var(--pad-bot);
+  }
+  /* The panel is positioned, so it paints above anything static no matter
+     what z-index the static thing claims. The content is therefore set
+     relative — which lays out identically to static but lets z-index
+     actually apply — rather than static. */
+  .cover__panel { position: absolute; z-index: 0; }
+  .cover__nav, .cover__card, .cover__word, .cover__spec, .cover__scroll {
+    position: relative;
+    /* relative keeps the desktop offsets as displacements, so they are
+       cleared here or every block sits shifted off its own margin */
+    inset: auto;
+    z-index: 3;
+  }
+
+  .cover__nav {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 1.15rem 1.1rem 0;
+    gap: .4rem;
+  }
+  .cover__nav a { margin-top: 0 !important; }
+
+  .cover__card {
+    width: auto;
+    margin: 1.15rem 1.1rem 0;
+    padding: .85rem .95rem;
+  }
+
+  /* no inversion here: with the layers in flow they cannot be stacked,
+     so the word simply sits on the panel */
+  .cover__word { display: block; margin: 1.4rem 0 0; padding: 0 1.1rem; color: var(--paper); }
+  .cover__word span { font-size: 19.4vw; letter-spacing: -.03em; }
   .cover__word--in { display: none; }
-  .cover__spec { position: static; width: auto; margin: 1.75rem var(--gutter) 0; }
-  .cover__scroll { position: static; margin: 2rem var(--gutter) 2.5rem; }
+
+  .cover__spec { width: auto; margin: 1.5rem 1.1rem 0; }
+  .cover__scroll { margin: 1.75rem 1.1rem 1.25rem; }
 }
 
 /* ---- catalogue -----------------------------------------------------
