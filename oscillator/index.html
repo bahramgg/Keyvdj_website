@@ -18,12 +18,12 @@
 </script>
 
 <title>Oscillator · Techno Label</title>
-<meta name="description" content="Oscillator is an independent techno label founded by KEYV, introducing artists and their work.">
+<meta name="description" content="Oscillator is an independent techno label founded by KEYV, putting artists forward one at a time.">
 <meta name="theme-color" content="#000000">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Oscillator · Techno Label">
-<meta property="og:description" content="An independent techno label introducing artists and their work.">
+<meta property="og:description" content="An independent techno label. We put artists forward and let the work speak.">
 <meta property="og:image" content="media/rises-poster.webp">
 
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
@@ -32,7 +32,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=f8dcb92d">
+<link rel="stylesheet" href="assets/css/style.css?v=2d7a5656">
 </head>
 
 <body>
@@ -40,75 +40,82 @@
 <a class="skip-link" href="#artists">Skip to the artists</a>
 
 <header class="nav">
-  <a class="nav__mark" href="#top" aria-label="Oscillator, top">
-    <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" decoding="async">
-    <span>Oscillator</span>
-  </a>
-  <nav class="nav__links" aria-label="Primary">
-    <a href="artists.html">Artists</a>
-    <a href="#listen">Listen</a>
+  <div class="nav__set">
     <a href="#about">About</a>
-    <a href="#demos">Demos</a>
-  </nav>
+    <a href="artists.html">Artists</a>
+  </div>
+  <div class="nav__set">
+    <a href="#listen">Listen</a>
+    <a href="#demos">Contact</a>
+  </div>
 </header>
 
 <main id="top">
 
-  <!-- ── black band: the mark, on its own screen ────────────────────── -->
-  <div class="band band--ink">
-    <section class="hero" aria-label="Intro">
-      <div class="hero__mark">
-        <video class="hero__video" poster="media/rises-poster.webp"
-               autoplay muted loop playsinline disablepictureinpicture
-               width="720" height="720" aria-hidden="true">
-          <source src="media/rises.mp4" type="video/mp4">
-        </video>
-      </div>
-      <p class="hero__claim">We are Oscillator</p>
-      <h1 class="hero__name">Oscillator</h1>
-      <p class="hero__line">An independent techno label. We put artists forward and let the work speak.</p>
-    </section>
-  </div>
+  <!-- ══ HERO — the label's own logo animation, at full size ═════════ -->
+  <section class="hero" aria-label="Intro">
+    <h1 class="hero__title">
+      <video class="hero__video" poster="media/rises-poster.webp"
+             autoplay muted loop playsinline disablepictureinpicture
+             width="720" height="720" aria-label="Oscillator">
+        <source src="media/rises.mp4" type="video/mp4">
+      </video>
+    </h1>
 
-  <!-- ── yellow band: artists ───────────────────────────────────────── -->
-  <div class="band band--ink">
-    <section id="artists" class="section" aria-labelledby="artists-title">
-      <p class="kicker">Artists</p>
-      <h2 class="title" id="artists-title">Who we put on</h2>
+    <div class="hero__foot">
+      <p class="tag tag--acid">Independent techno label</p>
+      <p class="tag tag--soft hero__scroll">Scroll</p>
+    </div>
+  </section>
 
-      <ul class="artists artists--featured" id="featured-artists"></ul>
+  <!-- ══ STATEMENT ══════════════════════════════════════════════════ -->
+  <section class="section section--tight" aria-label="What the label is">
+    <p class="statement">
+      <em class="mark">Artists</em> first, <span class="blk" aria-hidden="true"></span>
+      <em class="mark">records</em> second.
+    </p>
+  </section>
 
-      <p class="artists__after">
-        <a class="link" href="artists.html">All artists <span aria-hidden="true">→</span></a>
-      </p>
-    </section>
-  </div>
+  <!-- ══ LATEST ═════════════════════════════════════════════════════ -->
+  <section id="listen" class="section" aria-labelledby="latest-title">
+    <div class="head">
+      <p class="tag tag--soft">Latest</p>
+      <h2 class="title" id="latest-title">Out now</h2>
+    </div>
+    <div class="release" id="release"></div>
+  </section>
 
-  <!-- ── black band: the newest mix ─────────────────────────────────── -->
-  <div class="band band--ink">
-    <section id="listen" class="section" aria-labelledby="listen-title">
-      <p class="kicker">Listen</p>
-      <h2 class="title" id="listen-title">Latest</h2>
-      <div class="latest" id="latest"></div>
-    </section>
-  </div>
+  <!-- ══ ARTISTS ════════════════════════════════════════════════════ -->
+  <section id="artists" class="section" aria-labelledby="artists-title">
+    <div class="head">
+      <p class="tag tag--soft">The roster</p>
+      <h2 class="title" id="artists-title">Artists</h2>
+    </div>
 
-  <!-- ── yellow band: shows, only when there are any ────────────────── -->
-  <div class="band band--ink is-empty" id="events-band">
-    <section id="events" class="section" aria-labelledby="events-title">
-      <p class="kicker">Live</p>
-      <h2 class="title" id="events-title">Upcoming</h2>
-      <ol class="events" id="event-list"></ol>
-    </section>
-  </div>
+    <ul class="cards" id="featured-artists"></ul>
 
-  <!-- ── black band: about ──────────────────────────────────────────── -->
-  <div class="band band--ink">
-    <section id="about" class="section" aria-labelledby="about-title">
-      <p class="kicker">About</p>
+    <p class="after">
+      <a class="btn" href="artists.html">All artists <span aria-hidden="true">→</span></a>
+    </p>
+  </section>
+
+  <!-- ══ BIG STATEMENT ══════════════════════════════════════════════ -->
+  <section class="section section--tight" aria-label="How the label works">
+    <p class="statement">
+      We do <em class="mark">not</em> put music out
+      <span class="blk" aria-hidden="true"></span> to <em class="mark">fill</em> a schedule.
+    </p>
+  </section>
+
+  <!-- ══ ABOUT ══════════════════════════════════════════════════════ -->
+  <section id="about" class="section" aria-labelledby="about-title">
+    <div class="head">
+      <p class="tag tag--soft">The label</p>
       <h2 class="title" id="about-title">Built for the floor first</h2>
+    </div>
 
-      <div class="about__body">
+    <div class="manifest">
+      <div>
         <p>
           Oscillator is an independent techno label founded by KEYV. It exists
           for records that are built for the floor first: stripped, loud and
@@ -119,49 +126,101 @@
           want heard, put forward one at a time.
         </p>
       </div>
-    </section>
-  </div>
 
-  <!-- ── yellow band: demos + contact ───────────────────────────────── -->
-  <div class="band band--sun">
-    <section id="demos" class="section" aria-labelledby="demos-title">
-      <p class="kicker">Get in touch</p>
-      <h2 class="title" id="demos-title">Send us something</h2>
+      <figure class="duo manifest__shot">
+        <img src="img/covers/029.webp" alt="" width="700" height="700" loading="lazy" decoding="async">
+      </figure>
 
-      <div class="duo">
-        <div>
-          <h3>Demos</h3>
-          <p>
-            We listen to everything that comes in. Send a private link with a
-            line about who you are — no attachments, no zip files.
-          </p>
-          <p class="duo__links" id="demo-links"></p>
-        </div>
-        <div>
-          <h3>Contact</h3>
-          <p>Bookings, press and anything else about the label.</p>
-          <p class="duo__links">
-            <a class="link" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-            <a class="link" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-            <a class="link" href="https://keyvdj.com/#booking">KEYV booking</a>
-          </p>
-        </div>
+      <ul class="panel">
+        <li>Raw</li>
+        <li>Unpolished</li>
+        <li>For the floor</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══ EVENTS — appears only when there are any ═══════════════════ -->
+  <section class="section is-empty" id="events-band" aria-labelledby="events-title">
+    <div class="head">
+      <p class="tag tag--soft">Live</p>
+      <h2 class="title" id="events-title">Upcoming</h2>
+    </div>
+    <ol class="events" id="event-list"></ol>
+  </section>
+
+  <!-- ══ LISTENING ROOM ═════════════════════════════════════════════ -->
+  <section class="section room" aria-labelledby="room-title">
+    <p class="room__ghost" aria-hidden="true">OSCILLATOR</p>
+    <div class="room__inner">
+      <div id="room-shot"></div>
+      <div>
+        <p class="tag tag--acid">Listening room</p>
+        <h2 class="title room__title" id="room-title">Play the newest mix</h2>
+        <p class="room__note">
+          Every mix the label has put out lives on SoundCloud, numbered and
+          archived. Nothing loads from them until you press play.
+        </p>
+        <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">The full archive</a>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <!-- ══ DEMOS + CONTACT ════════════════════════════════════════════ -->
+  <section id="demos" class="section" aria-labelledby="demos-title">
+    <div class="head">
+      <p class="tag tag--soft">Get in touch</p>
+      <h2 class="title" id="demos-title">Send us something</h2>
+    </div>
+
+    <div class="duo-col">
+      <div>
+        <h3>Demos</h3>
+        <p>
+          We listen to everything that comes in. Send a private link with a
+          line about who you are — no attachments, no zip files.
+        </p>
+        <p class="duo-col__links" id="demo-links"></p>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p>Bookings, press and anything else about the label.</p>
+        <p class="duo-col__links">
+          <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+          <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CLOSING CALL ═══════════════════════════════════════════════ -->
+  <section class="call" aria-label="Listen">
+    <figure class="duo">
+      <img src="img/covers/030.webp" alt="" width="700" height="700" loading="lazy" decoding="async">
+    </figure>
+    <div class="call__inner">
+      <p class="statement statement--sm">
+        Step into the <em class="mark">signal</em>.
+      </p>
+      <a class="btn btn--acid" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen now</a>
+    </div>
+  </section>
 
 </main>
 
-<footer class="footer band band--ink">
-  <p>© <span id="year">2026</span> Oscillator. Founded by <a href="https://keyvdj.com/">KEYV</a>.</p>
-  <p class="footer__links">
-    <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-    <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-  </p>
+<footer class="footer">
+  <div class="footer__rows">
+    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
+    <span class="footer__set">
+      <a href="artists.html">Artists</a>
+      <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+      <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+    </span>
+  </div>
+  <p class="footer__mark" aria-hidden="true">Oscillator</p>
 </footer>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=4dde8eaf"></script>
-<script defer src="assets/js/main.js?v=d682c08b"></script>
+<script defer src="assets/js/main.js?v=9a580ced"></script>
 </body>
 </html>

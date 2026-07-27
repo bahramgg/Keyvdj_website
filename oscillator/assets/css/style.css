@@ -1,25 +1,27 @@
 /* =============================================================
    OSCILLATOR — label site
 
-   Nothing here is shared with the KEYV stylesheet except the two font
-   files. That site is a dark site: black ground, one accent, centred
-   sections, card grids. This one is the opposite on every one of those
-   counts — the label's yellow is the paper, the type is black and set
-   flush left, and the artists are an index rather than a grid of cards.
-   Black is used only for the bands that top and tail the page.
+   Built to the reference: a black page punctuated by flat accent blocks.
+   The devices are borrowed, the palette is ours — the label's acid yellow
+   where the reference used pink.
+
+     · photographs are duotoned to the accent, never left full colour
+     · statements carry rough marker blocks behind the words
+     · the catalogue is flat accent cards with black type and corner ticks
+     · the wordmark closes the page at the size of a poster
+
+   Nothing is shared with the KEYV stylesheet but the two font files.
    ============================================================= */
 
-/* ---- tokens -------------------------------------------------------- */
 :root {
-  --yellow: #FEED07;          /* sampled from the label's own wordmark */
-  --black: #000000;           /* matches the logo animation's own ground */
-  --ink: #0A0A00;
-  --ink-soft: #4A4A34;        /* secondary type on yellow */
-  --paper: #F2F2E8;
-  --paper-soft: #9A9A88;      /* secondary type on black */
-  --rule: rgba(10, 10, 0, .22);
+  --acid: #FEED07;            /* sampled from the label's own wordmark */
+  --black: #000000;
+  --ink: #0A0A00;             /* type on the accent */
+  --paper: #EFEFE6;
+  --soft: #7E7E70;            /* secondary type on black */
+  --line: #23231F;
 
-  --gutter: clamp(1.15rem, 5vw, 5rem);
+  --gutter: clamp(1.15rem, 4.5vw, 4.5rem);
   --font-display: "Anton", "Arial Narrow", sans-serif;
   --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -53,323 +55,354 @@ body {
 }
 img, video { display: block; max-width: 100%; }
 ul, ol { list-style: none; margin: 0; padding: 0; }
-a { color: inherit; }
-:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
 
-.skip-link { position: absolute; left: -9999px; top: 0; background: var(--ink); color: var(--yellow); padding: .7rem 1rem; z-index: 100; }
+.skip-link { position: absolute; left: -9999px; top: 0; background: var(--acid); color: var(--ink); padding: .7rem 1rem; z-index: 100; }
 .skip-link:focus { left: 0; }
 
-/* ---- nav: one row, name one side, links the other ------------------ */
+/* ---- small technical labels ---------------------------------------- */
+.tag {
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+}
+.tag--soft { color: var(--soft); }
+.tag--acid { color: var(--acid); }
+
+/* ---- marker blocks -------------------------------------------------
+   The reference sets its statements with torn rectangles painted behind
+   the words. Three clip paths, cycled, so no two blocks are cut alike. */
+.mark {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  padding: 0 .28em;
+  color: var(--ink);
+  isolation: isolate;
+}
+.mark::before {
+  content: "";
+  position: absolute;
+  inset: .1em -.05em .04em;
+  z-index: -1;
+  background: var(--acid);
+  clip-path: polygon(1% 8%, 99% 2%, 100% 92%, 2% 98%);
+}
+.mark:nth-of-type(3n+2)::before { clip-path: polygon(0 4%, 98% 9%, 99% 96%, 1% 90%); }
+.mark:nth-of-type(3n+3)::before { clip-path: polygon(2% 6%, 100% 3%, 98% 97%, 0 93%); }
+
+/* a blank block, used as a redaction bar between words */
+.blk {
+  display: inline-block;
+  width: 2.2em;
+  height: .74em;
+  background: var(--acid);
+  clip-path: polygon(1% 6%, 99% 2%, 100% 94%, 2% 98%);
+  vertical-align: baseline;
+}
+
+/* ---- nav ------------------------------------------------------------ */
 .nav {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: .7rem var(--gutter);
+  padding: 1rem var(--gutter);
+  /* Difference-blending this was legible over the black hero and turned
+     to unreadable blue the moment an acid card scrolled under it. A solid
+     bar is the only thing that holds against both grounds, and against
+     the hero — which is black anyway — it does not read as a bar at all. */
   background: var(--black);
-  color: var(--paper);
 }
-.nav__mark {
-  display: flex;
-  align-items: center;
-  gap: .55rem;
-  flex: none;
-  text-decoration: none;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--yellow);
-}
-.nav__mark img { width: 24px; height: 24px; flex: none; }
-.nav__links {
-  display: flex;
-  gap: clamp(1.1rem, 3vw, 2.25rem);
-  flex: none;
-}
-.nav__links a {
-  font-size: .6875rem;
-  font-weight: 500;
+.nav__set { display: flex; gap: clamp(.9rem, 2.4vw, 1.8rem); }
+.nav__set a {
+  font-size: .625rem;
+  font-weight: 700;
   letter-spacing: .2em;
   text-transform: uppercase;
-  text-decoration: none;
   white-space: nowrap;
   color: var(--paper);
-  transition: color .2s var(--ease);
-}
-.nav__links a:hover,
-.nav__links a[aria-current] { color: var(--yellow); }
-
-/* Four links plus the name do not fit a narrow phone, and the row was
-   pushing the whole page wider than the viewport. The mark carries the
-   brand on its own at this size, so the word steps aside instead. */
-@media (max-width: 560px) {
-  .nav { padding-inline: clamp(.7rem, 3vw, 1.15rem); }
-  .nav__mark span { display: none; }
-  .nav__links { gap: .85rem; }
-  .nav__links a { font-size: .5625rem; letter-spacing: .11em; }
-}
-
-/* ---- hero ----------------------------------------------------------
-   Fills the screen on purpose: at anything less the next band creeps
-   into view under it and the opening reads as a fragment. 100svh is the
-   small viewport height, so a phone's collapsing toolbar cannot push the
-   bottom of it off-screen. */
-.hero {
-  min-height: 100svh;
-  padding: clamp(1.5rem, 4vh, 3rem) var(--gutter) clamp(2rem, 5vh, 3.5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(.5rem, 1.5vh, 1rem);
-  text-align: center;
-}
-.hero__claim {
-  margin: 0;
-  font-size: .6875rem;
-  font-weight: 700;
-  letter-spacing: .42em;
-  text-transform: uppercase;
-  color: var(--yellow);
-}
-.hero__mark { width: min(44vw, 190px); aspect-ratio: 1; }
-/* The clip is yellow line-work on its own black. Screen-blending drops that
-   black entirely, so the video reads as the mark floating on the section
-   rather than as a slightly-different black rectangle sitting on it. */
-.hero__mark video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  mix-blend-mode: screen;
-}
-
-.hero__name {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.6rem, 11vw, 6rem);
-  line-height: .9;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  color: var(--yellow);
-}
-.hero__line {
-  margin: 0;
-  max-width: 30ch;
-  color: var(--paper-soft);
-  font-size: .8125rem;
-}
-
-/* ---- section furniture --------------------------------------------- */
-.section { padding: clamp(2.75rem, 8vh, 5.5rem) var(--gutter); }
-/* two sections sharing one band would otherwise stack their padding into
-   an obvious hole between them */
-.band > .section + .section { padding-top: 0; }
-
-/* ---- the two grounds ------------------------------------------------
-   Flat, both of them. The yellow is loud enough that using it as the
-   page's ground is tiring to read against, so it is kept for a single
-   band and for small type, and the artwork carries the page instead. */
-.band--ink { background: var(--black); color: var(--paper); }
-.band--sun { background: var(--yellow); color: var(--ink); }
-.band--sun .artist__no,
-.band--sun .roster__no,
-.band--sun .roster__bio { color: var(--ink-soft); }
-
-.kicker {
-  margin: 0 0 .6rem;
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .32em;
-  text-transform: uppercase;
-  opacity: .6;
-}
-.title {
-  margin: 0 0 1.5rem;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2rem, 6vw, 3.6rem);
-  line-height: .95;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-
-.link {
-  display: inline-flex;
-  align-items: baseline;
-  gap: .5rem;
-  font-size: .75rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border-bottom: 2px solid currentColor;
-  padding-bottom: .2rem;
   transition: opacity .2s var(--ease);
 }
-.link:hover { opacity: .6; }
+.nav__set a:hover, .nav__set a[aria-current] { opacity: .55; }
 
-/* ---- artists: an index, not a card grid ---------------------------- */
-/* Each artist is a row: portrait, then the name set large. On a phone
-   the rows stack into two columns so the page does not run on. */
-.artists { display: grid; gap: clamp(1rem, 2.5vw, 1.5rem); }
-.artists--featured { grid-template-columns: repeat(2, 1fr); }
-@media (min-width: 780px) { .artists--featured { grid-template-columns: repeat(4, 1fr); } }
-
-.artist__link { display: block; text-decoration: none; color: inherit; }
-.artist__shot {
+/* ---- hero: the logo animation, at full size ------------------------ */
+.hero {
   position: relative;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: var(--black);
-}
-.artist__shot img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .5s var(--ease);
-}
-.artist__link:hover .artist__shot img,
-.artist__link:focus-visible .artist__shot img { transform: scale(1.03); }
-
-.artist__name {
-  margin: .55rem 0 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
-  line-height: 1.05;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-.artist__no {
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .16em;
-  color: var(--ink-soft);
-}
-
-.artists__after { margin-top: clamp(1.75rem, 4vh, 2.75rem); }
-
-/* ---- the full index page ------------------------------------------- */
-.roster { border-top: 1px solid var(--rule); }
-.roster__row {
+  min-height: 100svh;
   display: grid;
-  grid-template-columns: 84px 1fr;
-  gap: clamp(1rem, 3vw, 2.25rem);
-  align-items: start;
-  padding: clamp(1.1rem, 3vh, 1.9rem) 0;
-  border-bottom: 1px solid var(--rule);
+  place-items: center;
+  padding: 5rem var(--gutter) clamp(4rem, 12vh, 7rem);
+  text-align: center;
 }
-@media (min-width: 720px) {
-  .roster__row { grid-template-columns: 150px 1fr; align-items: center; }
+.hero__video {
+  width: min(78vw, 620px);
+  aspect-ratio: 1;
+  object-fit: contain;
+  mix-blend-mode: screen;             /* drops the clip's own black field */
 }
-.roster__shot { aspect-ratio: 1; overflow: hidden; background: var(--black); }
-.roster__shot img { width: 100%; height: 100%; object-fit: cover; }
+.hero__foot {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(1.25rem, 4vh, 2.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: .75rem 1.5rem;
+}
+.hero__scroll { color: var(--soft); }
+.hero__title { margin: 0; line-height: 0; }
+.hero__foot p { margin: 0; }
 
-.roster__name {
+.after { margin: clamp(1.5rem, 4vh, 2.5rem) 0 0; }
+.head .tag { margin: 0; }
+.room__title { margin: .5rem 0 .9rem; }
+.room__note { margin: 0 0 1.25rem; max-width: 44ch; color: var(--soft); }
+.manifest__shot, .call .duo, .release__shot { margin: 0; }
+
+/* ---- statement ------------------------------------------------------ */
+.statement {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(1.5rem, 5vw, 2.6rem);
+  font-size: clamp(1.9rem, 6.4vw, 5rem);
+  line-height: 1.06;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.statement--sm { font-size: clamp(1.5rem, 4.4vw, 3.2rem); }
+
+/* ---- section furniture ---------------------------------------------- */
+.section { padding: clamp(3rem, 9vh, 6.5rem) var(--gutter); }
+.section--tight { padding-block: clamp(2rem, 6vh, 4rem); }
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: .9rem;
+  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 5vw, 3.4rem);
   line-height: 1;
   letter-spacing: .01em;
   text-transform: uppercase;
 }
-.roster__no {
-  display: block;
-  margin-bottom: .3rem;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  border: 1px solid currentColor;
+  padding: .8rem 1.4rem;
   font-size: .625rem;
   font-weight: 700;
   letter-spacing: .22em;
-  color: var(--ink-soft);
+  text-transform: uppercase;
+  transition: background .22s var(--ease), color .22s var(--ease);
 }
-.roster__bio { margin: .5rem 0 0; max-width: 56ch; color: var(--ink-soft); }
-.roster__go { margin-top: .7rem; }
+.btn:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+.btn--acid { background: var(--acid); border-color: var(--acid); color: var(--ink); }
+.btn--acid:hover { background: transparent; color: var(--acid); }
 
-/* ---- latest: the newest mix, played in place ----------------------- */
-/* No third-party embed is loaded until the reader asks for it — until
-   then this is a still of the artwork and a button. */
-.latest { display: grid; gap: clamp(1.25rem, 4vw, 2.5rem); }
-@media (min-width: 820px) { .latest { grid-template-columns: 320px 1fr; align-items: center; } }
+/* ---- duotone --------------------------------------------------------
+   Multiplying a greyscale image onto the accent keeps the blacks and
+   turns every light value acid — the reference's treatment, our colour. */
+.duo { position: relative; background: var(--acid); overflow: hidden; }
+.duo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* These covers are already largely acid, so a light-handed grade turns
+     them into a flat yellow square — greyscale sends the yellow to near
+     white and white multiplied onto the accent is just the accent again.
+     Pulling the exposure down keeps real darks for the blend to hold. */
+  filter: grayscale(1) contrast(1.45) brightness(.78);
+  mix-blend-mode: multiply;
+}
 
-.latest__shot { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--black); }
-.latest__shot img { width: 100%; height: 100%; object-fit: cover; }
-.latest__play {
+/* ---- latest release -------------------------------------------------- */
+.release { display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); }
+@media (min-width: 860px) { .release { grid-template-columns: 1fr 300px; align-items: start; } }
+
+.spec { border-top: 1px solid var(--line); }
+.spec__row {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: .85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.spec__key { font-size: .625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
+.spec__val { font-family: var(--font-display); font-size: clamp(1.05rem, 2.4vw, 1.5rem); text-transform: uppercase; letter-spacing: .01em; }
+.release__shot { aspect-ratio: 1; }
+
+/* ---- catalogue cards -------------------------------------------------
+   Flat accent, black type, a tick in each corner. */
+.cards { display: grid; grid-template-columns: 1fr; gap: clamp(.8rem, 2vw, 1.25rem); }
+@media (min-width: 620px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 980px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  min-height: 12.5rem;
+  padding: 1.1rem 1.15rem 1.25rem;
+  background: var(--acid);
+  color: var(--ink);
+  transition: transform .3s var(--ease);
+}
+.card:hover { transform: translateY(-3px); }
+.card__top { display: flex; justify-content: space-between; gap: 1rem; }
+.card__name {
+  margin: auto 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+  line-height: 1.02;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.card__bio { margin: 0; font-size: .8125rem; line-height: 1.45; }
+/* corner ticks */
+.card::before, .card::after {
+  content: "";
+  position: absolute;
+  width: 9px; height: 9px;
+  border: 1.5px solid var(--ink);
+  opacity: .55;
+}
+.card::before { top: 7px; left: 7px; border-right: 0; border-bottom: 0; }
+.card::after { bottom: 7px; right: 7px; border-left: 0; border-top: 0; }
+
+/* ---- manifesto row --------------------------------------------------- */
+.manifest { display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
+@media (min-width: 900px) { .manifest { grid-template-columns: 1fr 1fr 15rem; } }
+.manifest__shot { aspect-ratio: 4/3; }
+.manifest p { margin: 0 0 1rem; max-width: 46ch; color: var(--soft); }
+.panel { background: var(--acid); color: var(--ink); padding: 1.25rem; }
+.panel li { padding: .55rem 0; border-bottom: 1px solid rgba(10,10,0,.28); font-family: var(--font-display); font-size: 1.15rem; text-transform: uppercase; }
+.panel li:last-child { border-bottom: 0; }
+
+/* ---- listening room --------------------------------------------------- */
+.room { position: relative; overflow: hidden; }
+/* the ghosted lettering the reference runs behind this block */
+.room__ghost {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 16vw, 13rem);
+  line-height: 1;
+  letter-spacing: .06em;
+  color: var(--paper);
+  opacity: .045;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.room__inner { position: relative; display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); }
+@media (min-width: 860px) { .room__inner { grid-template-columns: 300px 1fr; align-items: center; } }
+.room__shot { position: relative; aspect-ratio: 1; }
+.room__play {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
   border: 0;
-  background: rgba(0, 0, 0, .45);
-  color: var(--yellow);
+  background: transparent;
+  color: var(--ink);
   font: inherit;
-  font-size: .6875rem;
+  cursor: pointer;
+}
+.room__play span {
+  background: var(--black);
+  color: var(--acid);
+  padding: .6rem 1.15rem;
+  font-size: .625rem;
   font-weight: 700;
   letter-spacing: .22em;
   text-transform: uppercase;
-  cursor: pointer;
-  transition: background .25s var(--ease);
 }
-.latest__play:hover { background: rgba(0, 0, 0, .7); }
-.latest__play span { border: 2px solid currentColor; padding: .6rem 1.2rem; }
-.latest__frame { border: 0; width: 100%; height: 320px; display: block; }
-.latest__who { margin: 0 0 .4rem; font-family: var(--font-display); font-size: clamp(1.6rem, 5vw, 2.6rem); line-height: 1; text-transform: uppercase; }
-.latest__meta { margin: 0 0 1rem; font-size: .6875rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; opacity: .65; }
+.room__frame { border: 0; width: 100%; height: 320px; display: block; }
 
-/* ---- events: collapses entirely when there is nothing on ----------- */
-.events { border-top: 1px solid currentColor; }
-.event {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: .35rem 1.25rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid currentColor;
-}
-.event__date { font-weight: 700; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; flex: none; }
+/* ---- closing call ----------------------------------------------------- */
+.call { position: relative; min-height: 62svh; display: grid; place-items: center; text-align: center; overflow: hidden; }
+.call .duo { position: absolute; inset: 0; }
+/* graded right down so the panel reads dark and the type on top of it
+   stays legible — the marker blocks need a dark field to register at all */
+.call .duo img { filter: grayscale(1) contrast(1.5) brightness(.34); }
+.call__inner { position: relative; padding: clamp(2.5rem, 8vh, 5rem) var(--gutter); }
+.call .statement { color: var(--paper); }
+
+/* ---- events ----------------------------------------------------------- */
+.events { border-top: 1px solid var(--line); }
+.event { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.event__date { font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--acid); flex: none; }
 .event__what { font-family: var(--font-display); font-size: 1.25rem; text-transform: uppercase; }
-.event__where { opacity: .7; font-size: .8125rem; }
+.event__where { color: var(--soft); font-size: .8125rem; }
 .is-empty { display: none; }
 
-/* ---- demos + contact ----------------------------------------------- */
-.duo { display: grid; gap: clamp(1.75rem, 5vw, 3.5rem); }
-@media (min-width: 820px) { .duo { grid-template-columns: 1fr 1fr; } }
-.duo h3 {
-  margin: 0 0 .6rem;
+/* ---- roster (artists page) --------------------------------------------- */
+.roster { border-top: 1px solid var(--line); }
+.roster__row {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  padding: clamp(.9rem, 2.5vh, 1.5rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 720px) { .roster__row { grid-template-columns: 120px 1fr auto; } }
+.roster__shot { aspect-ratio: 1; }
+.roster__name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.35rem, 4vw, 2.2rem); line-height: 1; text-transform: uppercase; }
+.roster__no { display: block; margin-bottom: .25rem; font-size: .625rem; font-weight: 700; letter-spacing: .22em; color: var(--soft); }
+.roster__bio { margin: .4rem 0 0; max-width: 54ch; color: var(--soft); font-size: .8125rem; }
+
+/* ---- demos + contact ---------------------------------------------------- */
+.duo-col { display: grid; gap: clamp(1.75rem, 4vw, 3rem); }
+@media (min-width: 820px) { .duo-col { grid-template-columns: 1fr 1fr; } }
+.duo-col h3 { margin: 0 0 .5rem; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.3rem, 3vw, 1.8rem); text-transform: uppercase; }
+.duo-col p { margin: 0 0 1rem; max-width: 44ch; color: var(--soft); }
+.duo-col__links { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+/* ---- footer ------------------------------------------------------------- */
+.footer { padding: clamp(2.5rem, 6vh, 4rem) var(--gutter) 0; border-top: 1px solid var(--line); }
+.footer__rows { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; font-size: .625rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); }
+.footer__rows a:hover { color: var(--acid); }
+.footer__set { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+
+/* the wordmark, poster-sized, bled off the bottom edge */
+.footer__mark {
+  margin: clamp(1.5rem, 5vh, 3rem) 0 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  line-height: 1;
+  font-size: clamp(3.2rem, 19vw, 17rem);
+  line-height: .78;
+  letter-spacing: .005em;
   text-transform: uppercase;
+  color: var(--acid);
+  overflow: hidden;
 }
-.duo p { margin: 0 0 1rem; max-width: 46ch; }
-.duo__links { display: flex; flex-wrap: wrap; gap: 1.25rem; }
 
-/* ---- about --------------------------------------------------------- */
-.about__body { max-width: 46rem; }
-.about__body p { margin: 0 0 1rem; max-width: 54ch; font-size: 1rem; }
-.about__links { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.75rem; }
-
-/* ---- footer -------------------------------------------------------- */
-.footer {
-  background: var(--black);
-  color: var(--paper-soft);
-  padding: clamp(2rem, 5vh, 3rem) var(--gutter);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  font-size: .6875rem;
-}
-.footer a { color: var(--yellow); }
-.footer__links { display: flex; gap: 1.25rem; }
-
-/* ---- motion preferences -------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

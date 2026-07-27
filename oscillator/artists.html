@@ -19,7 +19,7 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=f8dcb92d">
+<link rel="stylesheet" href="assets/css/style.css?v=2d7a5656">
 </head>
 
 <body>
@@ -27,45 +27,47 @@
 <a class="skip-link" href="#roster">Skip to the list</a>
 
 <header class="nav">
-  <a class="nav__mark" href="index.html" aria-label="Oscillator, home">
-    <img src="../img/oscillator-logo.webp" alt="" width="600" height="600" decoding="async">
-    <span>Oscillator</span>
-  </a>
-  <nav class="nav__links" aria-label="Primary">
-    <a href="artists.html" aria-current="page">Artists</a>
-    <a href="index.html#listen">Listen</a>
+  <div class="nav__set">
     <a href="index.html#about">About</a>
-    <a href="index.html#demos">Demos</a>
-  </nav>
+    <a href="artists.html" aria-current="page">Artists</a>
+  </div>
+  <div class="nav__set">
+    <a href="index.html#listen">Listen</a>
+    <a href="index.html#demos">Contact</a>
+  </div>
 </header>
 
 <main>
-  <div class="band band--ink">
   <section class="section" aria-labelledby="roster-title">
-    <p class="kicker">Artists</p>
-    <h1 class="title" id="roster-title">Everyone we have put forward</h1>
+    <div class="head">
+      <p class="tag tag--soft">The roster</p>
+      <h1 class="title" id="roster-title">Artists</h1>
+    </div>
 
     <ol class="roster" id="roster">
       <!-- filled from assets/js/artists.js -->
     </ol>
 
-    <p class="artists__after">
-      <a class="link" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
+    <p class="after">
+      <a class="btn" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
     </p>
   </section>
-  </div>
 </main>
 
-<footer class="footer band band--ink">
-  <p>© <span id="year">2026</span> Oscillator. Founded by <a href="https://keyvdj.com/">KEYV</a>.</p>
-  <p class="footer__links">
-    <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-    <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-  </p>
+<footer class="footer">
+  <div class="footer__rows">
+    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
+    <span class="footer__set">
+      <a href="index.html">Label</a>
+      <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+      <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+    </span>
+  </div>
+  <p class="footer__mark" aria-hidden="true">Oscillator</p>
 </footer>
 
 <script src="assets/js/info.js?v=4dde8eaf"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
-<script defer src="assets/js/main.js?v=d682c08b"></script>
+<script defer src="assets/js/main.js?v=9a580ced"></script>
 </body>
 </html>
