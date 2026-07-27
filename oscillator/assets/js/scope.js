@@ -1,27 +1,29 @@
 /* =============================================================
-   OSCILLATOR — the beam
+   OSCILLATOR — the lines
 
-   An oscilloscope in XY mode does not draw a waveform, it draws a
-   Lissajous figure: two oscillators at right angles, one on each axis.
-   The label is called Oscillator, so the first screen is that — the
-   canonical picture of the thing the label is named after.
+   Three lines that wander down the whole site.
 
-   Nothing here is a texture or an image. Two sines, a beam that sweeps
-   them, and phosphor.
+   This was a Lissajous figure before, which was wrong twice over. A
+   Lissajous is amplitude times a sine on both axes, so it can only ever
+   live inside a box in the middle of the screen; and it was painted on
+   a canvas fixed to the window, so it sat still while the page moved
+   under it. Boxed, and stuck to the glass.
 
-   Three things make it read as a scope rather than as a drawing:
+   So there is no figure and no centre now. Each line is a function of
+   how far down the document you are —
 
-     · the screen is never cleared. Each frame lays a nearly-transparent
-       black over the last one, so the beam leaves a decaying trail and
-       the brightest part of the figure is wherever it just passed
-     · the strokes are additive, so where the trace crosses itself it
-       burns toward white instead of just overlapping
-     · the frequency ratio drifts. It locks onto a small-integer ratio,
-       holds a closed figure for a few seconds, then slides to the next
-       one — and everything in between is an open, tumbling curve
+       x = f(y)
 
-   The ratio is on screen at the foot of the page, because a scope with
-   no readout is a screensaver.
+   — evaluated across whatever slice of the document is on screen. That
+   makes them continuous over the entire page: scroll and you travel
+   along them, because they belong to the document rather than to the
+   viewport. They are infinite and hold no state; nothing is remembered
+   between frames, which is also why scrolling can never smear them.
+
+   f is two sines of very different wavelength added together: a long
+   one that carries the line across the full width, and a short one that
+   stops it being a plain wave. The phase creeps, so the whole set
+   drifts upward slowly — about half a minute for one pass.
    ============================================================= */
 
 (function () {
@@ -30,56 +32,32 @@
   var canvas = document.getElementById('scope');
   if (!canvas || !canvas.getContext) return;
 
-  var ctx = canvas.getContext('2d', { alpha: false });
+  var ctx = canvas.getContext('2d', { alpha: true });
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   var ACID = '254, 237, 7';
-  var GROUND = '5, 5, 4';        /* --black; the decay has to match it */
 
-  /* The beam.
-
-     Slow, and the tail short enough that the figure reads as one line
-     being drawn rather than as a ball of wire. At 0.042 radians a frame
-     a full period takes about two and a half seconds, and the phosphor
-     gives out after roughly two thirds of one — so there is always a
-     head, a tail, and nothing older than that on screen. */
-  var SEGS = 12;                 /* segments drawn per frame */
-  var DT = 0.0035;               /* radians of sweep per segment */
-  var DECAY = 0.016;             /* how fast the phosphor gives up */
-
-  /* Small integers only. The ratio is how many lobes the figure has, so
-     7:5 is a thicket and 3:2 is a shape — and this now sits behind the
-     whole site rather than in a box on the first screen, where a thicket
-     would fight everything set over it. */
-  var RATIOS = [
-    [1, 2], [2, 3], [3, 2], [1, 1], [3, 4], [4, 3], [2, 1], [1, 3]
+  /* Three, at different weights, so the set reads as composed rather
+     than as a machine's output. Wavelengths are in document pixels:
+     `long` carries a line across the page, `short` roughens it.
+     `sway` is the fraction of the viewport width it swings through. */
+  var LINES = [
+    { long: 1180, short: 337, sway: 0.40, rough: 0.15, at: 0.50, seed: 0.0, lit: 0.34 },
+    { long:  860, short: 271, sway: 0.32, rough: 0.11, at: 0.34, seed: 2.1, lit: 0.20 },
+    { long: 1490, short: 419, sway: 0.28, rough: 0.09, at: 0.68, seed: 4.3, lit: 0.14 }
   ];
 
-  var w = 0, h = 0, dpr = 1, cx = 0, cy = 0, radius = 0;
+  var STEP = 14;                 /* document px between samples */
+  var DRIFT = 0.0042;            /* radians of phase per frame */
+  var OVER = 120;                /* sampled past both edges, so no line
+                                    ends in mid-air at the fold */
+
+  var w = 0, h = 0, dpr = 1;
   var raf = null, running = false;
+  var phase = 0;
 
-  var t = 0;                     /* beam position along the figure */
-  var a = 3, b = 2;              /* live frequency ratio */
-  var aTo = 3, bTo = 2;          /* where it is heading */
-  var phase = 0, phaseRate = 0.02;
-  var hold = 0;                  /* frames left before the next ratio */
-
-  /* the pointer nudges the phase, so the figure leans toward the cursor
-     without ever being driven by it */
+  /* the pointer leans the lines, without ever driving them */
   var lean = 0, leanTo = 0;
-
-  function pickRatio() {
-    var next = RATIOS[(Math.random() * RATIOS.length) | 0];
-    /* never pick the one already showing, or it looks stuck */
-    if (next[0] === aTo && next[1] === bTo) {
-      next = RATIOS[(RATIOS.indexOf(next) + 1) % RATIOS.length];
-    }
-    aTo = next[0];
-    bTo = next[1];
-    /* long enough to hold a closed figure still for a while before it
-       slides to the next one */
-    hold = 620 + ((Math.random() * 420) | 0);
-  }
 
   /* ---- sizing ----------------------------------------------------------- */
   function resize() {
@@ -87,24 +65,11 @@
     if (!rect.width || !rect.height) return;
     w = rect.width;
     h = rect.height;
-    /* the beam is a hairline on black; full device ratio rasterises far
-       more than the look needs and the decay fill is per-pixel work */
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    /* The canvas is fixed to the viewport rather than to the first
-       screen, so the beam runs behind the whole site. It stays centred
-       on the window as the page moves under it. */
-    cx = w / 2;
-    cy = h * 0.47;               /* sits with the badge on the first screen */
-    radius = Math.min(w, h) * 0.4;
-
-    /* a resize wipes the buffer, so lay the ground back down */
-    ctx.fillStyle = 'rgb(' + GROUND + ')';
-    ctx.fillRect(0, 0, w, h);
-    if (reduced.matches) still();
+    if (!running) draw();
   }
 
   /* ---- the readout ------------------------------------------------------ */
@@ -114,89 +79,75 @@
   var readoutAt = 0;
 
   function readout(now) {
-    if (now - readoutAt < 220) return;   /* four times a second is plenty */
+    if (now - readoutAt < 240) return;   /* four times a second is plenty */
     readoutAt = now;
-    if (rx) rx.textContent = a.toFixed(2);
-    if (ry) ry.textContent = b.toFixed(2);
+    if (rx) rx.textContent = LINES[0].long;
+    if (ry) ry.textContent = LINES[0].short;
     if (rp) rp.textContent = (((phase % 6.28318) + 6.28318) % 6.28318).toFixed(2);
   }
 
-  /* ---- one frame -------------------------------------------------------- */
-  function point(k) {
-    return [
-      cx + Math.sin(a * k + phase + lean) * radius,
-      cy + Math.sin(b * k) * radius
-    ];
-  }
+  /* ---- one line ---------------------------------------------------------
+     Drawn three times: a wide faint pass for the bloom, a middle one for
+     the halo, and the line itself. Cheaper than a blur filter and it is
+     the only way the glow survives without costing the frame. */
+  function trace(line, top, bottom, top0, alpha, width) {
+    var longK = 6.28318 / line.long;
+    var shortK = 6.28318 / line.short;
+    var swing = w * line.sway;
+    var rough = w * line.rough;
+    var mid = w * line.at;
 
-  function sweep(alpha, width) {
     ctx.beginPath();
-    var p = point(t);
-    ctx.moveTo(p[0], p[1]);
-    for (var i = 1; i <= SEGS; i++) {
-      p = point(t + i * DT);
-      ctx.lineTo(p[0], p[1]);
+    for (var y = top; y <= bottom; y += STEP) {
+      var x = mid
+        + Math.sin(y * longK + line.seed + phase + lean) * swing
+        + Math.sin(y * shortK + line.seed * 1.7 - phase * 0.55) * rough;
+      var screenY = y - top0;
+      if (y === top) ctx.moveTo(x, screenY);
+      else ctx.lineTo(x, screenY);
     }
     ctx.strokeStyle = 'rgba(' + ACID + ',' + alpha + ')';
     ctx.lineWidth = width;
     ctx.stroke();
   }
 
-  function frame(now) {
-    /* phosphor: never cleared, only dimmed */
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(' + GROUND + ',' + DECAY + ')';
-    ctx.fillRect(0, 0, w, h);
+  function scrollTop() {
+    return window.pageYOffset || document.documentElement.scrollTop || 0;
+  }
 
-    if (--hold <= 0) pickRatio();
-    a += (aTo - a) * 0.004;
-    b += (bTo - b) * 0.004;
-    phase += phaseRate * 0.016;
-    lean += (leanTo - lean) * 0.05;
-
-    /* Additive, so the crossings burn rather than merely overlap. Dimmer
-       than it was: this is behind every section now, not only behind the
-       first screen, and it has to stay under the type set over it. */
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    sweep(0.035, 7);             /* bloom */
-    sweep(0.09, 3);              /* halo */
-    sweep(0.42, 1.2);            /* the beam itself */
 
-    /* No dot marks the head. One was drawn here and it left a speck at
-       every frame's position; once the ratio drifted, those specks were
-       scattered off the curve the beam is now on and read as dirt. The
-       decay already makes the leading edge the brightest part, which is
-       what a scope's head actually is. */
-    t += SEGS * DT;
+    /* The slice of the document that is on screen. `from` is snapped to
+       the sample grid so the samples sit at fixed document positions and
+       the curve does not shimmer as it scrolls; the offset used to put
+       it back on screen has to be the true scroll position, not the
+       snapped one, or the lines would step instead of glide. */
+    var y0 = scrollTop();
+    var from = Math.floor((y0 - OVER) / STEP) * STEP;
+    var to = y0 + h + OVER;
+
+    for (var i = 0; i < LINES.length; i++) {
+      var line = LINES[i];
+      trace(line, from, to, y0, line.lit * 0.09, 7);
+      trace(line, from, to, y0, line.lit * 0.26, 3);
+      trace(line, from, to, y0, line.lit, 1.1);
+    }
+  }
+
+  function frame(now) {
+    phase += DRIFT;
+    lean += (leanTo - lean) * 0.04;
+    draw();
     readout(now);
     raf = running ? requestAnimationFrame(frame) : null;
   }
 
-  /* ---- the still ---------------------------------------------------------
-     Reduced motion gets one closed figure drawn in full rather than a
-     blank box: the same picture, just not sweeping. */
-  function still() {
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgb(' + GROUND + ')';
-    ctx.fillRect(0, 0, w, h);
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    a = aTo = 3; b = bTo = 2; phase = Math.PI / 2; lean = 0;
-    var whole = SEGS;
-    SEGS = Math.ceil(6.28318 / DT);       /* one entire period */
-    t = 0;
-    sweep(0.035, 7);
-    sweep(0.09, 3);
-    sweep(0.42, 1.2);
-    SEGS = whole;
-  }
-
   function start() {
-    if (reduced.matches) { still(); return; }
+    if (reduced.matches) { draw(); return; }
     if (!running) { running = true; raf = requestAnimationFrame(frame); }
   }
 
@@ -207,7 +158,7 @@
 
   /* ---- boot ------------------------------------------------------------- */
   resize();
-  pickRatio();
+  start();
 
   var rt;
   window.addEventListener('resize', function () {
@@ -215,22 +166,27 @@
     rt = setTimeout(resize, 150);
   }, { passive: true });
 
-  /* only run while it is actually on screen */
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) start(); else stop();
-    }, { threshold: 0 }).observe(canvas);
-  } else {
-    start();
-  }
+  /* Standing still, the lines are anchored to the document, so a reduced
+     motion visitor still has to see them move past as they scroll — this
+     is the only redraw they get. */
+  var pending = false;
+  window.addEventListener('scroll', function () {
+    if (running || pending) return;
+    pending = true;
+    requestAnimationFrame(function () { pending = false; draw(); });
+  }, { passive: true });
 
   if (!reduced.matches) {
     window.addEventListener('pointermove', function (e) {
-      leanTo = ((e.clientX / window.innerWidth) - 0.5) * 1.6;
+      leanTo = ((e.clientX / window.innerWidth) - 0.5) * 0.7;
     }, { passive: true });
   }
 
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stop(); else start();
+  });
+
   reduced.addEventListener('change', function () {
-    if (reduced.matches) { stop(); still(); } else start();
+    if (reduced.matches) { stop(); draw(); } else start();
   });
 })();

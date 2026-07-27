@@ -42,10 +42,10 @@
 <!-- the reel cuts the whole frame to its inverse twice on the way in -->
 <span class="flash" aria-hidden="true"></span>
 
-<!-- An oscilloscope in XY mode draws a Lissajous figure: two
-     oscillators, one per axis. The label is named after the thing, so
-     this is the picture of it — see assets/js/scope.js. Fixed to the
-     window and behind every section, not only the first screen. -->
+<!-- Three lines, each a function of how far down the document you are,
+     so they run the whole length of the site and you travel along them
+     as you scroll rather than watching them sit still. The canvas is
+     fixed to the window; what is drawn on it is not. See scope.js. -->
 <canvas class="scope" id="scope" aria-hidden="true"></canvas>
 
 <a class="skip-link" href="#artists">Skip to the artists</a>
@@ -100,7 +100,7 @@
 
   <div class="hero__foot">
     <p class="readout" aria-hidden="true">
-      X <b id="scope-x">3.00</b> : Y <b id="scope-y">2.00</b> &middot; &phi; <b id="scope-p">0.00</b>
+      &lambda; <b id="scope-x">1180</b> / <b id="scope-y">337</b> &middot; &phi; <b id="scope-p">0.00</b>
     </p>
     <p class="tag">Independent techno · Tehran</p>
     <p class="tag"><a href="#artists">Scroll <span aria-hidden="true">↓</span></a></p>
@@ -219,7 +219,7 @@
   </form>
 </dialog>
 
-<script defer src="assets/js/scope.js?v=d815190f"></script>
+<script defer src="assets/js/scope.js?v=0d808a0d"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
 <script defer src="assets/js/main.js?v=b8ee9be4"></script>
