@@ -19,69 +19,87 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=1b846efb">
+<link rel="stylesheet" href="assets/css/style.css?v=ef09b1b9">
 </head>
 
 <body>
 
 <a class="skip-link" href="#roster">Skip to the list</a>
 
-<div class="console">
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <filter id="tear" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.013 0.085" numOctaves="4" seed="11" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
-  <!-- the same deck, standing still: there is no catalogue here to
-       follow, so it holds the mark and the way back -->
-  <aside class="deck">
-    <a class="deck__mark" href="index.html" aria-label="Oscillator, home">
-      <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" fetchpriority="high" decoding="async">
-    </a>
+<!-- The same first screen, shorter: this page has a list to get to, so
+     the sleeve is cut to the frame, the rail and the title. -->
+<section class="hero hero--short" id="top" aria-labelledby="roster-title">
+  <span class="frame frame--in marks" aria-hidden="true"></span>
 
-    <div class="deck__art" id="deck-art">
-      <img id="deck-img" src="img/covers/030.webp" alt="" width="1100" height="1100" fetchpriority="high" decoding="async">
-    </div>
+  <nav class="hero__nav" aria-label="Primary">
+    <a href="index.html#archive">Archive</a>
+    <a href="artists.html" aria-current="page">Artists</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
 
-    <div class="deck__meta">
-      <p class="deck__note"><span class="deck__no" id="deck-no">030</span> · <span id="deck-note">Latest session</span></p>
-      <p class="deck__name" id="deck-name">—</p>
-    </div>
+  <div class="hero__rail">
+    <p class="hero__spine">Everyone we have put forward</p>
+    <svg class="hero__node" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
+      <path d="M8 30 L14 24 H106 L112 30 V50 L106 56 H14 L8 50 Z"
+            fill="none" stroke="#FEED07" stroke-width="7"/>
+      <g fill="#FEED07">
+        <circle cx="52" cy="32" r="15"/><circle cx="68" cy="32" r="15"/>
+        <circle cx="52" cy="60" r="15"/><circle cx="68" cy="60" r="15"/>
+      </g>
+      <g fill="#000000">
+        <circle cx="52" cy="32" r="9"/><circle cx="68" cy="32" r="9"/>
+        <circle cx="52" cy="60" r="9"/><circle cx="68" cy="60" r="9"/>
+      </g>
+      <g fill="#FEED07">
+        <circle cx="52" cy="32" r="2.6"/><circle cx="68" cy="32" r="2.6"/>
+        <circle cx="52" cy="60" r="2.6"/><circle cx="68" cy="60" r="2.6"/>
+      </g>
+    </svg>
+  </div>
 
-    <nav class="deck__nav" aria-label="Primary">
-      <a href="index.html#sessions">Sessions</a>
-      <a href="artists.html" aria-current="page">Artists</a>
-      <a href="index.html#about">About</a>
-      <a href="index.html#contact">Contact</a>
-    </nav>
-  </aside>
+  <div class="hero__stage">
+    <h1 class="ttl ttl--acid echo" id="roster-title" data-echo="Artists">Artists</h1>
+    <p class="hero__say">Every artist Oscillator has put forward, with their session.</p>
+  </div>
 
-  <main class="feed">
+  <div class="hero__foot">
+    <a class="tag hero__back" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
+  </div>
+</section>
 
-    <section class="lede" aria-labelledby="roster-title">
-      <p class="tag">Everyone we have put forward</p>
-      <h1 id="roster-title">Artists</h1>
-    </section>
-
+<main>
+  <section class="plate" aria-label="The artists">
+    <span class="frame marks" aria-hidden="true"></span>
     <ol class="roster" id="roster">
       <!-- filled from assets/js/artists.js -->
     </ol>
+  </section>
+</main>
 
-    <footer class="foot">
-      <p class="foot__mark">
-        <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-      </p>
-      <div class="foot__rows">
-        <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
-        <span class="foot__set">
-          <a href="index.html">Label</a>
-          <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-          <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-        </span>
-      </div>
-    </footer>
-
-  </main>
-</div>
+<footer class="foot">
+  <p class="foot__mark">
+    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+  </p>
+  <div class="foot__rows">
+    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
+    <span class="foot__set">
+      <a href="index.html">Label</a>
+      <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+      <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+    </span>
+  </div>
+</footer>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=773f9ea1"></script>
+<script defer src="assets/js/main.js?v=24e539e6"></script>
 </body>
 </html>

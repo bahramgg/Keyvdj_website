@@ -32,112 +32,177 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=1b846efb">
+<link rel="stylesheet" href="assets/css/style.css?v=ef09b1b9">
 </head>
 
 <body>
 
-<a class="skip-link" href="#sessions">Skip to the sessions</a>
+<a class="skip-link" href="#archive">Skip to the archive</a>
 
-<!-- ══ THE CONSOLE ═══════════════════════════════════════════════════
-     No hero. The label has ten sessions, so the ten sessions are the
-     first screen. The deck holds the identity and the artwork of
-     whichever row you are on; the feed beside it is the catalogue. -->
-<div class="console">
+<!-- The chewed border on every sleeve, as a filter: turbulence
+     displacing the image against itself, so the edge is eaten rather
+     than cut. Referenced from CSS by .torn — see the stylesheet. -->
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <filter id="tear" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.013 0.085" numOctaves="4" seed="11" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
-  <aside class="deck">
-    <a class="deck__mark" href="index.html" aria-label="Oscillator, home">
-      <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" fetchpriority="high" decoding="async">
-    </a>
+<!-- ══ THE FIRST SCREEN ═══════════════════════════════════════════════
+     A sleeve at the size of the window. Registration brackets on the
+     frame, the rail down the right with its type on its side, the
+     wordmark as large as it will go with its own reflection beneath it —
+     which is the move the sleeves make with every artist's name. -->
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <span class="frame frame--in marks" aria-hidden="true"></span>
 
-    <!-- swapped by assets/js/main.js as you move down the catalogue -->
-    <div class="deck__art" id="deck-art">
-      <img id="deck-img" src="img/covers/030.webp" alt="" width="1100" height="1100" fetchpriority="high" decoding="async">
-    </div>
+  <nav class="hero__nav" aria-label="Primary">
+    <a href="#archive">Archive</a>
+    <a href="artists.html">Artists</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
-    <div class="deck__meta">
-      <p class="deck__note"><span class="deck__no" id="deck-no">030</span> · <span id="deck-note">Latest session</span></p>
-      <p class="deck__name" id="deck-name">—</p>
-    </div>
+  <div class="hero__rail">
+    <p class="hero__spine">Independent techno label · Tehran · EST. KEYV</p>
 
-    <nav class="deck__nav" aria-label="Primary">
-      <a href="#sessions">Sessions</a>
-      <a href="artists.html">Artists</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </aside>
+    <!-- the label's emblem: the chamfered bar and its four dotted nodes,
+         redrawn so it can be set at any size without going soft -->
+    <svg class="hero__node" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
+      <path d="M8 30 L14 24 H106 L112 30 V50 L106 56 H14 L8 50 Z"
+            fill="none" stroke="#FEED07" stroke-width="7"/>
+      <g fill="#FEED07">
+        <circle cx="52" cy="32" r="15"/><circle cx="68" cy="32" r="15"/>
+        <circle cx="52" cy="60" r="15"/><circle cx="68" cy="60" r="15"/>
+      </g>
+      <g fill="#000000">
+        <circle cx="52" cy="32" r="9"/><circle cx="68" cy="32" r="9"/>
+        <circle cx="52" cy="60" r="9"/><circle cx="68" cy="60" r="9"/>
+      </g>
+      <g fill="#FEED07">
+        <circle cx="52" cy="32" r="2.6"/><circle cx="68" cy="32" r="2.6"/>
+        <circle cx="52" cy="60" r="2.6"/><circle cx="68" cy="60" r="2.6"/>
+      </g>
+    </svg>
+  </div>
 
-  <main class="feed">
-
-    <!-- ══ what the label is, in one sentence ═══════════════════════ -->
-    <section class="lede" aria-labelledby="lede-title">
-      <p class="tag">Independent techno · Tehran</p>
-      <h1 id="lede-title">Oscillator puts forward <em>one artist at a time</em>.</h1>
-    </section>
-
-    <!-- ══ the catalogue ════════════════════════════════════════════ -->
-    <section id="sessions" aria-labelledby="sessions-title">
-      <h2 class="sr-only" id="sessions-title">Sessions</h2>
-      <ol class="rows" id="session-list"></ol>
-    </section>
-
-    <!-- ══ about ════════════════════════════════════════════════════ -->
-    <section id="about" class="panel" aria-labelledby="about-title">
-      <p class="tag panel__tag">The label</p>
-      <h2 id="about-title">About</h2>
-      <div class="prose">
-        <p>
-          Oscillator is an independent techno label founded by KEYV. Every
-          session hands the deck to another artist, and the archive is the
-          record of it.
-        </p>
-        <p>
-          Sessions go out numbered, in order, with no schedule to fill.
-        </p>
-      </div>
-
-      <dl class="facts">
-        <div><dt>Sessions</dt><dd id="fact-count">—</dd></div>
-        <div><dt>Latest</dt><dd id="fact-latest">—</dd></div>
-        <div><dt>Based in</dt><dd>Tehran</dd></div>
-        <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
-      </dl>
-    </section>
-
-    <!-- ══ contact ══════════════════════════════════════════════════ -->
-    <section id="contact" class="panel" aria-labelledby="contact-title">
-      <p class="tag panel__tag">Demos, bookings, press</p>
-      <h2 id="contact-title">Get in touch</h2>
-      <div class="prose">
-        <p>
-          We listen to everything that comes in. Send a private link with a
-          line about who you are — no attachments, no zip files.
-        </p>
-      </div>
-      <p class="actions">
-        <button class="btn btn--acid" type="button" id="contact-open">Write to us</button>
-        <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-        <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-      </p>
-    </section>
-
-    <footer class="foot">
-      <p class="foot__mark">
-        <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-      </p>
-      <div class="foot__rows">
-        <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
-        <span class="foot__set">
-          <a href="artists.html">Artists</a>
-          <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-          <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+  <div class="hero__stage">
+    <p class="hero__say">A label from Tehran that puts forward <b>one artist at a time</b>.</p>
+    <h1 class="hero__word" id="hero-title">
+      <span class="sr-only">Oscillator</span>
+      <span class="hero__wordin">
+        <img src="img/wordmark.webp" alt="" width="1600" height="470" fetchpriority="high" decoding="async">
+        <span class="hero__echo" aria-hidden="true">
+          <img src="img/wordmark.webp" alt="" width="1600" height="470" decoding="async">
         </span>
-      </div>
-    </footer>
+      </span>
+    </h1>
+  </div>
 
-  </main>
-</div>
+  <div class="hero__foot">
+    <span class="hero__latest">
+      <span class="tag">Latest</span>
+      <span class="notch"><span id="hero-no">030</span></span>
+      <strong id="hero-name">—</strong>
+    </span>
+    <a class="tag hero__scroll" href="#archive">Scroll <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<main>
+
+  <!-- ══ THE ARCHIVE ═════════════════════════════════════════════════ -->
+  <section class="plate" id="archive" aria-labelledby="archive-title">
+    <span class="frame marks" aria-hidden="true"></span>
+
+    <div class="plate__head">
+      <p class="tag">Every session, in order</p>
+      <h2 class="ttl echo" id="archive-title" data-echo="Archive">Archive</h2>
+    </div>
+
+    <div class="cat">
+      <ol class="cat__list" id="session-list"></ol>
+
+      <!-- the sleeve of whichever row you are on; desktop only -->
+      <div class="cat__sleeve" aria-hidden="true">
+        <figure>
+          <span class="cat__box">
+            <span class="frame marks" aria-hidden="true"></span>
+            <img class="torn" id="sleeve-img" src="img/covers/030.webp" alt="" width="1100" height="1100" loading="lazy" decoding="async">
+          </span>
+          <figcaption><b id="sleeve-no">030</b> · <span id="sleeve-name">—</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ABOUT ═══════════════════════════════════════════════════════ -->
+  <section class="plate" id="about" aria-labelledby="about-title">
+    <span class="frame marks" aria-hidden="true"></span>
+
+    <div class="plate__head">
+      <p class="tag">The label</p>
+      <h2 class="ttl ttl--acid echo" id="about-title" data-echo="About">About</h2>
+    </div>
+
+    <div class="prose">
+      <p>
+        Oscillator is an independent techno label founded by KEYV. Every
+        session hands the deck to another artist, and the archive is the
+        record of it.
+      </p>
+      <p>
+        Sessions go out numbered, in order, with no schedule to fill.
+      </p>
+    </div>
+
+    <dl class="facts">
+      <div><dt>Sessions</dt><dd id="fact-count">—</dd></div>
+      <div><dt>Latest</dt><dd id="fact-latest">—</dd></div>
+      <div><dt>Based in</dt><dd>Tehran</dd></div>
+      <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
+    </dl>
+  </section>
+
+  <!-- ══ CONTACT ═════════════════════════════════════════════════════ -->
+  <section class="plate" id="contact" aria-labelledby="contact-title">
+    <span class="frame marks" aria-hidden="true"></span>
+
+    <div class="plate__head">
+      <p class="tag">Demos, bookings, press</p>
+      <h2 class="ttl echo" id="contact-title" data-echo="Get in touch">Get in touch</h2>
+    </div>
+
+    <div class="prose">
+      <p>
+        We listen to everything that comes in. Send a private link with a
+        line about who you are — no attachments, no zip files.
+      </p>
+    </div>
+
+    <p class="actions">
+      <button class="btn btn--acid" type="button" id="contact-open"><span>Write to us</span></button>
+      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener"><span>SoundCloud</span></a>
+      <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener"><span>Instagram</span></a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot__mark">
+    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+  </p>
+  <div class="foot__rows">
+    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
+    <span class="foot__set">
+      <a href="artists.html">Artists</a>
+      <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+      <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+    </span>
+  </div>
+</footer>
 
 <dialog class="modal" id="contact-modal" aria-labelledby="modal-title">
   <form class="modal__in" id="contact-form" novalidate>
@@ -159,13 +224,13 @@
       <textarea name="message" rows="5" required placeholder="Demo link, booking, press…"></textarea>
     </label>
 
-    <button class="btn btn--acid" type="submit">Send</button>
+    <button class="btn btn--acid" type="submit"><span>Send</span></button>
     <p class="modal__note" id="contact-note" role="status" aria-live="polite"></p>
   </form>
 </dialog>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=773f9ea1"></script>
+<script defer src="assets/js/main.js?v=24e539e6"></script>
 </body>
 </html>

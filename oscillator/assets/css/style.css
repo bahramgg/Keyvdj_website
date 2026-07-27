@@ -1,14 +1,21 @@
 /* =============================================================
    OSCILLATOR — label site
 
-   Structure first. This is a label with ten numbered sessions, so the
-   ten sessions are the page: you land on the catalogue, not on a poster
-   that makes you scroll to reach it. There is no hero here on purpose.
+   Built out of the label's own artwork rather than next to it. The
+   sleeves already have a finished visual system and this stylesheet is
+   that system, taken apart and rebuilt in CSS:
 
-   The page is a console. A deck is fixed down the left — the mark, the
-   artwork of whichever session you are pointing at, its number set huge
-   over the art, and the way in. The right column is the catalogue, and
-   it carries everything else past the deck as you scroll.
+     · registration brackets in the corner of every frame
+     · a rail down one side, type running vertically
+     · the name set twice, the second copy mirrored — the signature
+       move on every cover, and what the page is built around
+     · the number in a box with its corners cut
+     · torn, chewed edges on the photography
+     · black, one acid yellow, and nothing else
+
+   The wordmark is a circuit trace: rectilinear strokes at one weight,
+   45-degree cuts, negative space down to slots. Everything drawn here
+   follows those rules — no rounded corners, no gradients, no shadows.
 
    Nothing is shared with the KEYV stylesheet but the two font files.
    ============================================================= */
@@ -18,15 +25,22 @@
   --black: #000000;
   --ink: #0A0A00;             /* type on the accent */
   --paper: #EFEFE6;
-  --soft: #78786C;            /* secondary type on black */
-  --line: #1E1E1A;            /* the hairline grid */
-  --line-lit: #35352E;
+  --soft: #74746A;
+  --line: #212119;
 
-  --deck: clamp(17rem, 30vw, 26rem);
-  --pad: clamp(1.15rem, 2.6vw, 2.25rem);
+  --gutter: clamp(1.1rem, 3.5vw, 3.25rem);
   --font-display: "Anton", "Arial Narrow", sans-serif;
   --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --ease: cubic-bezier(.22, 1, .36, 1);
+
+  /* the cut corner, straight off the number boxes on the sleeves */
+  --ch: 7px;
+  --chamfer: polygon(
+    0 var(--ch), var(--ch) 0,
+    calc(100% - var(--ch)) 0, 100% var(--ch),
+    100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%,
+    var(--ch) 100%, 0 calc(100% - var(--ch))
+  );
 }
 
 @font-face {
@@ -58,7 +72,7 @@ body {
 img { display: block; max-width: 100%; }
 ul, ol { list-style: none; margin: 0; padding: 0; }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--acid); outline-offset: -2px; }
+:focus-visible { outline: 2px solid var(--acid); outline-offset: 2px; }
 
 .skip-link { position: absolute; left: -9999px; top: 0; background: var(--acid); color: var(--ink); padding: .7rem 1rem; z-index: 100; }
 .skip-link:focus { left: 0; }
@@ -72,22 +86,113 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
 }
 
-/* Flat black reads as a void, so the page sits on graph paper: a fine
-   fixed grid, barely above the black, that gives the type something to
-   be measured against. The sprayed wall this replaced was louder than
-   the covers and fought them for attention. */
-body::before {
+/* Grain, because every one of these sleeves is a photocopy of a
+   photocopy and flat black would give that away. Fixed, so it sits on
+   the page like paper stock rather than scrolling with the content. */
+body::after {
   content: "";
   position: fixed;
-  inset: 0;
-  z-index: -2;
+  inset: -50%;
+  z-index: 9;
   pointer-events: none;
-  background-image:
-    repeating-linear-gradient(0deg,  rgba(239, 239, 230, .03) 0 1px, transparent 1px 46px),
-    repeating-linear-gradient(90deg, rgba(239, 239, 230, .03) 0 1px, transparent 1px 46px);
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
-/* ---- small technical labels ---------------------------------------- */
+/* =============================================================
+   THE PARTS THE SLEEVES ARE MADE OF
+   ============================================================= */
+
+/* ---- registration brackets ------------------------------------------
+   Eight gradients, two arms to a corner. They ride on their own overlay
+   rather than on the section itself, because a section's padding is
+   rarely equal on both axes and the brackets have to sit square. */
+.frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.frame--in { inset: clamp(.7rem, 1.8vh, 1.25rem); }
+
+.marks {
+  --arm: clamp(13px, 2vw, 24px);
+  --gauge: 2px;
+  background-image:
+    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid)),
+    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid)),
+    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid)),
+    linear-gradient(var(--acid), var(--acid)), linear-gradient(var(--acid), var(--acid));
+  background-size:
+    var(--gauge) var(--arm), var(--arm) var(--gauge),
+    var(--gauge) var(--arm), var(--arm) var(--gauge),
+    var(--gauge) var(--arm), var(--arm) var(--gauge),
+    var(--gauge) var(--arm), var(--arm) var(--gauge);
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+  background-repeat: no-repeat;
+}
+
+/* ---- a box with its corners cut -------------------------------------
+   Two layers: clip-path takes the border with it, so the outline has to
+   be a filled shape with a smaller filled shape sitting inside it. */
+.notch {
+  display: inline-block;
+  padding: 2px;
+  background: var(--acid);
+  clip-path: var(--chamfer);
+}
+.notch > * {
+  display: block;
+  padding: .3rem .6rem;
+  background: var(--black);
+  clip-path: var(--chamfer);
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--acid);
+}
+
+/* ---- the mirrored name ----------------------------------------------
+   The move that runs through every sleeve: the name, then the name
+   again upside down under it, fading as it goes. Set from a data
+   attribute so there is only ever one copy of the text in the document
+   for a screen reader to find. */
+.echo { position: relative; display: block; }
+.echo::after {
+  content: attr(data-echo);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  /* Mirrored about the top edge, which throws it upward over the
+     original, so it is pushed back down by its own height. Held to half
+     scale: at full height a title's reflection reached the first row of
+     whatever came under it. */
+  transform: translateY(50%) scaleY(-.5);
+  transform-origin: top;
+  color: inherit;
+  opacity: .2;
+  -webkit-mask-image: linear-gradient(to top, transparent 12%, #000 92%);
+  mask-image: linear-gradient(to top, transparent 12%, #000 92%);
+  pointer-events: none;
+  white-space: inherit;
+}
+
+/* ---- torn edges ------------------------------------------------------
+   The filter itself lives in the page as SVG; this is only what it is
+   applied to. Every sleeve has its photograph chewed at the border, and
+   an untorn rectangle is the one thing that would read as not theirs.
+
+   Photographs only. The wordmark is a circuit trace with slots a few
+   pixels wide, and displacing it by twelve turns it to mush. */
+.torn { filter: url(#tear); }
+
+/* ---- small technical type -------------------------------------------- */
 .tag {
   margin: 0;
   font-size: .625rem;
@@ -99,161 +204,207 @@ body::before {
 .tag--acid { color: var(--acid); }
 
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .6rem;
-  border: 1px solid currentColor;
-  padding: .8rem 1.4rem;
+  display: inline-block;
+  padding: 2px;
+  background: var(--acid);
+  clip-path: var(--chamfer);
+  border: 0;
   font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+.btn > span {
+  display: block;
+  padding: .8rem 1.5rem;
+  background: var(--black);
+  clip-path: var(--chamfer);
   font-size: .625rem;
   font-weight: 700;
   letter-spacing: .22em;
   text-transform: uppercase;
-  cursor: pointer;
-  background: none;
-  color: inherit;
-  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+  color: var(--acid);
+  transition: background .18s var(--ease), color .18s var(--ease);
 }
-.btn:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
-.btn--acid { background: var(--acid); border-color: var(--acid); color: var(--ink); }
-.btn--acid:hover { background: transparent; border-color: var(--acid); color: var(--acid); }
+.btn:hover > span { background: var(--acid); color: var(--ink); }
+.btn--acid > span { background: var(--acid); color: var(--ink); }
+.btn--acid:hover > span { background: var(--black); color: var(--acid); }
 
 /* =============================================================
-   THE CONSOLE — deck on the left, catalogue on the right
+   THE FIRST SCREEN — a sleeve at the size of the window
+
+   Everything the sleeves do, at full scale: brackets on the frame, the
+   rail down the right with its type on its side, the wordmark set as
+   large as it will go with its own reflection under it, and the number
+   of the newest session in a cut box.
    ============================================================= */
-.console {
+.hero {
+  position: relative;
+  min-height: 100svh;
   display: grid;
-  grid-template-columns: var(--deck) minmax(0, 1fr);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(1rem, 3vh, 2rem);
+  padding: clamp(1rem, 2.6vh, 1.75rem) var(--gutter);
+  overflow: hidden;
 }
-
-/* ---- the deck -------------------------------------------------------
-   Sticky for the whole document, so the artwork and the way in never
-   leave. It is a grid rather than a stack because the artwork has to
-   take whatever height is left after the mark, the caption and the nav
-   have had theirs — at 700px tall and at 1400px tall alike. */
-.deck {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-  gap: var(--pad);
-  padding: var(--pad);
-  border-right: 1px solid var(--line);
-  background: var(--black);
-}
-
-.deck__mark { display: block; width: min(11rem, 62%); }
-.deck__mark img { width: 100%; height: auto; }
-
-/* The artwork of the session under the cursor. It is a hard cut, not a
-   fade: a label swaps records, it does not dissolve them.
-
-   Nothing is set over it. The covers already carry the session number
-   and the artist's name in the label's own hand — an overlay of ours
-   would only be a second, worse version of what is already there. */
-/* Held to the top of its row, so the slack in the column collects in one
-   place above the caption instead of splitting either side of the art. */
-.deck__art { display: grid; place-items: start center; min-height: 0; }
-/* The covers are square and the slot is not, so the image is capped in
-   both directions and left at its own ratio rather than being cropped to
-   fill — a crop here cut the artist's name off their own cover. */
-.deck__art img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-  background: #0B0B09;
-  border: 1px solid var(--line);
-}
-
-.deck__meta { display: grid; gap: .3rem; }
-.deck__note { margin: 0; font-size: .625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
-.deck__no { color: var(--acid); font-variant-numeric: tabular-nums; }
-.deck__name {
-  margin: 0;
-  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: -.025em;
-  line-height: 1.15;
-}
-
-.deck__nav { display: flex; flex-wrap: wrap; gap: .45rem 1.1rem; }
-.deck__nav a {
+.hero__nav { grid-column: 1; display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; align-self: start; }
+.hero__nav a {
   font-size: .625rem;
   font-weight: 700;
-  letter-spacing: .2em;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--paper);
   transition: color .18s var(--ease);
 }
-.deck__nav a:hover,
-.deck__nav a[aria-current] { color: var(--acid); }
+.hero__nav a:hover, .hero__nav a[aria-current] { color: var(--acid); }
 
-/* ---- the feed ------------------------------------------------------- */
-.feed { min-width: 0; }
-
-/* One statement, and then straight into the work. This is the closest
-   thing to a hero the page has, and it is three lines of type. */
-.lede {
-  padding: clamp(2.25rem, 6vh, 4rem) var(--pad) clamp(1.75rem, 4vh, 2.5rem);
-  border-bottom: 1px solid var(--line);
+/* ---- the rail --------------------------------------------------------
+   Reads bottom-to-top like the name on a spine, and like the rail on
+   every sleeve it ends with the emblem. */
+.hero__rail {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  display: grid;
+  justify-items: center;
+  align-content: space-between;
+  gap: 1rem;
+  padding-left: clamp(.75rem, 2vw, 1.5rem);
+  border-left: 1px solid var(--line);
 }
-.lede h1 {
-  margin: .9rem 0 0;
-  max-width: 18ch;
-  font-size: clamp(1.75rem, 4.2vw, 3.6rem);
+.hero__spine {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin: 0;
+  font-size: .625rem;
   font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -.035em;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--acid);
+  white-space: nowrap;
 }
-.lede h1 em { font-style: normal; color: var(--acid); }
+.hero__node {
+  width: clamp(1.5rem, 3vw, 2.25rem);
+  aspect-ratio: 1;
+  opacity: .85;
+}
 
-/* ---- the catalogue --------------------------------------------------
-   Ten rows of type, all on the first screen. No grid of squares: the
-   artwork lives in the deck and swaps as you move down the list, so the
-   archive reads the way a catalogue reads. */
-.rows { border-bottom: 1px solid var(--line); }
-.rows li + li .row { border-top: 1px solid var(--line); }
+/* ---- the wordmark ---------------------------------------------------- */
+.hero__stage {
+  grid-column: 1;
+  grid-row: 2;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: clamp(1rem, 3vh, 2rem);
+  min-height: 0;
+}
+/* The reflection is taken out of flow, so the block reserves its room
+   here — the wordmark is 1600x470, so a full-height mirror is another
+   29% of the width, and the mask leaves about two thirds of it visible.
+   Without this the strapline printed straight over the reflection. */
+.hero__word { width: min(100%, 60rem); padding-bottom: 19%; }
+.hero__wordin { position: relative; display: block; }
+.hero__word img { width: 100%; height: auto; }
+/* the reflection, exactly as the sleeves set it under a name */
+.hero__echo {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  opacity: .3;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 62%);
+  mask-image: linear-gradient(to bottom, #000, transparent 62%);
+  pointer-events: none;
+}
+.hero__echo img { transform: scaleY(-1); }
+
+.hero__say {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(.9375rem, 1.5vw, 1.25rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+  color: var(--paper);
+}
+.hero__say b { color: var(--acid); font-weight: 700; }
+
+/* ---- the foot of the first screen ------------------------------------ */
+.hero__foot {
+  grid-column: 1;
+  grid-row: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem clamp(1rem, 3vw, 2.5rem);
+  align-self: end;
+}
+.hero__latest { display: flex; align-items: center; gap: .75rem; }
+.hero__latest .tag { color: var(--soft); }
+.hero__latest strong { font-size: .8125rem; font-weight: 700; letter-spacing: .04em; }
+.hero__scroll { margin-left: auto; }
+.hero__back:hover { color: var(--acid); }
+
+/* the artists page has a list to get to, so its first screen is cut to
+   the frame, the rail and the title */
+.hero--short { min-height: 52svh; }
+/* the title's reflection lands in this gap, so it is set from the
+   reflection's height rather than picked to look right */
+.hero--short .hero__stage { gap: clamp(2.5rem, 6vh, 4rem); }
+
+/* =============================================================
+   SECTIONS — each one a framed plate, the way each sleeve is
+   ============================================================= */
+.plate {
+  position: relative;
+  margin: clamp(2rem, 6vh, 4.5rem) var(--gutter);
+  padding: clamp(1.75rem, 5vh, 3.25rem) clamp(1.25rem, 3.5vw, 3rem);
+}
+.plate__head { margin-bottom: clamp(1.75rem, 5vh, 3rem); }
+.plate__head .tag { margin-bottom: .9rem; }
+.ttl {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 7vw, 5.5rem);
+  line-height: .88;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+.ttl--acid { color: var(--acid); }
+/* The reflection is out of flow and half the title's height, so half an
+   em of clearance covers it exactly — at any size the title is set. */
+.ttl.echo { margin-bottom: .8em; }
+
+/* ---- the archive -----------------------------------------------------
+   A rail of rows: the number in its cut box, the name, and the sleeve
+   itself held off to the side and swapped as you move down, so the list
+   stays a list. */
+.cat { display: grid; grid-template-columns: minmax(0, 1fr) clamp(12rem, 22vw, 19rem); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+.cat__list { border-top: 1px solid var(--line); }
 
 .row {
-  position: relative;
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1rem;
-  padding: 0 var(--pad);
-  /* ten of these plus the lede have to clear a 900px-tall window, which
-     is what fixes the ceiling here — the whole point of the layout is
-     that the entire catalogue is on the first screen */
-  min-height: clamp(3.1rem, 6.4svh, 4.5rem);
+  gap: clamp(.9rem, 2vw, 1.75rem);
+  padding: clamp(.7rem, 1.6vh, 1.1rem) clamp(.5rem, 1.5vw, 1rem);
+  border-bottom: 1px solid var(--line);
   color: inherit;
   transition: background .16s var(--ease), color .16s var(--ease);
 }
 .row__thumb { display: none; }
-
-.row__no {
-  font-size: .8125rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-  font-variant-numeric: tabular-nums;
-  color: var(--acid);
-  transition: color .16s var(--ease);
-}
 .row__name {
   margin: 0;
-  font-size: clamp(1.05rem, 2.1vw, 1.65rem);
-  font-weight: 700;
-  letter-spacing: -.03em;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3.2vw, 2.5rem);
+  line-height: 1;
+  letter-spacing: .01em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Anchors the right edge of a very wide row so the line does not trail
-   off into nothing. Present at rest, lit on hover. */
 .row__go {
   font-size: .5625rem;
   font-weight: 700;
@@ -263,42 +414,43 @@ body::before {
   transition: color .16s var(--ease);
 }
 
-/* A hard acid fill, the way a channel lights when you push it. */
-.row:hover,
-.row:focus-visible {
+.row:hover, .row:focus-visible {
   background: var(--acid);
   color: var(--ink);
   outline: none;
 }
-.row:hover .row__no,
-.row:focus-visible .row__no,
-.row:hover .row__go,
-.row:focus-visible .row__go { color: var(--ink); }
+.row:hover .row__go, .row:focus-visible .row__go { color: var(--ink); }
+.row:hover .notch, .row:focus-visible .notch { background: var(--ink); }
+.row:hover .notch > *, .row:focus-visible .notch > * { background: var(--acid); color: var(--ink); }
 
-/* ---- the panels below ----------------------------------------------- */
-.panel {
-  padding: clamp(3rem, 9vh, 6rem) var(--pad);
-  border-bottom: 1px solid var(--line);
-}
-.panel__tag { margin: 0 0 1.25rem; }
-.panel h2 {
-  margin: 0 0 1.25rem;
-  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+/* the sleeve beside the list, torn like the sleeves themselves */
+.cat__sleeve { position: sticky; top: clamp(1.5rem, 6vh, 4rem); }
+.cat__sleeve figure { margin: 0; }
+/* the brackets belong to the picture, not to the picture plus its
+   caption — on the figure they closed around the caption text */
+.cat__box { position: relative; display: block; aspect-ratio: 1; }
+.cat__sleeve img { width: 100%; height: 100%; object-fit: cover; }
+.cat__sleeve figcaption {
+  margin-top: .9rem;
+  font-size: .625rem;
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -.035em;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--soft);
 }
-.prose { max-width: 46ch; color: #C9C9BE; }
+.cat__sleeve figcaption b { color: var(--acid); }
+
+/* ---- prose plates ---------------------------------------------------- */
+.prose { max-width: 44ch; color: #C6C6BB; }
 .prose p { margin: 0 0 1rem; }
 .prose p:last-child { margin-bottom: 0; }
-.actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.75rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 2rem; }
 
-/* the label's own numbers, set as a strip rather than a paragraph */
 .facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
   gap: 1px;
-  margin-top: 2.25rem;
+  margin: 2.5rem 0 0;
   background: var(--line);
   border: 1px solid var(--line);
 }
@@ -307,35 +459,32 @@ body::before {
 .facts dd { margin: .5rem 0 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; }
 .facts a { color: var(--acid); }
 
-/* ---- the roster (artists page) --------------------------------------
-   Same column, but each artist gets their cover, because this page is
-   where you come to read about them rather than to pick a mix. */
+/* ---- the roster (artists page) --------------------------------------- */
 .roster__row {
   display: grid;
-  grid-template-columns: clamp(5.5rem, 12vw, 9rem) minmax(0, 1fr);
-  gap: clamp(1rem, 2.5vw, 2rem);
+  grid-template-columns: clamp(6rem, 14vw, 11rem) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
   align-items: start;
-  padding: clamp(1.5rem, 4vh, 2.5rem) var(--pad);
+  padding: clamp(1.5rem, 4vh, 2.5rem) 0;
+  border-bottom: 1px solid var(--line);
 }
-.roster__row + .roster__row { border-top: 1px solid var(--line); }
-.roster__shot { margin: 0; aspect-ratio: 1; overflow: hidden; background: #0B0B09; border: 1px solid var(--line); }
+/* positioned, or the brackets inside it escape to the plate */
+.roster__shot { position: relative; margin: 0; aspect-ratio: 1; }
 .roster__shot img { width: 100%; height: 100%; object-fit: cover; }
-.roster__no { font-size: .6875rem; font-weight: 700; letter-spacing: .16em; color: var(--acid); font-variant-numeric: tabular-nums; }
 .roster__name {
-  margin: .25rem 0 0;
-  font-size: clamp(1.15rem, 2.6vw, 1.9rem);
-  font-weight: 700;
-  letter-spacing: -.03em;
-  line-height: 1.1;
+  margin: .75rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
+  line-height: .95;
   text-transform: uppercase;
 }
-.roster__bio { margin: .7rem 0 0; max-width: 52ch; color: #C9C9BE; }
-.roster__row .btn { margin-top: 1rem; }
+.roster__bio { margin: .9rem 0 0; max-width: 50ch; color: #C6C6BB; }
+.roster__row .btn { margin-top: 1.25rem; }
 
-/* ---- foot ----------------------------------------------------------- */
-.foot { padding: clamp(2rem, 6vh, 3.5rem) var(--pad) clamp(2.5rem, 7vh, 4rem); }
-.foot__mark { margin: 0 0 2rem; max-width: min(30rem, 100%); }
-.foot__mark img { width: 100%; height: auto; opacity: .9; }
+/* ---- foot ------------------------------------------------------------ */
+.foot { padding: clamp(2rem, 6vh, 4rem) var(--gutter) clamp(2.5rem, 7vh, 4.5rem); }
+.foot__mark { position: relative; margin: 0 0 2.5rem; width: min(38rem, 100%); }
+.foot__mark img { width: 100%; height: auto; }
 .foot__rows {
   display: flex;
   flex-wrap: wrap;
@@ -348,70 +497,46 @@ body::before {
   color: var(--soft);
 }
 .foot__set { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; }
-.foot__rows a { transition: color .18s var(--ease); }
 .foot__rows a:hover { color: var(--acid); }
 
 /* =============================================================
-   MOBILE — the deck cannot be a column, so it becomes a masthead and
-   the artwork moves into the rows themselves.
+   NARROW — the rail cannot survive, so the sleeve moves into the rows
    ============================================================= */
-@media (max-width: 900px) {
-  .console { grid-template-columns: 1fr; }
-
-  /* Four nav items will not sit beside the mark at 320px, and wrapping
-     them against a right edge reads as an accident — so they get their
-     own line under it. */
-  .deck {
-    position: static;
-    height: auto;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    gap: .75rem;
-    padding-bottom: 1rem;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .hero__rail {
+    grid-column: 1;
+    grid-row: 3;
+    grid-auto-flow: column;
+    justify-content: space-between;
+    align-items: center;
+    justify-items: stretch;
+    padding-left: 0;
+    padding-top: 1rem;
+    border-left: 0;
+    border-top: 1px solid var(--line);
   }
-  .deck__mark { width: 8rem; }
-  .deck__nav { justify-content: flex-start; }
-  /* the deck's artwork and caption are what the rows now carry */
-  .deck__art, .deck__meta { display: none; }
+  /* on its side it would be a column of one letter per line at 320px */
+  .hero__spine { writing-mode: horizontal-tb; transform: none; letter-spacing: .22em; font-size: .5625rem; white-space: normal; }
+  .hero__foot { grid-row: 4; }
+  .hero__scroll { display: none; }
 
-  .lede { padding-top: clamp(2.25rem, 6vh, 3.5rem); }
+  .cat { grid-template-columns: minmax(0, 1fr); }
+  .cat__sleeve { display: none; }
 
-  .row {
-    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
-    gap: .9rem;
-    padding: .85rem var(--pad);
-    min-height: 0;
-  }
-  .row__thumb {
-    display: block;
-    grid-row: span 1;
-    width: 3.5rem;
-    aspect-ratio: 1;
-    margin: 0;
-    overflow: hidden;
-    background: #0B0B09;
-  }
+  .row { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; gap: .5rem .9rem; }
+  .row__thumb { display: block; grid-column: 1; grid-row: 1 / span 2; width: clamp(3.25rem, 14vw, 4.5rem); aspect-ratio: 1; margin: 0; }
   .row__thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .row__no {
-    /* the thumbnail has taken the first column, so the number rides
-       above the name rather than beside it */
-    grid-column: 2;
-    font-size: .625rem;
-  }
-  .row__name { grid-column: 2; grid-row: 2; font-size: 1.0625rem; white-space: normal; }
+  .row .notch { grid-column: 2; grid-row: 1; justify-self: start; }
+  .row__name { grid-column: 2; grid-row: 2; font-size: clamp(1.15rem, 5.5vw, 1.75rem); white-space: normal; }
   .row__go { display: none; }
-  .row { grid-template-rows: auto auto; align-items: center; }
-  .row__thumb { grid-column: 1; grid-row: 1 / span 2; }
-
-  /* no hover on a touch screen, so the fill would only ever stick */
+  /* a fill that only ever sticks is worse than no fill on a touch screen */
   .row:hover { background: none; color: inherit; }
-  .row:hover .row__no { color: var(--acid); }
+  .row:hover .notch { background: var(--acid); }
+  .row:hover .notch > * { background: var(--black); color: var(--acid); }
   .row:active { background: var(--acid); color: var(--ink); }
-  .row:active .row__no { color: var(--ink); }
 
-  .roster__row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+  .roster__row { grid-template-columns: clamp(4.5rem, 22vw, 7rem) minmax(0, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -427,19 +552,23 @@ body::before {
    ============================================================= */
 .modal {
   width: min(30rem, calc(100vw - 2rem));
-  padding: 0;
-  border: 1px solid var(--acid);
-  background: var(--black);
+  padding: 2px;
+  border: 0;
+  background: var(--acid);
+  clip-path: var(--chamfer);
   color: var(--paper);
 }
-.modal::backdrop { background: rgba(0, 0, 0, .82); }
-.modal__in { display: grid; gap: 1rem; padding: clamp(1.25rem, 4vw, 2rem); }
-.modal__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.modal__head h2 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; }
-.modal__x {
-  border: 0; background: none; color: var(--soft);
-  font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 0 .25rem;
+.modal::backdrop { background: rgba(0, 0, 0, .85); }
+.modal__in {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  background: var(--black);
+  clip-path: var(--chamfer);
 }
+.modal__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.modal__head h2 { margin: 0; font-family: var(--font-display); font-size: 1.5rem; text-transform: uppercase; letter-spacing: .02em; }
+.modal__x { border: 0; background: none; color: var(--soft); font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 0 .25rem; }
 .modal__x:hover { color: var(--acid); }
 
 .field { display: grid; gap: .4rem; }
@@ -448,8 +577,8 @@ body::before {
   font: inherit;
   padding: .7rem .8rem;
   color: var(--paper);
-  background: #0B0B09;
-  border: 1px solid var(--line-lit);
+  background: #0A0A08;
+  border: 1px solid #33332C;
   border-radius: 0;
   resize: vertical;
 }

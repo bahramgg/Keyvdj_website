@@ -1,10 +1,10 @@
 /* =============================================================
-   OSCILLATOR — builds the console from artists.js and info.js
+   OSCILLATOR — builds the pages from artists.js and info.js
 
-   The deck on the left is the only moving part: it shows the artwork,
-   number and name of whichever session you are pointing at, and falls
-   back to the newest one when you are pointing at nothing. Everything
-   else is markup.
+   Everything the label makes is built out of the same parts, so this
+   builds the page out of them too: a number in a box with its corners
+   cut, a name, and a sleeve held off to the side that cuts to whichever
+   row you are on.
 
    No framework, no build step.
    ============================================================= */
@@ -29,46 +29,66 @@
     return node;
   }
 
+  /* the registration brackets, which are an overlay rather than a border */
+  function frame() {
+    var span = el('span', 'frame marks');
+    span.setAttribute('aria-hidden', 'true');
+    return span;
+  }
+
+  /* a number in a box with its corners cut, as on every sleeve */
+  function notch(text) {
+    var box = el('span', 'notch');
+    box.appendChild(el('span', null, text));
+    return box;
+  }
+
+  function coverImage(artist, cls) {
+    var img = new Image();
+    img.src = artist.cover;
+    img.alt = '';                         /* the name is set next to it */
+    img.className = cls || '';
+    img.width = 1100;
+    img.height = 1100;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    return img;
+  }
+
   function listenLabel(artist) {
     return 'Listen to ' + (artist.name || 'this artist') + ' on SoundCloud';
   }
 
-  function coverImage(artist, lazy) {
-    var img = new Image();
-    img.src = artist.cover;
-    img.alt = '';                         /* the name is set next to it */
-    img.width = 1100;
-    img.height = 1100;
-    img.decoding = 'async';
-    if (lazy) img.loading = 'lazy';
-    return img;
+  /* the outlined button is two nested clipped boxes, so its label has to
+     live one level down rather than directly on the element */
+  function button(tag, cls, text) {
+    var node = el(tag, cls);
+    node.appendChild(el('span', null, text));
+    return node;
   }
 
-  /* ---- the deck -------------------------------------------------------
+  /* ---- the sleeve beside the archive ----------------------------------
      A hard cut, not a fade — a label swaps records, it does not dissolve
-     them. That only reads as deliberate if the next cover is already
-     decoded, so they are all warmed once the page is up. */
-  var deck = (function () {
-    var img = document.getElementById('deck-img');
-    var no = document.getElementById('deck-no');
-    var name = document.getElementById('deck-name');
-    var note = document.getElementById('deck-note');
+     them. The covers are warmed on idle so the cut is instant. */
+  var sleeve = (function () {
+    var img = document.getElementById('sleeve-img');
+    var no = document.getElementById('sleeve-no');
+    var name = document.getElementById('sleeve-name');
     if (!img) return { show: function () {}, rest: function () {} };
 
     var current = null;
 
-    function show(artist, resting) {
+    function show(artist) {
       if (!artist || artist === current) return;
       current = artist;
       if (artist.cover) img.src = artist.cover;
       if (no) no.textContent = artist.number || '';
       if (name) name.textContent = artist.name || '';
-      if (note) note.textContent = resting ? 'Latest session' : 'Session';
     }
 
     return {
-      show: function (artist) { show(artist, false); },
-      rest: function () { current = null; show(ARTISTS[0], true); }
+      show: show,
+      rest: function () { current = null; show(ARTISTS[0]); }
     };
   })();
 
@@ -78,10 +98,7 @@
     });
   }
 
-  /* ---- the catalogue --------------------------------------------------
-     Ten rows of type on the first screen. The artwork is not laid out
-     with them — it lives in the deck and follows the cursor, so the
-     archive reads as a catalogue rather than a wall of squares. */
+  /* ---- the archive ----------------------------------------------------- */
   function rowNode(artist) {
     var item = el('li');
     var url = safeUrl(artist.url);
@@ -93,19 +110,19 @@
       row.setAttribute('aria-label', listenLabel(artist));
     }
 
-    /* the thumbnail is the deck's stand-in on a narrow screen, where
-       there is no room for a column beside the list */
+    /* the sleeve's stand-in on a narrow screen, where there is no room
+       for a column beside the list */
     if (artist.cover) {
       var fig = el('figure', 'row__thumb');
-      fig.appendChild(coverImage(artist, true));
+      fig.appendChild(coverImage(artist));
       row.appendChild(fig);
     }
 
-    row.appendChild(el('span', 'row__no', artist.number || ''));
+    row.appendChild(notch(artist.number || ''));
     row.appendChild(el('h3', 'row__name', artist.name || ''));
     row.appendChild(el('span', 'row__go', 'SoundCloud'));
 
-    function enter() { deck.show(artist); }
+    function enter() { sleeve.show(artist); }
     row.addEventListener('mouseenter', enter);
     row.addEventListener('focus', enter);
 
@@ -113,7 +130,7 @@
     return item;
   }
 
-  function renderSessions() {
+  function renderArchive() {
     var list = document.getElementById('session-list');
     if (!list || !ARTISTS.length) return;
 
@@ -121,25 +138,26 @@
     ARTISTS.forEach(function (a) { frag.appendChild(rowNode(a)); });
     list.appendChild(frag);
 
-    list.addEventListener('mouseleave', function () { deck.rest(); });
+    list.addEventListener('mouseleave', function () { sleeve.rest(); });
   }
 
-  /* ---- the roster (artists page) ------------------------------------- */
+  /* ---- the roster (artists page) --------------------------------------- */
   function rosterNode(artist) {
     var row = el('li', 'roster__row');
     var url = safeUrl(artist.url);
 
     var fig = el('figure', 'roster__shot');
-    if (artist.cover) fig.appendChild(coverImage(artist, true));
+    fig.appendChild(frame());
+    if (artist.cover) fig.appendChild(coverImage(artist, 'torn'));
     row.appendChild(fig);
 
     var body = el('div');
-    if (artist.number) body.appendChild(el('span', 'roster__no', artist.number));
+    if (artist.number) body.appendChild(notch(artist.number));
     body.appendChild(el('h2', 'roster__name', artist.name || ''));
     /* bios are hand-written and may not be filled in yet */
     if (artist.bio) body.appendChild(el('p', 'roster__bio', artist.bio));
     if (url) {
-      var a = el('a', 'btn', 'Listen');
+      var a = button('a', 'btn', 'Listen');
       a.href = url;
       a.target = '_blank';
       a.rel = 'noopener';
@@ -157,18 +175,25 @@
     node.appendChild(frag);
   }
 
-  /* ---- the label's own numbers --------------------------------------- */
-  function renderFacts() {
+  /* ---- the newest session, on the first screen and in the facts -------- */
+  function renderLatest() {
+    var newest = ARTISTS[0];
     var count = document.getElementById('fact-count');
     var latest = document.getElementById('fact-latest');
-    var newest = ARTISTS[0];
+    var heroNo = document.getElementById('hero-no');
+    var heroName = document.getElementById('hero-name');
+
     if (count) count.textContent = ARTISTS.length || '—';
-    if (latest && newest) {
+    if (!newest) return;
+
+    if (heroNo) heroNo.textContent = newest.number || '';
+    if (heroName) heroName.textContent = newest.name || '';
+    if (latest) {
       latest.textContent = (newest.number ? newest.number + ' — ' : '') + (newest.name || '');
     }
   }
 
-  /* ---- contact dialog -------------------------------------------------
+  /* ---- contact dialog ---------------------------------------------------
      One way in for demos, bookings and press. The form hands the message
      to whichever route is configured: a Formspree endpoint if there is
      one, otherwise the mail client. With neither set it says so rather
@@ -243,10 +268,10 @@
   }
 
   function boot() {
-    deck.rest();
-    renderSessions();
+    sleeve.rest();
+    renderArchive();
     fill(document.getElementById('roster'), rosterNode);
-    renderFacts();
+    renderLatest();
     setUpContact();
 
     var year = document.getElementById('year');
