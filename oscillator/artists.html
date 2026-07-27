@@ -6,12 +6,12 @@
 
 <title>Artists · Oscillator</title>
 <meta name="description" content="Every artist Oscillator has put forward, with their session.">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#050504">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Artists · Oscillator">
 <meta property="og:description" content="Every artist Oscillator has put forward, with their session.">
-<meta property="og:image" content="img/covers/030.webp">
+<meta property="og:image" content="img/disc.webp">
 
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -19,65 +19,23 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=06759809">
+<link rel="stylesheet" href="assets/css/style.css?v=5b018708">
 </head>
 
 <body>
 
 <a class="skip-link" href="#roster">Skip to the list</a>
 
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-  <filter id="tear" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
-    <feTurbulence type="fractalNoise" baseFrequency="0.013 0.085" numOctaves="4" seed="11" result="noise"/>
-    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-  </filter>
-</svg>
-
-<!-- The same first screen, shorter: this page has a list to get to, so
-     the sleeve is cut to the frame, the rail and the title. -->
-<section class="hero hero--short" id="top" aria-labelledby="roster-title">
-  <span class="frame frame--in marks" aria-hidden="true"></span>
-
-  <nav class="hero__nav" aria-label="Primary">
-    <a href="index.html#archive">Archive</a>
-    <a href="artists.html" aria-current="page">Artists</a>
-    <a href="index.html#about">About</a>
-    <a href="index.html#contact">Contact</a>
-  </nav>
-
-  <div class="hero__rail">
-    <p class="hero__spine">Everyone we have put forward</p>
-    <svg class="hero__node" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
-      <path d="M8 30 L14 24 H106 L112 30 V50 L106 56 H14 L8 50 Z"
-            fill="none" stroke="#FEED07" stroke-width="7"/>
-      <g fill="#FEED07">
-        <circle cx="52" cy="32" r="15"/><circle cx="68" cy="32" r="15"/>
-        <circle cx="52" cy="60" r="15"/><circle cx="68" cy="60" r="15"/>
-      </g>
-      <g fill="#000000">
-        <circle cx="52" cy="32" r="9"/><circle cx="68" cy="32" r="9"/>
-        <circle cx="52" cy="60" r="9"/><circle cx="68" cy="60" r="9"/>
-      </g>
-      <g fill="#FEED07">
-        <circle cx="52" cy="32" r="2.6"/><circle cx="68" cy="32" r="2.6"/>
-        <circle cx="52" cy="60" r="2.6"/><circle cx="68" cy="60" r="2.6"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="hero__stage">
-    <h1 class="ttl ttl--acid echo" id="roster-title" data-echo="Artists">Artists</h1>
-    <p class="hero__say">Every artist Oscillator has put forward, with their session.</p>
-  </div>
-
-  <div class="hero__foot">
-    <a class="tag hero__back" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
-  </div>
-</section>
-
 <main>
-  <section class="plate" aria-label="The artists">
-    <span class="frame marks" aria-hidden="true"></span>
+  <section class="sect" aria-labelledby="roster-title">
+    <div class="head">
+      <p class="tag"><a href="index.html"><span aria-hidden="true">←</span> Oscillator</a></p>
+      <h1 id="roster-title">Artists</h1>
+      <div class="prose">
+        <p>Everyone the label has put forward, newest first.</p>
+      </div>
+    </div>
+
     <ol class="roster" id="roster">
       <!-- filled from assets/js/artists.js -->
     </ol>
@@ -85,21 +43,22 @@
 </main>
 
 <footer class="foot">
-  <p class="foot__mark">
-    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-  </p>
-  <div class="foot__rows">
-    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
-    <span class="foot__set">
-      <a href="index.html">Label</a>
+  <div class="foot__in">
+    <p class="foot__mark glow">
+      <img src="img/lockup.webp" alt="Oscillator" width="1400" height="1052" loading="lazy" decoding="async">
+    </p>
+    <p class="foot__set">
+      <a href="index.html">The label</a>
+      <a href="index.html#archive">Archive</a>
       <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-    </span>
+    </p>
+    <p class="tag">© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></p>
   </div>
 </footer>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=552fb01c"></script>
+<script defer src="assets/js/main.js?v=b25072c6"></script>
 </body>
 </html>

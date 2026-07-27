@@ -18,195 +18,191 @@
 </script>
 
 <title>Oscillator · Techno Label</title>
-<meta name="description" content="Oscillator is an independent techno label from Tehran. A numbered archive of sessions, one artist at a time.">
-<meta name="theme-color" content="#000000">
+<meta name="description" content="We are Oscillator — an independent techno label from Tehran. A numbered archive of sessions, one artist at a time.">
+<meta name="theme-color" content="#050504">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Oscillator · Techno Label">
-<meta property="og:description" content="A numbered archive of sessions, one artist at a time.">
-<meta property="og:image" content="img/covers/030.webp">
+<meta property="og:description" content="We are Oscillator. A numbered archive of sessions, one artist at a time.">
+<meta property="og:image" content="img/disc.webp">
 
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
+<link rel="preload" as="image" href="img/lockup.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="assets/css/style.css?v=06759809">
+<link rel="stylesheet" href="assets/css/style.css?v=5b018708">
 </head>
 
 <body>
 
-<a class="skip-link" href="#archive">Skip to the archive</a>
-
-<!-- The chewed border on every sleeve, as a filter: turbulence
-     displacing the image against itself, so the edge is eaten rather
-     than cut. Referenced from CSS by .torn — see the stylesheet. -->
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-  <filter id="tear" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
-    <feTurbulence type="fractalNoise" baseFrequency="0.013 0.085" numOctaves="4" seed="11" result="noise"/>
-    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
-  </filter>
-</svg>
+<a class="skip-link" href="#latest">Skip to the latest session</a>
 
 <!-- ══ THE FIRST SCREEN ═══════════════════════════════════════════════
-     The sleeve formula at the size of the window, nothing invented: a
-     hard vertical split, the newest session's artwork bled to the edge
-     on the left, and a slab of acid on the right carrying black type —
-     the name against its own mirror, the emblem and the number in cut
-     boxes at the foot, the wordmark beneath them. -->
-<section class="hero" id="top" aria-labelledby="hero-title">
+     The badge from the identity reel: a thin ring with the name running
+     around it, turning, and the lockup lit at its centre. Everything
+     yellow on this page glows — see .glow and .lit in the stylesheet. -->
+<header class="hero" id="top">
 
-  <div class="hero__plate">
-    <img class="hero__cover" id="hero-cover" src="img/plates/030.webp" alt=""
-         width="1100" height="1100" fetchpriority="high" decoding="async">
-    <span class="frame frame--in marks" aria-hidden="true"></span>
+  <nav class="hero__nav" aria-label="Primary">
+    <a href="#latest">Latest</a>
+    <a href="#archive">Archive</a>
+    <a href="artists.html">Artists</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
-    <nav class="hero__nav" aria-label="Primary">
-      <a href="#archive">Archive</a>
-      <a href="artists.html">Artists</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+  <div class="hero__mid">
+    <h1 class="sr-only">Oscillator — independent techno label, Tehran</h1>
 
-    <!-- the number is struck once, in the slab's box, exactly as the
-         sleeves do it — so this carries only who it is -->
-    <p class="hero__cred">
-      <b>Latest</b> <span id="hero-name">—</span>
-    </p>
+    <div class="badge glow">
+      <svg class="badge__ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <defs>
+          <!-- one full circle, started at the top and running clockwise,
+               so the type sets the right way up -->
+          <path id="ring" d="M100,100 m0,-82 a82,82 0 1,1 -0.1,0" />
+        </defs>
+        <circle cx="100" cy="100" r="93" />
+        <circle cx="100" cy="100" r="70.5" />
+        <g class="badge__spin">
+          <!-- textLength is the circle's own circumference, so the
+               repeats close the loop exactly instead of leaving a gap or
+               running over themselves at a different font size -->
+          <!-- xml:space, or the trailing space is dropped and the loop
+               closes as "…OSCILLATOR /OSCILLATOR" with no gap at the seam -->
+          <text xml:space="preserve"><textPath href="#ring" textLength="515.2" lengthAdjust="spacing">OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR / </textPath></text>
+        </g>
+      </svg>
+
+      <img class="badge__mark" src="img/lockup.webp" alt=""
+           width="1400" height="1052" fetchpriority="high" decoding="async">
+    </div>
+
+    <p class="hero__we lit">We are Oscillator</p>
   </div>
 
-  <aside class="rail">
-    <span class="frame frame--in marks marks--ink" aria-hidden="true"></span>
-
-    <h1 class="rail__name" id="hero-title">
-      <span class="sr-only">Oscillator</span>
-      <span class="rail__set" aria-hidden="true">
-        <span>Oscillator</span>
-        <span class="rail__mirror">Oscillator</span>
-      </span>
-    </h1>
-
-    <div class="rail__foot">
-      <span class="rail__set--boxes">
-        <span class="notch notch--ink"><span>
-          <svg class="rail__emblem" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
-            <path d="M8 30 L14 24 H106 L112 30 V50 L106 56 H14 L8 50 Z"
-                  fill="none" stroke="#000" stroke-width="7"/>
-            <g fill="#000">
-              <circle cx="52" cy="32" r="15"/><circle cx="68" cy="32" r="15"/>
-              <circle cx="52" cy="60" r="15"/><circle cx="68" cy="60" r="15"/>
-            </g>
-            <g fill="#FFFD01">
-              <circle cx="52" cy="32" r="9"/><circle cx="68" cy="32" r="9"/>
-              <circle cx="52" cy="60" r="9"/><circle cx="68" cy="60" r="9"/>
-            </g>
-            <g fill="#000">
-              <circle cx="52" cy="32" r="2.6"/><circle cx="68" cy="32" r="2.6"/>
-              <circle cx="52" cy="60" r="2.6"/><circle cx="68" cy="60" r="2.6"/>
-            </g>
-          </svg>
-        </span></span>
-        <span class="notch notch--ink"><span id="hero-count">030</span></span>
-      </span>
-
-      <img class="rail__mark" src="img/wordmark.webp" alt=""
-           width="1600" height="470" decoding="async">
-    </div>
-  </aside>
-</section>
+  <div class="hero__foot">
+    <p class="tag">Independent techno · Tehran</p>
+    <p class="tag"><a href="#latest">Scroll <span aria-hidden="true">↓</span></a></p>
+  </div>
+</header>
 
 <main>
 
-  <!-- ══ THE ARCHIVE ═════════════════════════════════════════════════ -->
-  <section class="plate" id="archive" aria-labelledby="archive-title">
-    <span class="frame marks" aria-hidden="true"></span>
-
-    <div class="plate__head">
-      <p class="tag">Every session, in order</p>
-      <h2 class="ttl echo" id="archive-title" data-echo="Archive">Archive</h2>
+  <!-- ══ THE LATEST SESSION ═══════════════════════════════════════════ -->
+  <section class="sect" id="latest" aria-labelledby="latest-title">
+    <div class="head">
+      <p class="tag">The newest session</p>
+      <h2 id="latest-title">Out now</h2>
     </div>
 
-    <div class="cat">
-      <ol class="cat__list" id="session-list"></ol>
+    <div class="latest">
+      <figure class="latest__shot">
+        <img id="latest-shot" src="img/covers/030.webp" alt=""
+             width="1100" height="1100" decoding="async">
+      </figure>
 
-      <!-- the sleeve of whichever row you are on; desktop only -->
-      <div class="cat__sleeve" aria-hidden="true">
-        <figure>
-          <span class="cat__box">
-            <span class="frame marks" aria-hidden="true"></span>
-            <img class="torn" id="sleeve-img" src="img/covers/030.webp" alt="" width="1100" height="1100" loading="lazy" decoding="async">
-          </span>
-          <figcaption><b id="sleeve-no">030</b> · <span id="sleeve-name">—</span></figcaption>
-        </figure>
+      <div>
+        <p class="latest__no lit" id="latest-no">030</p>
+        <p class="latest__name" id="latest-name">—</p>
+        <div class="prose">
+          <p>
+            Every session hands the deck to another artist for its whole
+            length. Nothing is compiled and nothing is cut together from
+            parts.
+          </p>
+        </div>
+        <p class="actions">
+          <a class="btn btn--acid" id="latest-link" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen</a>
+          <a class="btn" href="#archive">The archive</a>
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- ══ ABOUT ═══════════════════════════════════════════════════════ -->
-  <section class="plate plate--acid" id="about" aria-labelledby="about-title">
-    <span class="frame marks marks--ink" aria-hidden="true"></span>
-
-    <div class="plate__head">
-      <p class="tag">The label</p>
-      <h2 class="ttl echo" id="about-title" data-echo="About">About</h2>
+  <!-- ══ THE ARCHIVE ══════════════════════════════════════════════════ -->
+  <section class="sect" id="archive" aria-labelledby="archive-title">
+    <div class="head">
+      <p class="tag">Every session, in order</p>
+      <h2 id="archive-title">The archive</h2>
     </div>
 
-    <div class="prose">
-      <p>
-        Oscillator is an independent techno label founded by KEYV. Every
-        session hands the deck to another artist, and the archive is the
-        record of it.
-      </p>
-      <p>
-        Sessions go out numbered, in order, with no schedule to fill.
-      </p>
-    </div>
+    <ol class="tiles" id="tiles"></ol>
 
-    <dl class="facts">
-      <div><dt>Sessions</dt><dd id="fact-count">—</dd></div>
-      <div><dt>Latest</dt><dd id="fact-latest">—</dd></div>
-      <div><dt>Based in</dt><dd>Tehran</dd></div>
-      <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
-    </dl>
+    <p class="actions">
+      <a class="btn" href="artists.html">The artist index</a>
+      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">All of it on SoundCloud</a>
+    </p>
   </section>
 
-  <!-- ══ CONTACT ═════════════════════════════════════════════════════ -->
-  <section class="plate" id="contact" aria-labelledby="contact-title">
-    <span class="frame marks" aria-hidden="true"></span>
+  <!-- ══ ABOUT ════════════════════════════════════════════════════════ -->
+  <section class="sect" id="about" aria-labelledby="about-title">
+    <div class="about">
+      <div>
+        <div class="head">
+          <p class="tag">The label</p>
+          <h2 id="about-title">We are Oscillator</h2>
+        </div>
+        <div class="prose">
+          <p>
+            An independent techno label founded by KEYV, putting one
+            artist forward at a time. Sessions go out numbered and stay
+            up — the archive is kept whole, oldest as long as newest.
+          </p>
+          <p>
+            Sound and artwork are made together and released together.
+            The sleeve is the other half of the mix, not a wrapper for it.
+          </p>
+        </div>
 
-    <div class="plate__head">
-      <p class="tag">Demos, bookings, press</p>
-      <h2 class="ttl echo" id="contact-title" data-echo="Get in touch">Get in touch</h2>
+        <dl class="facts">
+          <div><dt>Sessions</dt><dd id="fact-count">—</dd></div>
+          <div><dt>Latest</dt><dd id="fact-latest">—</dd></div>
+          <div><dt>Based in</dt><dd>Tehran</dd></div>
+          <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
+        </dl>
+      </div>
+
+      <figure class="about__disc glow">
+        <img src="img/disc.webp" alt="" width="1400" height="1400" loading="lazy" decoding="async">
+      </figure>
     </div>
+  </section>
 
+  <!-- ══ CONTACT ══════════════════════════════════════════════════════ -->
+  <section class="sect" id="contact" aria-labelledby="contact-title">
+    <div class="head">
+      <p class="tag">Demos, bookings, press</p>
+      <h2 id="contact-title">Get in touch</h2>
+    </div>
     <div class="prose">
       <p>
         We listen to everything that comes in. Send a private link with a
         line about who you are — no attachments, no zip files.
       </p>
     </div>
-
     <p class="actions">
-      <button class="btn btn--acid" type="button" id="contact-open"><span>Write to us</span></button>
-      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener"><span>SoundCloud</span></a>
-      <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener"><span>Instagram</span></a>
+      <button class="btn btn--acid" type="button" id="contact-open">Write to us</button>
+      <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
     </p>
   </section>
 
 </main>
 
 <footer class="foot">
-  <p class="foot__mark">
-    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-  </p>
-  <div class="foot__rows">
-    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
-    <span class="foot__set">
+  <div class="foot__in">
+    <p class="foot__mark glow">
+      <img src="img/lockup.webp" alt="Oscillator" width="1400" height="1052" loading="lazy" decoding="async">
+    </p>
+    <p class="foot__set">
+      <a href="#archive">Archive</a>
       <a href="artists.html">Artists</a>
       <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
       <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-    </span>
+    </p>
+    <p class="tag">© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></p>
   </div>
 </footer>
 
@@ -230,13 +226,13 @@
       <textarea name="message" rows="5" required placeholder="Demo link, booking, press…"></textarea>
     </label>
 
-    <button class="btn btn--acid" type="submit"><span>Send</span></button>
+    <button class="btn btn--acid" type="submit">Send</button>
     <p class="modal__note" id="contact-note" role="status" aria-live="polite"></p>
   </form>
 </dialog>
 
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=552fb01c"></script>
+<script defer src="assets/js/main.js?v=b25072c6"></script>
 </body>
 </html>

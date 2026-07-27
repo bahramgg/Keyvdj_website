@@ -1,10 +1,9 @@
 /* =============================================================
    OSCILLATOR — builds the pages from artists.js and info.js
 
-   Everything the label makes is built out of the same parts, so this
-   builds the page out of them too: a number in a box with its corners
-   cut, a name, and a sleeve held off to the side that cuts to whichever
-   row you are on.
+   The sleeves are the strongest thing the label owns, so the archive is
+   just them at size with the number struck in the corner. Nothing here
+   invents artwork; it places what exists.
 
    No framework, no build step.
    ============================================================= */
@@ -29,25 +28,14 @@
     return node;
   }
 
-  /* the registration brackets, which are an overlay rather than a border */
-  function frame() {
-    var span = el('span', 'frame marks');
-    span.setAttribute('aria-hidden', 'true');
-    return span;
+  function listenLabel(artist) {
+    return 'Listen to ' + (artist.name || 'this artist') + ' on SoundCloud';
   }
 
-  /* a number in a box with its corners cut, as on every sleeve */
-  function notch(text) {
-    var box = el('span', 'notch');
-    box.appendChild(el('span', null, text));
-    return box;
-  }
-
-  function coverImage(artist, cls) {
+  function coverImage(artist) {
     var img = new Image();
     img.src = artist.cover;
-    img.alt = '';                         /* the name is set next to it */
-    img.className = cls || '';
+    img.alt = '';                       /* the name is set next to it */
     img.width = 1100;
     img.height = 1100;
     img.loading = 'lazy';
@@ -55,154 +43,103 @@
     return img;
   }
 
-  function listenLabel(artist) {
-    return 'Listen to ' + (artist.name || 'this artist') + ' on SoundCloud';
-  }
-
-  /* The first screen is the sleeve composition rebuilt in HTML, so it
-     needs the photograph without the sleeve's own rail — tools/crop-
-     plates.py cuts those and leaves them alongside the covers. */
-  function plateFor(artist) {
-    return (artist.cover || '').replace('/covers/', '/plates/');
-  }
-
-  /* the outlined button is two nested clipped boxes, so its label has to
-     live one level down rather than directly on the element */
-  function button(tag, cls, text) {
-    var node = el(tag, cls);
-    node.appendChild(el('span', null, text));
-    return node;
-  }
-
-  /* ---- the sleeve beside the archive ----------------------------------
-     A hard cut, not a fade — a label swaps records, it does not dissolve
-     them. The covers are warmed on idle so the cut is instant. */
-  var sleeve = (function () {
-    var img = document.getElementById('sleeve-img');
-    var no = document.getElementById('sleeve-no');
-    var name = document.getElementById('sleeve-name');
-    if (!img) return { show: function () {}, rest: function () {} };
-
-    var current = null;
-
-    function show(artist) {
-      if (!artist || artist === current) return;
-      current = artist;
-      if (artist.cover) img.src = artist.cover;
-      if (no) no.textContent = artist.number || '';
-      if (name) name.textContent = artist.name || '';
-    }
-
-    return {
-      show: show,
-      rest: function () { current = null; show(ARTISTS[0]); }
-    };
-  })();
-
-  function warmCovers() {
-    ARTISTS.forEach(function (a) {
-      if (a.cover) { var i = new Image(); i.src = a.cover; }
-    });
-  }
-
-  /* ---- the archive ----------------------------------------------------- */
-  function rowNode(artist) {
+  /* ---- the archive ------------------------------------------------------ */
+  function tileNode(artist) {
     var item = el('li');
     var url = safeUrl(artist.url);
-    var row = el(url ? 'a' : 'div', 'row');
+    var tile = el(url ? 'a' : 'div', 'tile');
     if (url) {
-      row.href = url;
-      row.target = '_blank';
-      row.rel = 'noopener';
-      row.setAttribute('aria-label', listenLabel(artist));
+      tile.href = url;
+      tile.target = '_blank';
+      tile.rel = 'noopener';
+      tile.setAttribute('aria-label', listenLabel(artist));
     }
 
-    /* the sleeve's stand-in on a narrow screen, where there is no room
-       for a column beside the list */
-    if (artist.cover) {
-      var fig = el('figure', 'row__thumb');
-      fig.appendChild(coverImage(artist));
-      row.appendChild(fig);
-    }
+    var fig = el('figure', 'tile__shot');
+    if (artist.cover) fig.appendChild(coverImage(artist));
+    tile.appendChild(fig);
 
-    row.appendChild(notch(artist.number || ''));
-    row.appendChild(el('h3', 'row__name', artist.name || ''));
-    row.appendChild(el('span', 'row__go', 'SoundCloud'));
+    var name = el('h3', 'tile__name');
+    if (artist.number) name.appendChild(el('span', 'tile__no', artist.number));
+    name.appendChild(el('span', null, artist.name || ''));
+    tile.appendChild(name);
 
-    function enter() { sleeve.show(artist); }
-    row.addEventListener('mouseenter', enter);
-    row.addEventListener('focus', enter);
-
-    item.appendChild(row);
+    item.appendChild(tile);
     return item;
   }
 
   function renderArchive() {
-    var list = document.getElementById('session-list');
+    var list = document.getElementById('tiles');
     if (!list || !ARTISTS.length) return;
-
     var frag = document.createDocumentFragment();
-    ARTISTS.forEach(function (a) { frag.appendChild(rowNode(a)); });
+    ARTISTS.forEach(function (a) { frag.appendChild(tileNode(a)); });
     list.appendChild(frag);
-
-    list.addEventListener('mouseleave', function () { sleeve.rest(); });
   }
 
-  /* ---- the roster (artists page) --------------------------------------- */
+  /* ---- the roster (artists page) ----------------------------------------- */
   function rosterNode(artist) {
     var row = el('li', 'roster__row');
     var url = safeUrl(artist.url);
 
     var fig = el('figure', 'roster__shot');
-    fig.appendChild(frame());
-    if (artist.cover) fig.appendChild(coverImage(artist, 'torn'));
+    if (artist.cover) fig.appendChild(coverImage(artist));
     row.appendChild(fig);
 
     var body = el('div');
-    if (artist.number) body.appendChild(notch(artist.number));
+    if (artist.number) body.appendChild(el('p', 'roster__no', artist.number));
     body.appendChild(el('h2', 'roster__name', artist.name || ''));
     /* bios are hand-written and may not be filled in yet */
     if (artist.bio) body.appendChild(el('p', 'roster__bio', artist.bio));
+    row.appendChild(body);
+
     if (url) {
-      var a = button('a', 'btn', 'Listen');
+      var a = el('a', 'btn', 'Listen');
       a.href = url;
       a.target = '_blank';
       a.rel = 'noopener';
       a.setAttribute('aria-label', listenLabel(artist));
-      body.appendChild(a);
+      row.appendChild(a);
     }
-    row.appendChild(body);
     return row;
   }
 
-  function fill(node, build) {
+  function renderRoster() {
+    var node = document.getElementById('roster');
     if (!node || !ARTISTS.length) return;
     var frag = document.createDocumentFragment();
-    ARTISTS.forEach(function (artist) { frag.appendChild(build(artist)); });
+    ARTISTS.forEach(function (artist) { frag.appendChild(rosterNode(artist)); });
     node.appendChild(frag);
   }
 
-  /* ---- the newest session, on the first screen and in the facts -------- */
+  /* ---- the newest session ------------------------------------------------ */
   function renderLatest() {
     var newest = ARTISTS[0];
     var count = document.getElementById('fact-count');
-    var latest = document.getElementById('fact-latest');
-    var heroName = document.getElementById('hero-name');
-    var heroCount = document.getElementById('hero-count');
-    var heroCover = document.getElementById('hero-cover');
-
     if (count) count.textContent = ARTISTS.length || '—';
     if (!newest) return;
 
-    if (heroCount) heroCount.textContent = newest.number || '';
-    if (heroName) heroName.textContent = newest.name || '';
-    if (heroCover && newest.cover) heroCover.src = plateFor(newest);
-    if (latest) {
-      latest.textContent = (newest.number ? newest.number + ' — ' : '') + (newest.name || '');
+    function put(id, text) {
+      var node = document.getElementById(id);
+      if (node) node.textContent = text;
+    }
+    put('latest-no', newest.number || '');
+    put('latest-name', newest.name || '');
+    put('fact-latest', (newest.number ? newest.number + ' — ' : '') + (newest.name || ''));
+
+    var shot = document.getElementById('latest-shot');
+    if (shot && newest.cover) shot.src = newest.cover;
+
+    /* the button falls back to the label's own page in the markup, so it
+       is only moved when this session has a link we trust */
+    var link = document.getElementById('latest-link');
+    var url = safeUrl(newest.url);
+    if (link && url) {
+      link.href = url;
+      link.setAttribute('aria-label', listenLabel(newest));
     }
   }
 
-  /* ---- contact dialog ---------------------------------------------------
+  /* ---- contact dialog ----------------------------------------------------
      One way in for demos, bookings and press. The form hands the message
      to whichever route is configured: a Formspree endpoint if there is
      one, otherwise the mail client. With neither set it says so rather
@@ -277,17 +214,13 @@
   }
 
   function boot() {
-    sleeve.rest();
-    renderArchive();
-    fill(document.getElementById('roster'), rosterNode);
     renderLatest();
+    renderArchive();
+    renderRoster();
     setUpContact();
 
     var year = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
-
-    if ('requestIdleCallback' in window) window.requestIdleCallback(warmCovers);
-    else setTimeout(warmCovers, 600);
   }
 
   if (document.readyState === 'loading') {
