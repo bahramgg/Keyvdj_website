@@ -1,14 +1,10 @@
 /* =============================================================
    OSCILLATOR — label site
 
-   Built to the reference: a black page punctuated by flat accent blocks.
-   The devices are borrowed, the palette is ours — the label's acid yellow
-   where the reference used pink.
-
-     · photographs are duotoned to the accent, never left full colour
-     · statements carry rough marker blocks behind the words
-     · the catalogue is flat accent cards with black type and corner ticks
-     · the wordmark closes the page at the size of a poster
+   The label is a numbered archive of mixes, so the artwork is the site.
+   Everything here gets out of its way: black ground, the label's acid
+   yellow for anything that has to be read as a signal, and no section
+   that does not have something real in it.
 
    Nothing is shared with the KEYV stylesheet but the two font files.
    ============================================================= */
@@ -53,7 +49,7 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
-img, video { display: block; max-width: 100%; }
+img { display: block; max-width: 100%; }
 ul, ol { list-style: none; margin: 0; padding: 0; }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
@@ -68,16 +64,12 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
-  border: 0;
 }
 
-
-/* ---- the wall --------------------------------------------------------
-   Spray paint, not draughtsman's lines: the strokes are gestural and run
-   through a turbulence displacement so their edges are eaten the way an
-   aerosol edge is, with drips off the heavy ones and a haze of overspray.
-   Fixed behind the page, so it sits still like paint on a wall while the
-   content moves over it. */
+/* ---- the wall ------------------------------------------------------
+   Spray, not draughtsman's lines — the strokes run through a turbulence
+   displacement so the edges are eaten the way an aerosol edge is. Fixed,
+   so the paint stays put while the page moves over it. */
 body::before {
   content: "";
   position: fixed;
@@ -85,25 +77,12 @@ body::before {
   z-index: -2;
   pointer-events: none;
   opacity: .28;
-  background-image: url("../../img/wall.svg");
-  background-repeat: repeat;
-  background-size: 1600px 1200px;
-  background-position: center;
-}
-/* the wall is lit unevenly, so the type never sits on a bright patch */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 0%, transparent 30%, rgba(0,0,0,.55) 100%),
-    radial-gradient(90% 70% at 20% 100%, transparent 20%, rgba(0,0,0,.5) 100%);
+  background: url("../../img/wall.svg") repeat center / 1600px 1200px;
 }
 
 /* ---- small technical labels ---------------------------------------- */
 .tag {
+  margin: 0;
   font-size: .625rem;
   font-weight: 700;
   letter-spacing: .26em;
@@ -112,389 +91,206 @@ body::after {
 .tag--soft { color: var(--soft); }
 .tag--acid { color: var(--acid); }
 
-/* ---- marker blocks -------------------------------------------------
-   The reference sets its statements with torn rectangles painted behind
-   the words. Three clip paths, cycled, so no two blocks are cut alike. */
-.mark {
-  position: relative;
-  display: inline-block;
-  font-style: normal;
-  padding: 0 .28em;
-  color: var(--ink);
-  isolation: isolate;
-}
-.mark::before {
-  content: "";
-  position: absolute;
-  inset: .1em -.05em .04em;
-  z-index: -1;
-  background: var(--acid);
-  clip-path: polygon(1% 8%, 99% 2%, 100% 92%, 2% 98%);
-}
-.mark:nth-of-type(3n+2)::before { clip-path: polygon(0 4%, 98% 9%, 99% 96%, 1% 90%); }
-.mark:nth-of-type(3n+3)::before { clip-path: polygon(2% 6%, 100% 3%, 98% 97%, 0 93%); }
-
-/* a blank block, used as a redaction bar between words */
-.blk {
-  display: inline-block;
-  width: 2.2em;
-  height: .74em;
-  background: var(--acid);
-  clip-path: polygon(1% 6%, 99% 2%, 100% 94%, 2% 98%);
-  vertical-align: baseline;
-}
-
-/* ---- nav ------------------------------------------------------------ */
-.nav {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 40;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 1rem;
-  padding: .7rem var(--gutter);
-  /* Difference-blending this was legible over the black hero and turned
-     to unreadable blue the moment an acid card scrolled under it. A solid
-     bar is the only thing that holds against both grounds, and against
-     the hero — which is black anyway — it does not read as a bar. */
-  background: var(--black);
-}
-.nav__set { display: flex; gap: clamp(.9rem, 2.4vw, 1.8rem); }
-.nav__set--end { justify-content: flex-end; }
-.nav__mark { display: block; justify-self: center; }
-.nav__mark img { height: 26px; width: auto; }
-.nav__set a {
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--paper);
-  transition: opacity .2s var(--ease);
-}
-.nav__set a:hover, .nav__set a[aria-current] { opacity: .55; }
-
-/* ---- hero ----------------------------------------------------------
-   Full bleed and exactly one screen: at anything less the next section
-   showed underneath and the two ran together. The clip covers the whole
-   frame rather than sitting in the middle of it — it is a square of mark
-   on black, so cropping it costs nothing and buys the scale. */
-.hero {
-  position: relative;
-  height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(1.25rem, 4vh, 2.25rem);
-  padding: 5rem var(--gutter) clamp(3.5rem, 9vh, 5rem);
-  text-align: center;
-  overflow: hidden;
-}
-/* ---- the mark ------------------------------------------------------
-   A ring of type turning around the stamp. The ring is SVG text on a
-   circular path, so it stays sharp at any size; the stamp is held well
-   under its own pixel size for the same reason. The glow is the one
-   thing carried straight over from the clip. */
-.emblem {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: min(74vw, 480px);
-  aspect-ratio: 1;
-  filter: drop-shadow(0 0 14px rgba(254, 237, 7, .38))
-          drop-shadow(0 0 42px rgba(254, 237, 7, .22));
-}
-.emblem__ring {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  animation: emblem-turn 26s linear infinite;
-}
-.emblem__ring-text {
-  fill: var(--acid);
-  font-family: var(--font-body);
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: .34em;
-}
-.emblem__stamp {
-  position: relative;
-  width: 46%;
-  height: auto;
-  animation: emblem-breathe 7s ease-in-out infinite;
-}
-@keyframes emblem-turn {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes emblem-breathe {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.035); }
-}
-.hero__foot {
-  position: absolute;
-  left: 0; right: 0;
-  bottom: clamp(1.1rem, 3vh, 1.9rem);
-  display: flex;
-  justify-content: center;
-}
-.hero__scroll { color: var(--soft); }
-/* the strapline belongs with the mark, not pinned to a corner */
-.hero__line { position: relative; margin: 0; max-width: 34ch; color: var(--soft); font-size: .875rem; }
-.hero__title { margin: 0; line-height: 0; position: static; }
-.hero__foot p { margin: 0; }
-
-.after { margin: clamp(1.5rem, 4vh, 2.5rem) 0 0; }
-.head .tag { margin: 0; }
-.room__title { margin: .5rem 0 .9rem; }
-.room__note { margin: 0 0 1.25rem; max-width: 44ch; color: var(--soft); }
-.manifest__shot, .call .duo, .release__shot { margin: 0; }
-
-/* ---- statement ------------------------------------------------------ */
-.statement {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.9rem, 6.4vw, 5rem);
-  line-height: 1.06;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-.statement--sm { font-size: clamp(1.5rem, 4.4vw, 3.2rem); }
-
-/* ---- section furniture ---------------------------------------------- */
-.section { padding: clamp(3rem, 9vh, 6.5rem) var(--gutter); }
-.section--tight { padding-block: clamp(2rem, 6vh, 4rem); }
-
-.head {
-  padding-bottom: .9rem;
-  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
-  border-bottom: 1px solid var(--line);
-}
-.head .tag { display: block; margin: 0 0 .45rem; }
-
-.title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.7rem, 5vw, 3.4rem);
-  line-height: 1;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-
 .btn {
   display: inline-flex;
   align-items: center;
   gap: .6rem;
   border: 1px solid currentColor;
-  padding: .8rem 1.4rem;
+  padding: .8rem 1.5rem;
+  font: inherit;
   font-size: .625rem;
   font-weight: 700;
   letter-spacing: .22em;
   text-transform: uppercase;
+  cursor: pointer;
+  background: none;
+  color: inherit;
   transition: background .22s var(--ease), color .22s var(--ease);
 }
 .btn:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
 .btn--acid { background: var(--acid); border-color: var(--acid); color: var(--ink); }
 .btn--acid:hover { background: transparent; color: var(--acid); }
 
-/* ---- duotone --------------------------------------------------------
-   Multiplying a greyscale image onto the accent keeps the blacks and
-   turns every light value acid — the reference's treatment, our colour. */
-.duo { position: relative; background: var(--acid); overflow: hidden; }
-.duo img {
+/* ---- nav ------------------------------------------------------------ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .85rem var(--gutter);
+  background: linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,0));
+}
+.nav__mark img { height: 26px; width: auto; }
+.nav__set { display: flex; gap: clamp(1rem, 3vw, 2rem); }
+.nav__set a {
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color .2s var(--ease);
+}
+.nav__set a:hover, .nav__set a[aria-current] { color: var(--acid); }
+
+/* ---- hero ----------------------------------------------------------
+   The newest mix, full bleed. The artwork is the picture, the name is
+   set over it, and nothing else is on the screen. */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding: 6rem var(--gutter) clamp(3.5rem, 9vh, 5.5rem);
+  overflow: hidden;
+}
+.hero__art { position: absolute; inset: 0; margin: 0; background: var(--black); }
+.hero__art img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* These covers are already largely acid, so a light-handed grade turns
-     them into a flat yellow square — greyscale sends the yellow to near
-     white and white multiplied onto the accent is just the accent again.
-     Pulling the exposure down keeps real darks for the blend to hold. */
-  filter: grayscale(1) contrast(1.45) brightness(.78);
-  mix-blend-mode: multiply;
+  /* Left in colour on purpose. These covers are posters — the acid panel
+     and the artist's name are part of them, and greyscaling threw away
+     the one piece of brand colour on the screen. Only knocked back far
+     enough that the foot of the frame can carry type. */
+  filter: contrast(1.06) brightness(.88);
 }
-
-/* ---- latest release -------------------------------------------------- */
-.release { display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); }
-/* artwork leads, the specification follows it */
-@media (min-width: 860px) { .release { grid-template-columns: 300px 1fr; align-items: start; } }
-
-.spec { border-top: 1px solid var(--line); }
-.spec__row {
-  display: grid;
-  grid-template-columns: 8.5rem 1fr;
-  gap: 1rem;
-  align-items: baseline;
-  padding: .85rem 0;
-  border-bottom: 1px solid var(--line);
-}
-.spec__key { font-size: .625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
-.spec__val { font-family: var(--font-display); font-size: clamp(1.05rem, 2.4vw, 1.5rem); text-transform: uppercase; letter-spacing: .01em; }
-.release__shot { aspect-ratio: 1; }
-
-/* ---- catalogue cards -------------------------------------------------
-   Flat accent, black type, a tick in each corner. */
-.cards { display: grid; grid-template-columns: 1fr; gap: clamp(.8rem, 2vw, 1.25rem); }
-@media (min-width: 620px) { .cards { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 980px) { .cards { grid-template-columns: repeat(3, 1fr); } }
-
-.card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  min-height: 13.5rem;
-  padding: 1.1rem 1.15rem 1.25rem;
-  background: var(--acid);
-  color: var(--ink);
-  overflow: hidden;
-  isolation: isolate;
-  transition: transform .3s var(--ease);
-}
-.card:hover { transform: translateY(-3px); }
-
-/* The artist's own cover sits behind the card, knocked right back so the
-   name stays the thing you read — the picture is texture, not content. */
-.card__shot {
+/* and a gradient at the foot, where the type actually sits */
+.hero::after {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
-  margin: 0;
-  background: var(--acid);
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.55) 38%, rgba(0,0,0,.15) 70%);
 }
-.card__shot img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.3) brightness(.9);
-  mix-blend-mode: multiply;
-  opacity: .32;
-  transition: opacity .35s var(--ease), transform .5s var(--ease);
-}
-.card:hover .card__shot img { opacity: .46; transform: scale(1.04); }
+.hero__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
 
-.card__top { display: flex; justify-content: space-between; gap: 1rem; }
-.card__name {
-  margin: auto 0 0;
+.hero__scroll {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(3.5rem, 9vh, 5.5rem);
+  z-index: 1;
+}
+
+/* ---- section furniture ---------------------------------------------- */
+.section { padding: clamp(3.5rem, 10vh, 7rem) var(--gutter); }
+.head {
+  padding-bottom: .9rem;
+  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+  border-bottom: 1px solid var(--line);
+}
+.head .tag { margin-bottom: .45rem; }
+.title {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(1.6rem, 4.2vw, 2.4rem);
-  line-height: .98;
+  font-size: clamp(1.9rem, 5.5vw, 3.8rem);
+  line-height: 1;
   letter-spacing: .01em;
   text-transform: uppercase;
 }
-.card__bio { margin: 0; font-size: .8125rem; line-height: 1.45; }
-/* corner ticks */
-.card::before, .card::after {
-  content: "";
-  position: absolute;
-  width: 9px; height: 9px;
-  border: 1.5px solid var(--ink);
-  opacity: .55;
-}
-.card::before { top: 7px; left: 7px; border-right: 0; border-bottom: 0; }
-.card::after { bottom: 7px; right: 7px; border-left: 0; border-top: 0; }
+.after { display: flex; flex-wrap: wrap; gap: .75rem; margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; }
 
-/* ---- manifesto row --------------------------------------------------- */
-.manifest { display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
-@media (min-width: 900px) { .manifest { grid-template-columns: 1fr 1fr 15rem; } }
-.manifest__shot { aspect-ratio: 4/3; }
-.manifest p { margin: 0 0 1rem; max-width: 46ch; color: var(--soft); }
-.panel { background: var(--acid); color: var(--ink); padding: 1.25rem; }
-.panel li { padding: .55rem 0; border-bottom: 1px solid rgba(10,10,0,.28); font-family: var(--font-display); font-size: 1.15rem; text-transform: uppercase; }
-.panel li:last-child { border-bottom: 0; }
-
-/* ---- listening room --------------------------------------------------- */
-.room { position: relative; overflow: hidden; }
-/* the ghosted lettering the reference runs behind this block */
-.room__ghost {
-  position: absolute;
-  inset: 0;
+/* ---- the archive -----------------------------------------------------
+   The covers are posters and already carry the artist's name and number,
+   so they are shown whole and large and left to do the work. */
+.grid {
   display: grid;
-  place-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(.6rem, 1.6vw, 1.1rem);
+}
+@media (min-width: 760px)  { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1180px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+.tile { position: relative; display: block; overflow: hidden; background: #0C0C09; }
+.tile__art { aspect-ratio: 1; margin: 0; }
+.tile__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .55s var(--ease), filter .35s var(--ease);
+}
+.tile:hover .tile__art img,
+.tile:focus-visible .tile__art img { transform: scale(1.05); filter: brightness(.55); }
+
+/* the name is in the artwork already — this is only for the hover state */
+.tile__over {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .8rem .9rem;
+  background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+}
+.tile:hover .tile__over,
+.tile:focus-visible .tile__over { opacity: 1; transform: none; }
+.tile__name { font-family: var(--font-display); font-size: 1.05rem; text-transform: uppercase; letter-spacing: .01em; }
+.tile__play { color: var(--acid); }
+
+/* ---- about -----------------------------------------------------------
+   One paragraph, set at size. There is no manifesto to pad it out with. */
+.about__inner { max-width: 46rem; }
+.about__lead {
+  margin: .9rem 0 1.25rem;
   font-family: var(--font-display);
-  font-size: clamp(5.5rem, 23vw, 20rem);
-  line-height: 1;
-  letter-spacing: .04em;
-  color: var(--acid);
-  opacity: .12;
-  white-space: nowrap;
-  pointer-events: none;
-  user-select: none;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.6vw, 2.6rem);
+  line-height: 1.16;
+  letter-spacing: .005em;
 }
-.room__inner { position: relative; display: grid; gap: clamp(1.25rem, 3vw, 2.5rem); }
-@media (min-width: 860px) { .room__inner { grid-template-columns: 300px 1fr; align-items: center; } }
-.room__shot { position: relative; aspect-ratio: 1; }
-.room__play {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  cursor: pointer;
-}
-.room__play span {
-  background: var(--black);
-  color: var(--acid);
-  padding: .6rem 1.15rem;
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-}
-.room__frame { border: 0; width: 100%; height: 320px; display: block; }
+.about__lead a { color: var(--acid); }
+.about__lead a:hover { text-decoration: underline; }
+.about__note { margin: 0; max-width: 44ch; color: var(--soft); }
 
-/* ---- closing call ----------------------------------------------------
-   A flat acid block. A faded mark behind type was neither one thing nor
-   the other; the panel does more work as a plain field of colour. */
-.call {
-  position: relative;
+/* ---- contact ---------------------------------------------------------- */
+.contact { max-width: 46rem; }
+.contact__note { margin: 0 0 1.5rem; max-width: 48ch; color: var(--soft); }
+.contact__links { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
+
+/* ---- roster (artists page) --------------------------------------------- */
+.roster { border-top: 1px solid var(--line); }
+.roster__row {
   display: grid;
-  place-items: center;
-  text-align: center;
-  padding: clamp(3.5rem, 12vh, 7rem) var(--gutter);
-  background: var(--acid);
-  color: var(--ink);
+  grid-template-columns: 76px 1fr;
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  padding: clamp(.9rem, 2.5vh, 1.5rem) 0;
+  border-bottom: 1px solid var(--line);
 }
-.call .statement { color: var(--ink); }
-/* on the accent the marker blocks invert, or they vanish into the ground */
-.call .mark { color: var(--acid); }
-.call .mark::before { background: var(--ink); }
-.call .btn { border-color: var(--ink); color: var(--ink); }
-.call .btn:hover { background: var(--ink); color: var(--acid); }
 @media (min-width: 720px) { .roster__row { grid-template-columns: 120px 1fr auto; } }
-.roster__shot { aspect-ratio: 1; }
+.roster__shot { margin: 0; aspect-ratio: 1; overflow: hidden; background: #0C0C09; }
+.roster__shot img { width: 100%; height: 100%; object-fit: cover; }
 .roster__name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.35rem, 4vw, 2.2rem); line-height: 1; text-transform: uppercase; }
 .roster__no { display: block; margin-bottom: .25rem; font-size: .625rem; font-weight: 700; letter-spacing: .22em; color: var(--soft); }
 .roster__bio { margin: .4rem 0 0; max-width: 54ch; color: var(--soft); font-size: .8125rem; }
 
-/* ---- demos + contact ---------------------------------------------------- */
-.duo-col { display: grid; gap: clamp(1.75rem, 4vw, 3rem); }
-@media (min-width: 820px) { .duo-col { grid-template-columns: 1fr 1fr; } }
-.duo-col h3 { margin: 0 0 .5rem; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.3rem, 3vw, 1.8rem); text-transform: uppercase; }
-.duo-col p { margin: 0 0 1rem; max-width: 44ch; color: var(--soft); }
-.duo-col__links { display: flex; flex-wrap: wrap; gap: .75rem; }
-
 /* ---- footer ------------------------------------------------------------- */
 .footer { padding: clamp(3rem, 9vh, 6rem) var(--gutter) clamp(2rem, 5vh, 3rem); border-top: 1px solid var(--line); }
-.footer__rows { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; font-size: .625rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); }
+.footer__mark { margin: 0 0 clamp(1.25rem, 4vh, 2.25rem); }
+.footer__mark img { width: 100%; height: auto; }
+.footer__rows {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
 .footer__rows a:hover { color: var(--acid); }
 .footer__set { display: flex; flex-wrap: wrap; gap: 1.25rem; }
 
-/* the label's own lockup, poster-sized, closing the page */
-.footer__mark { margin: 0 0 clamp(1.25rem, 4vh, 2.25rem); }
-.footer__mark img { width: 100%; height: auto; }
-
-/* ---- contact dialog ---------------------------------------------------
-   One way in for both demos and everything else. Plain <dialog>, so the
-   browser handles focus trapping and Escape for us. */
+/* ---- contact dialog ------------------------------------------------------
+   Plain <dialog>, so the browser handles focus trapping and Escape. */
 .modal {
   width: min(34rem, calc(100vw - 2rem));
   padding: 0;
@@ -502,7 +298,7 @@ body::after {
   background: var(--black);
   color: var(--paper);
 }
-.modal::backdrop { background: rgba(0, 0, 0, .78); }
+.modal::backdrop { background: rgba(0, 0, 0, .8); }
 .modal__in { padding: clamp(1.25rem, 4vw, 2rem); }
 .modal__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.1rem; }
 .modal__head h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; text-transform: uppercase; }
@@ -527,7 +323,6 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .emblem__ring, .emblem__stamp { animation: none; }
   *, *::before, *::after {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
