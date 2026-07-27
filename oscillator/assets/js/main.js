@@ -1,7 +1,11 @@
 /* =============================================================
-   OSCILLATOR — builds the page from artists.js and info.js
-   Home: the newest mix as the hero, then the whole archive.
-   artists.html: the index, with bios when they exist.
+   OSCILLATOR — builds the console from artists.js and info.js
+
+   The deck on the left is the only moving part: it shows the artwork,
+   number and name of whichever session you are pointing at, and falls
+   back to the newest one when you are pointing at nothing. Everything
+   else is markup.
+
    No framework, no build step.
    ============================================================= */
 
@@ -11,7 +15,7 @@
   var ARTISTS = Array.isArray(window.OSCILLATOR_ARTISTS) ? window.OSCILLATOR_ARTISTS : [];
   var INFO = window.OSCILLATOR_INFO || {};
 
-  /* The data file is regenerated from SoundCloud, so treat its URLs as
+  /* artists.js is regenerated from SoundCloud, so treat its URLs as
      untrusted input and only ever build links to hosts we expect. */
   function safeUrl(value) {
     if (typeof value !== 'string') return '';
@@ -25,52 +29,60 @@
     return node;
   }
 
-  function cover(artist, cls, eager) {
-    var fig = el('figure', cls);
-    if (!artist.cover) return fig;
-    var img = new Image();
-    img.src = artist.cover;
-    img.alt = '';                       /* the name is set next to it */
-    img.width = 1100;
-    img.height = 1100;
-    img.decoding = 'async';
-    if (eager) img.fetchPriority = 'high';
-    else img.loading = 'lazy';
-    fig.appendChild(img);
-    return fig;
-  }
-
   function listenLabel(artist) {
     return 'Listen to ' + (artist.name || 'this artist') + ' on SoundCloud';
   }
 
-  function externalLink(cls, text, url, label) {
-    var a = el('a', cls, text);
-    a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    if (label) a.setAttribute('aria-label', label);
-    return a;
-  }
-
-  /* ---- catalogue -----------------------------------------------------
-     Each session is a row of type. The artwork is not laid out with the
-     rows — it is held to one side and swapped in as the cursor moves, so
-     the archive reads as a list rather than as a wall of squares. */
-  function peekAt(peek, artist) {
-    if (!peek || !artist.cover) return;
-    var img = peek.firstChild;
-    if (!img) {
-      img = new Image();
-      img.alt = '';
-      img.decoding = 'async';
-      peek.appendChild(img);
-    }
+  function coverImage(artist, lazy) {
+    var img = new Image();
     img.src = artist.cover;
-    peek.classList.add('is-on');
+    img.alt = '';                         /* the name is set next to it */
+    img.width = 1100;
+    img.height = 1100;
+    img.decoding = 'async';
+    if (lazy) img.loading = 'lazy';
+    return img;
   }
 
-  function rowNode(artist, peek) {
+  /* ---- the deck -------------------------------------------------------
+     A hard cut, not a fade — a label swaps records, it does not dissolve
+     them. That only reads as deliberate if the next cover is already
+     decoded, so they are all warmed once the page is up. */
+  var deck = (function () {
+    var img = document.getElementById('deck-img');
+    var no = document.getElementById('deck-no');
+    var name = document.getElementById('deck-name');
+    var note = document.getElementById('deck-note');
+    if (!img) return { show: function () {}, rest: function () {} };
+
+    var current = null;
+
+    function show(artist, resting) {
+      if (!artist || artist === current) return;
+      current = artist;
+      if (artist.cover) img.src = artist.cover;
+      if (no) no.textContent = artist.number || '';
+      if (name) name.textContent = artist.name || '';
+      if (note) note.textContent = resting ? 'Latest session' : 'Session';
+    }
+
+    return {
+      show: function (artist) { show(artist, false); },
+      rest: function () { current = null; show(ARTISTS[0], true); }
+    };
+  })();
+
+  function warmCovers() {
+    ARTISTS.forEach(function (a) {
+      if (a.cover) { var i = new Image(); i.src = a.cover; }
+    });
+  }
+
+  /* ---- the catalogue --------------------------------------------------
+     Ten rows of type on the first screen. The artwork is not laid out
+     with them — it lives in the deck and follows the cursor, so the
+     archive reads as a catalogue rather than a wall of squares. */
+  function rowNode(artist) {
     var item = el('li');
     var url = safeUrl(artist.url);
     var row = el(url ? 'a' : 'div', 'row');
@@ -81,16 +93,19 @@
       row.setAttribute('aria-label', listenLabel(artist));
     }
 
+    /* the thumbnail is the deck's stand-in on a narrow screen, where
+       there is no room for a column beside the list */
+    if (artist.cover) {
+      var fig = el('figure', 'row__thumb');
+      fig.appendChild(coverImage(artist, true));
+      row.appendChild(fig);
+    }
+
     row.appendChild(el('span', 'row__no', artist.number || ''));
     row.appendChild(el('h3', 'row__name', artist.name || ''));
-    row.appendChild(el('span', 'row__go', 'Listen'));
+    row.appendChild(el('span', 'row__go', 'SoundCloud'));
 
-    /* the field behind the cover retunes to this artist's own frequency */
-    function enter() {
-      if (peek) peekAt(peek, artist);
-      var scope = window.OSCILLATOR_SCOPE;
-      if (scope) scope.retune(artist.number || artist.slug || artist.name);
-    }
+    function enter() { deck.show(artist); }
     row.addEventListener('mouseenter', enter);
     row.addEventListener('focus', enter);
 
@@ -100,52 +115,57 @@
 
   function renderSessions() {
     var list = document.getElementById('session-list');
-    var peek = document.getElementById('session-peek');
     if (!list || !ARTISTS.length) return;
 
     var frag = document.createDocumentFragment();
-    ARTISTS.forEach(function (a) { frag.appendChild(rowNode(a, peek)); });
+    ARTISTS.forEach(function (a) { frag.appendChild(rowNode(a)); });
     list.appendChild(frag);
 
-    list.addEventListener('mouseleave', function () {
-      if (peek) peek.classList.remove('is-on');
-      var scope = window.OSCILLATOR_SCOPE;
-      if (scope) scope.retune(null);          /* back to the label's own */
-    });
-
-    var count = document.getElementById('spec-count');
-    if (count) count.textContent = ARTISTS.length + ' sessions';
-
-    var latest = document.getElementById('spec-latest');
-    var newest = ARTISTS[0];
-    if (latest && newest) {
-      latest.textContent = (newest.number ? newest.number + ' — ' : '') + (newest.name || '');
-    }
+    list.addEventListener('mouseleave', function () { deck.rest(); });
   }
 
-  /* ---- roster (artists page) ---------------------------------------- */
+  /* ---- the roster (artists page) ------------------------------------- */
   function rosterNode(artist) {
     var row = el('li', 'roster__row');
     var url = safeUrl(artist.url);
 
-    row.appendChild(cover(artist, 'roster__shot'));
+    var fig = el('figure', 'roster__shot');
+    if (artist.cover) fig.appendChild(coverImage(artist, true));
+    row.appendChild(fig);
 
     var body = el('div');
     if (artist.number) body.appendChild(el('span', 'roster__no', artist.number));
     body.appendChild(el('h2', 'roster__name', artist.name || ''));
     /* bios are hand-written and may not be filled in yet */
     if (artist.bio) body.appendChild(el('p', 'roster__bio', artist.bio));
+    if (url) {
+      var a = el('a', 'btn', 'Listen');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.setAttribute('aria-label', listenLabel(artist));
+      body.appendChild(a);
+    }
     row.appendChild(body);
-
-    if (url) row.appendChild(externalLink('btn', 'Listen', url, listenLabel(artist)));
     return row;
   }
 
-  function fill(node, list, build) {
-    if (!node || !list.length) return;
+  function fill(node, build) {
+    if (!node || !ARTISTS.length) return;
     var frag = document.createDocumentFragment();
-    list.forEach(function (artist) { frag.appendChild(build(artist)); });
+    ARTISTS.forEach(function (artist) { frag.appendChild(build(artist)); });
     node.appendChild(frag);
+  }
+
+  /* ---- the label's own numbers --------------------------------------- */
+  function renderFacts() {
+    var count = document.getElementById('fact-count');
+    var latest = document.getElementById('fact-latest');
+    var newest = ARTISTS[0];
+    if (count) count.textContent = ARTISTS.length || '—';
+    if (latest && newest) {
+      latest.textContent = (newest.number ? newest.number + ' — ' : '') + (newest.name || '');
+    }
   }
 
   /* ---- contact dialog -------------------------------------------------
@@ -223,12 +243,17 @@
   }
 
   function boot() {
+    deck.rest();
     renderSessions();
-    fill(document.getElementById('roster'), ARTISTS, rosterNode);
+    fill(document.getElementById('roster'), rosterNode);
+    renderFacts();
     setUpContact();
 
     var year = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
+
+    if ('requestIdleCallback' in window) window.requestIdleCallback(warmCovers);
+    else setTimeout(warmCovers, 600);
   }
 
   if (document.readyState === 'loading') {

@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Artists · Oscillator</title>
-<meta name="description" content="Every artist Oscillator has put forward, with their work.">
-<meta name="theme-color" content="#FEED07">
+<meta name="description" content="Every artist Oscillator has put forward, with their session.">
+<meta name="theme-color" content="#000000">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Artists · Oscillator">
-<meta property="og:description" content="Every artist Oscillator has put forward, with their work.">
-<meta property="og:image" content="media/rises-poster.webp">
+<meta property="og:description" content="Every artist Oscillator has put forward, with their session.">
+<meta property="og:image" content="img/covers/030.webp">
 
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -19,57 +19,69 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=ebc61be8">
+<link rel="stylesheet" href="assets/css/style.css?v=1b846efb">
 </head>
 
 <body>
 
 <a class="skip-link" href="#roster">Skip to the list</a>
 
-<header class="nav">
-  <a class="nav__mark" href="index.html" aria-label="Oscillator, home">
-    <img src="img/mark.webp" alt="" width="677" height="508" decoding="async">
-  </a>
-  <nav class="nav__set" aria-label="Primary">
-    <a href="index.html#sessions">Sessions</a>
-    <a href="artists.html" aria-current="page">Artists</a>
-    <a href="index.html#contact">Contact</a>
-  </nav>
-</header>
+<div class="console">
 
-<main>
-  <section class="section" aria-labelledby="roster-title">
-    <div class="head">
-      <p class="tag tag--soft">Everyone we have put forward</p>
-      <h1 class="title" id="roster-title">Artists</h1>
+  <!-- the same deck, standing still: there is no catalogue here to
+       follow, so it holds the mark and the way back -->
+  <aside class="deck">
+    <a class="deck__mark" href="index.html" aria-label="Oscillator, home">
+      <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" fetchpriority="high" decoding="async">
+    </a>
+
+    <div class="deck__art" id="deck-art">
+      <img id="deck-img" src="img/covers/030.webp" alt="" width="1100" height="1100" fetchpriority="high" decoding="async">
     </div>
+
+    <div class="deck__meta">
+      <p class="deck__note"><span class="deck__no" id="deck-no">030</span> · <span id="deck-note">Latest session</span></p>
+      <p class="deck__name" id="deck-name">—</p>
+    </div>
+
+    <nav class="deck__nav" aria-label="Primary">
+      <a href="index.html#sessions">Sessions</a>
+      <a href="artists.html" aria-current="page">Artists</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </aside>
+
+  <main class="feed">
+
+    <section class="lede" aria-labelledby="roster-title">
+      <p class="tag">Everyone we have put forward</p>
+      <h1 id="roster-title">Artists</h1>
+    </section>
 
     <ol class="roster" id="roster">
       <!-- filled from assets/js/artists.js -->
     </ol>
 
-    <p class="after">
-      <a class="btn" href="index.html"><span aria-hidden="true">←</span> Back to the label</a>
-    </p>
-  </section>
-</main>
+    <footer class="foot">
+      <p class="foot__mark">
+        <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+      </p>
+      <div class="foot__rows">
+        <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
+        <span class="foot__set">
+          <a href="index.html">Label</a>
+          <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+          <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+        </span>
+      </div>
+    </footer>
 
-<footer class="footer">
-  <div class="footer__rows">
-    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
-    <span class="footer__set">
-      <a href="index.html">Label</a>
-      <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-      <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-    </span>
-  </div>
-  <p class="footer__mark">
-    <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
-  </p>
-</footer>
+  </main>
+</div>
 
-<script src="assets/js/info.js?v=55f4d261"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
-<script defer src="assets/js/main.js?v=e8624e3c"></script>
+<script src="assets/js/info.js?v=55f4d261"></script>
+<script defer src="assets/js/main.js?v=773f9ea1"></script>
 </body>
 </html>

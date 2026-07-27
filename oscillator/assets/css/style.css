@@ -1,10 +1,14 @@
 /* =============================================================
    OSCILLATOR — label site
 
-   The label is a numbered archive of mixes, so the artwork is the site.
-   Everything here gets out of its way: black ground, the label's acid
-   yellow for anything that has to be read as a signal, and no section
-   that does not have something real in it.
+   Structure first. This is a label with ten numbered sessions, so the
+   ten sessions are the page: you land on the catalogue, not on a poster
+   that makes you scroll to reach it. There is no hero here on purpose.
+
+   The page is a console. A deck is fixed down the left — the mark, the
+   artwork of whichever session you are pointing at, its number set huge
+   over the art, and the way in. The right column is the catalogue, and
+   it carries everything else past the deck as you scroll.
 
    Nothing is shared with the KEYV stylesheet but the two font files.
    ============================================================= */
@@ -14,10 +18,12 @@
   --black: #000000;
   --ink: #0A0A00;             /* type on the accent */
   --paper: #EFEFE6;
-  --soft: #7E7E70;            /* secondary type on black */
-  --line: #23231F;
+  --soft: #78786C;            /* secondary type on black */
+  --line: #1E1E1A;            /* the hairline grid */
+  --line-lit: #35352E;
 
-  --gutter: clamp(1.15rem, 4.5vw, 4.5rem);
+  --deck: clamp(17rem, 30vw, 26rem);
+  --pad: clamp(1.15rem, 2.6vw, 2.25rem);
   --font-display: "Anton", "Arial Narrow", sans-serif;
   --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --ease: cubic-bezier(.22, 1, .36, 1);
@@ -52,7 +58,7 @@ body {
 img { display: block; max-width: 100%; }
 ul, ol { list-style: none; margin: 0; padding: 0; }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--acid); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--acid); outline-offset: -2px; }
 
 .skip-link { position: absolute; left: -9999px; top: 0; background: var(--acid); color: var(--ink); padding: .7rem 1rem; z-index: 100; }
 .skip-link:focus { left: 0; }
@@ -66,18 +72,19 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
 }
 
-/* ---- the wall ------------------------------------------------------
-   Spray, not draughtsman's lines — the strokes run through a turbulence
-   displacement so the edges are eaten the way an aerosol edge is. Fixed,
-   so the paint stays put while the page moves over it. */
+/* Flat black reads as a void, so the page sits on graph paper: a fine
+   fixed grid, barely above the black, that gives the type something to
+   be measured against. The sprayed wall this replaced was louder than
+   the covers and fought them for attention. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  opacity: .28;
-  background: url("../../img/wall.svg") repeat center / 1600px 1200px;
+  background-image:
+    repeating-linear-gradient(0deg,  rgba(239, 239, 230, .03) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(239, 239, 230, .03) 0 1px, transparent 1px 46px);
 }
 
 /* ---- small technical labels ---------------------------------------- */
@@ -87,8 +94,8 @@ body::before {
   font-weight: 700;
   letter-spacing: .26em;
   text-transform: uppercase;
+  color: var(--soft);
 }
-.tag--soft { color: var(--soft); }
 .tag--acid { color: var(--acid); }
 
 .btn {
@@ -96,7 +103,7 @@ body::before {
   align-items: center;
   gap: .6rem;
   border: 1px solid currentColor;
-  padding: .8rem 1.5rem;
+  padding: .8rem 1.4rem;
   font: inherit;
   font-size: .625rem;
   font-weight: 700;
@@ -105,255 +112,349 @@ body::before {
   cursor: pointer;
   background: none;
   color: inherit;
-  transition: background .22s var(--ease), color .22s var(--ease);
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
 }
 .btn:hover { background: var(--acid); border-color: var(--acid); color: var(--ink); }
 .btn--acid { background: var(--acid); border-color: var(--acid); color: var(--ink); }
-.btn--acid:hover { background: transparent; color: var(--acid); }
+.btn--acid:hover { background: transparent; border-color: var(--acid); color: var(--acid); }
 
-/* ---- cover ----------------------------------------------------------
-   The field is a canvas, so the type only has to stay out of its way and
-   stay readable over it. Nothing is loaded for it — see oscilloscope.js. */
-.cover {
-  position: relative;
-  min-height: 100svh;
+/* =============================================================
+   THE CONSOLE — deck on the left, catalogue on the right
+   ============================================================= */
+.console {
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 1rem;
-  padding: clamp(1.1rem, 3vh, 2rem) var(--gutter) clamp(1.5rem, 4vh, 2.5rem);
-  background: var(--black);
-  overflow: hidden;
-  isolation: isolate;
-}
-.cover__scope {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.cover > *:not(.cover__scope) { position: relative; z-index: 2; }
-
-.cover__nav { display: flex; flex-wrap: wrap; gap: clamp(.9rem, 2.6vw, 2rem); align-self: start; }
-.cover__nav a {
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--paper);
-  transition: color .2s var(--ease);
-}
-.cover__nav a:hover { color: var(--acid); }
-
-/* the name sits on the quiet band the waves leave across the middle */
-.cover__mid { align-self: center; text-align: center; }
-.cover__word {
-  margin: 0;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: clamp(2.4rem, 11vw, 9rem);
-  line-height: .95;
-  letter-spacing: -.04em;
-  color: var(--paper);
-  /* the field runs behind it, so the letters carry their own darkness */
-  text-shadow: 0 0 clamp(1.5rem, 5vw, 4rem) rgba(0, 0, 0, .95),
-               0 0 clamp(.6rem, 2vw, 1.5rem) rgba(0, 0, 0, .9);
-}
-.cover__sub {
-  margin: .9rem 0 0;
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .3em;
-  text-transform: uppercase;
-  color: var(--acid);
-  text-shadow: 0 0 1.5rem rgba(0, 0, 0, .95);
+  grid-template-columns: var(--deck) minmax(0, 1fr);
+  align-items: start;
 }
 
-.cover__spec {
-  align-self: end;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem clamp(1.5rem, 5vw, 4rem);
-  color: var(--paper);
-}
-.cover__spec > div { display: flex; align-items: baseline; gap: .6rem; }
-.cover__spec dt {
-  font-size: .5625rem;
-  font-weight: 700;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--soft);
-}
-.cover__spec dd { margin: 0; font-size: .6875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-.cover__spec a { color: var(--acid); }
-/* Two classes deep on purpose: the blanket rule above is also two classes,
-   and a plain `.cover__scroll` would lose to it — leaving this `relative`,
-   which turns `right` into a leftward shift off the edge of the page. */
-.cover .cover__scroll {
-  position: absolute;
-  right: var(--gutter);
-  bottom: clamp(1.5rem, 4vh, 2.5rem);
-  z-index: 2;
-  margin: 0;
-  color: var(--soft);
-}
-
-@media (max-width: 720px) {
-  .cover__scroll { display: none; }
-  .cover__spec { gap: .3rem 1.25rem; }
-}
-
-/* ---- catalogue -----------------------------------------------------
-   The sessions are a list, not a grid of squares. A grid of the covers
-   is the Instagram feed with a header on it; set as type, the archive
-   reads as a catalogue and the artwork arrives only when asked for. */
-.cat { position: relative; }
-@media (min-width: 1080px) {
-  .cat { display: grid; grid-template-columns: 1fr 300px; gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
-}
-.cat__list { border-top: 1px solid var(--line); }
-
-.row {
-  display: grid;
-  grid-template-columns: 3.5rem 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  padding: clamp(.9rem, 2.4vh, 1.5rem) 0;
-  border-bottom: 1px solid var(--line);
-  transition: color .25s var(--ease), padding-left .35s var(--ease);
-}
-.row:hover, .row:focus-within { color: var(--acid); padding-left: .75rem; }
-.row__no { font-size: .6875rem; font-weight: 700; letter-spacing: .2em; color: var(--soft); }
-.row:hover .row__no, .row:focus-within .row__no { color: var(--acid); }
-.row__name {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.4rem, 4.6vw, 3rem);
-  line-height: 1;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-.row__go { font-size: .625rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; white-space: nowrap; }
-.row a { display: contents; }
-
-/* the artwork, held to one side and swapped as the cursor moves down */
-.cat__peek {
-  display: none;
-  /* sticky rather than absolute: pinned below the fixed bar, it follows
-     the list down instead of sitting underneath the navigation */
+/* ---- the deck -------------------------------------------------------
+   Sticky for the whole document, so the artwork and the way in never
+   leave. It is a grid rather than a stack because the artwork has to
+   take whatever height is left after the mark, the caption and the nav
+   have had theirs — at 700px tall and at 1400px tall alike. */
+.deck {
   position: sticky;
-  top: 5.5rem;
-  width: 100%;
-  aspect-ratio: 1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .3s var(--ease), transform .45s var(--ease);
-  transform: translateY(12px);
-}
-.cat__peek img { width: 100%; height: 100%; object-fit: cover; }
-.cat__peek.is-on { opacity: 1; transform: none; }
-@media (min-width: 1080px) { .cat__peek { display: block; } }
-
-/* ---- prose ----------------------------------------------------------- */
-.prose { max-width: 46rem; }
-.prose p { margin: 0 0 1.1rem; max-width: 52ch; color: var(--soft); font-size: 1rem; }
-.prose p:last-child { margin-bottom: 0; }
-.contact__links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem !important; }
-
-/* ---- section furniture ---------------------------------------------- */
-.section { padding: clamp(3.5rem, 10vh, 7rem) var(--gutter); }
-.head {
-  padding-bottom: .9rem;
-  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
-  border-bottom: 1px solid var(--line);
-}
-.head .tag { margin-bottom: .45rem; }
-.title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.9rem, 5.5vw, 3.8rem);
-  line-height: 1;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-}
-.after { display: flex; flex-wrap: wrap; gap: .75rem; margin: clamp(1.75rem, 4vh, 2.5rem) 0 0; }
-
-/* ---- roster (artists page) --------------------------------------------- */
-.roster { border-top: 1px solid var(--line); }
-.roster__row {
+  top: 0;
+  height: 100svh;
   display: grid;
-  grid-template-columns: 76px 1fr;
-  gap: clamp(1rem, 3vw, 2rem);
-  align-items: center;
-  padding: clamp(.9rem, 2.5vh, 1.5rem) 0;
-  border-bottom: 1px solid var(--line);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: var(--pad);
+  padding: var(--pad);
+  border-right: 1px solid var(--line);
+  background: var(--black);
 }
-@media (min-width: 720px) { .roster__row { grid-template-columns: 120px 1fr auto; } }
-.roster__shot { margin: 0; aspect-ratio: 1; overflow: hidden; background: #0C0C09; }
-.roster__shot img { width: 100%; height: 100%; object-fit: cover; }
-.roster__name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.35rem, 4vw, 2.2rem); line-height: 1; text-transform: uppercase; }
-.roster__no { display: block; margin-bottom: .25rem; font-size: .625rem; font-weight: 700; letter-spacing: .22em; color: var(--soft); }
-.roster__bio { margin: .4rem 0 0; max-width: 54ch; color: var(--soft); font-size: .8125rem; }
 
-/* ---- footer ------------------------------------------------------------- */
-.footer { padding: clamp(3rem, 9vh, 6rem) var(--gutter) clamp(2rem, 5vh, 3rem); border-top: 1px solid var(--line); }
-.footer__mark { margin: 0 0 clamp(1.25rem, 4vh, 2.25rem); }
-.footer__mark img { width: 100%; height: auto; }
-.footer__rows {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem 2rem;
+.deck__mark { display: block; width: min(11rem, 62%); }
+.deck__mark img { width: 100%; height: auto; }
+
+/* The artwork of the session under the cursor. It is a hard cut, not a
+   fade: a label swaps records, it does not dissolve them.
+
+   Nothing is set over it. The covers already carry the session number
+   and the artist's name in the label's own hand — an overlay of ours
+   would only be a second, worse version of what is already there. */
+/* Held to the top of its row, so the slack in the column collects in one
+   place above the caption instead of splitting either side of the art. */
+.deck__art { display: grid; place-items: start center; min-height: 0; }
+/* The covers are square and the slot is not, so the image is capped in
+   both directions and left at its own ratio rather than being cropped to
+   fill — a crop here cut the artist's name off their own cover. */
+.deck__art img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  background: #0B0B09;
+  border: 1px solid var(--line);
+}
+
+.deck__meta { display: grid; gap: .3rem; }
+.deck__note { margin: 0; font-size: .625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
+.deck__no { color: var(--acid); font-variant-numeric: tabular-nums; }
+.deck__name {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.15;
+}
+
+.deck__nav { display: flex; flex-wrap: wrap; gap: .45rem 1.1rem; }
+.deck__nav a {
   font-size: .625rem;
   font-weight: 700;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--soft);
+  transition: color .18s var(--ease);
 }
-.footer__rows a:hover { color: var(--acid); }
-.footer__set { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+.deck__nav a:hover,
+.deck__nav a[aria-current] { color: var(--acid); }
 
-/* ---- contact dialog ------------------------------------------------------
-   Plain <dialog>, so the browser handles focus trapping and Escape. */
+/* ---- the feed ------------------------------------------------------- */
+.feed { min-width: 0; }
+
+/* One statement, and then straight into the work. This is the closest
+   thing to a hero the page has, and it is three lines of type. */
+.lede {
+  padding: clamp(2.25rem, 6vh, 4rem) var(--pad) clamp(1.75rem, 4vh, 2.5rem);
+  border-bottom: 1px solid var(--line);
+}
+.lede h1 {
+  margin: .9rem 0 0;
+  max-width: 18ch;
+  font-size: clamp(1.75rem, 4.2vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+}
+.lede h1 em { font-style: normal; color: var(--acid); }
+
+/* ---- the catalogue --------------------------------------------------
+   Ten rows of type, all on the first screen. No grid of squares: the
+   artwork lives in the deck and swaps as you move down the list, so the
+   archive reads the way a catalogue reads. */
+.rows { border-bottom: 1px solid var(--line); }
+.rows li + li .row { border-top: 1px solid var(--line); }
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 var(--pad);
+  /* ten of these plus the lede have to clear a 900px-tall window, which
+     is what fixes the ceiling here — the whole point of the layout is
+     that the entire catalogue is on the first screen */
+  min-height: clamp(3.1rem, 6.4svh, 4.5rem);
+  color: inherit;
+  transition: background .16s var(--ease), color .16s var(--ease);
+}
+.row__thumb { display: none; }
+
+.row__no {
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--acid);
+  transition: color .16s var(--ease);
+}
+.row__name {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Anchors the right edge of a very wide row so the line does not trail
+   off into nothing. Present at rest, lit on hover. */
+.row__go {
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #2E2E29;
+  transition: color .16s var(--ease);
+}
+
+/* A hard acid fill, the way a channel lights when you push it. */
+.row:hover,
+.row:focus-visible {
+  background: var(--acid);
+  color: var(--ink);
+  outline: none;
+}
+.row:hover .row__no,
+.row:focus-visible .row__no,
+.row:hover .row__go,
+.row:focus-visible .row__go { color: var(--ink); }
+
+/* ---- the panels below ----------------------------------------------- */
+.panel {
+  padding: clamp(3rem, 9vh, 6rem) var(--pad);
+  border-bottom: 1px solid var(--line);
+}
+.panel__tag { margin: 0 0 1.25rem; }
+.panel h2 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.035em;
+}
+.prose { max-width: 46ch; color: #C9C9BE; }
+.prose p { margin: 0 0 1rem; }
+.prose p:last-child { margin-bottom: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.75rem; }
+
+/* the label's own numbers, set as a strip rather than a paragraph */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 1px;
+  margin-top: 2.25rem;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.facts > div { background: var(--black); padding: 1.1rem 1.2rem; }
+.facts dt { font-size: .5625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
+.facts dd { margin: .5rem 0 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; }
+.facts a { color: var(--acid); }
+
+/* ---- the roster (artists page) --------------------------------------
+   Same column, but each artist gets their cover, because this page is
+   where you come to read about them rather than to pick a mix. */
+.roster__row {
+  display: grid;
+  grid-template-columns: clamp(5.5rem, 12vw, 9rem) minmax(0, 1fr);
+  gap: clamp(1rem, 2.5vw, 2rem);
+  align-items: start;
+  padding: clamp(1.5rem, 4vh, 2.5rem) var(--pad);
+}
+.roster__row + .roster__row { border-top: 1px solid var(--line); }
+.roster__shot { margin: 0; aspect-ratio: 1; overflow: hidden; background: #0B0B09; border: 1px solid var(--line); }
+.roster__shot img { width: 100%; height: 100%; object-fit: cover; }
+.roster__no { font-size: .6875rem; font-weight: 700; letter-spacing: .16em; color: var(--acid); font-variant-numeric: tabular-nums; }
+.roster__name {
+  margin: .25rem 0 0;
+  font-size: clamp(1.15rem, 2.6vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.roster__bio { margin: .7rem 0 0; max-width: 52ch; color: #C9C9BE; }
+.roster__row .btn { margin-top: 1rem; }
+
+/* ---- foot ----------------------------------------------------------- */
+.foot { padding: clamp(2rem, 6vh, 3.5rem) var(--pad) clamp(2.5rem, 7vh, 4rem); }
+.foot__mark { margin: 0 0 2rem; max-width: min(30rem, 100%); }
+.foot__mark img { width: 100%; height: auto; opacity: .9; }
+.foot__rows {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .75rem 1.5rem;
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.foot__set { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; }
+.foot__rows a { transition: color .18s var(--ease); }
+.foot__rows a:hover { color: var(--acid); }
+
+/* =============================================================
+   MOBILE — the deck cannot be a column, so it becomes a masthead and
+   the artwork moves into the rows themselves.
+   ============================================================= */
+@media (max-width: 900px) {
+  .console { grid-template-columns: 1fr; }
+
+  /* Four nav items will not sit beside the mark at 320px, and wrapping
+     them against a right edge reads as an accident — so they get their
+     own line under it. */
+  .deck {
+    position: static;
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: .75rem;
+    padding-bottom: 1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .deck__mark { width: 8rem; }
+  .deck__nav { justify-content: flex-start; }
+  /* the deck's artwork and caption are what the rows now carry */
+  .deck__art, .deck__meta { display: none; }
+
+  .lede { padding-top: clamp(2.25rem, 6vh, 3.5rem); }
+
+  .row {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    gap: .9rem;
+    padding: .85rem var(--pad);
+    min-height: 0;
+  }
+  .row__thumb {
+    display: block;
+    grid-row: span 1;
+    width: 3.5rem;
+    aspect-ratio: 1;
+    margin: 0;
+    overflow: hidden;
+    background: #0B0B09;
+  }
+  .row__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .row__no {
+    /* the thumbnail has taken the first column, so the number rides
+       above the name rather than beside it */
+    grid-column: 2;
+    font-size: .625rem;
+  }
+  .row__name { grid-column: 2; grid-row: 2; font-size: 1.0625rem; white-space: normal; }
+  .row__go { display: none; }
+  .row { grid-template-rows: auto auto; align-items: center; }
+  .row__thumb { grid-column: 1; grid-row: 1 / span 2; }
+
+  /* no hover on a touch screen, so the fill would only ever stick */
+  .row:hover { background: none; color: inherit; }
+  .row:hover .row__no { color: var(--acid); }
+  .row:active { background: var(--acid); color: var(--ink); }
+  .row:active .row__no { color: var(--ink); }
+
+  .roster__row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* =============================================================
+   CONTACT — one way in, for demos, bookings and press alike
+   ============================================================= */
 .modal {
-  width: min(34rem, calc(100vw - 2rem));
+  width: min(30rem, calc(100vw - 2rem));
   padding: 0;
   border: 1px solid var(--acid);
   background: var(--black);
   color: var(--paper);
 }
-.modal::backdrop { background: rgba(0, 0, 0, .8); }
-.modal__in { padding: clamp(1.25rem, 4vw, 2rem); }
-.modal__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.1rem; }
-.modal__head h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; text-transform: uppercase; }
-.modal__x { border: 0; background: none; color: var(--soft); font: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 0 .2rem; }
+.modal::backdrop { background: rgba(0, 0, 0, .82); }
+.modal__in { display: grid; gap: 1rem; padding: clamp(1.25rem, 4vw, 2rem); }
+.modal__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.modal__head h2 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; }
+.modal__x {
+  border: 0; background: none; color: var(--soft);
+  font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 0 .25rem;
+}
 .modal__x:hover { color: var(--acid); }
 
-.field { display: block; margin-bottom: .9rem; }
-.field span { display: block; margin-bottom: .3rem; font-size: .625rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); }
+.field { display: grid; gap: .4rem; }
+.field > span { font-size: .5625rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--soft); }
 .field input, .field textarea {
-  width: 100%;
-  padding: .65rem .75rem;
-  border: 1px solid var(--line);
-  background: #0B0B08;
-  color: var(--paper);
   font: inherit;
-  font-size: .875rem;
+  padding: .7rem .8rem;
+  color: var(--paper);
+  background: #0B0B09;
+  border: 1px solid var(--line-lit);
+  border-radius: 0;
+  resize: vertical;
 }
 .field input:focus, .field textarea:focus { outline: none; border-color: var(--acid); }
-.field textarea { resize: vertical; min-height: 7rem; }
-.modal__note { margin: .9rem 0 0; font-size: .75rem; color: var(--soft); }
-.modal__note[data-state="bad"] { color: var(--acid); }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: .001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .001ms !important;
-  }
-}
+.modal__note { margin: 0; min-height: 1.25rem; font-size: .8125rem; color: var(--soft); }
+.modal__note[data-state="bad"] { color: #FF6B4A; }
+.modal__note[data-state="ok"] { color: var(--acid); }

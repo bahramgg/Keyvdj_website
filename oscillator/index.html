@@ -18,7 +18,7 @@
 </script>
 
 <title>Oscillator · Techno Label</title>
-<meta name="description" content="Oscillator is an independent techno label founded by KEYV. A numbered archive of sessions, one artist at a time.">
+<meta name="description" content="Oscillator is an independent techno label from Tehran. A numbered archive of sessions, one artist at a time.">
 <meta name="theme-color" content="#000000">
 
 <meta property="og:type" content="website">
@@ -32,112 +32,112 @@
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
 
-<link rel="stylesheet" href="assets/css/style.css?v=ebc61be8">
+<link rel="stylesheet" href="assets/css/style.css?v=1b846efb">
 </head>
 
 <body>
 
 <a class="skip-link" href="#sessions">Skip to the sessions</a>
 
-<main id="top">
+<!-- ══ THE CONSOLE ═══════════════════════════════════════════════════
+     No hero. The label has ten sessions, so the ten sessions are the
+     first screen. The deck holds the identity and the artwork of
+     whichever row you are on; the feed beside it is the catalogue. -->
+<div class="console">
 
-  <!-- ══ COVER — the label, running ══════════════════════════════════
-       There is no image here. The field is a set of standing waves
-       solved every frame in assets/js/oscilloscope.js: the label is
-       called Oscillator, so the page is one. It answers the cursor, and
-       the archive below retunes it to whichever artist you are on. -->
-  <section class="cover" aria-labelledby="cover-title">
-    <canvas class="cover__scope" id="scope" aria-hidden="true"></canvas>
+  <aside class="deck">
+    <a class="deck__mark" href="index.html" aria-label="Oscillator, home">
+      <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" fetchpriority="high" decoding="async">
+    </a>
 
-    <nav class="cover__nav" aria-label="Primary">
+    <!-- swapped by assets/js/main.js as you move down the catalogue -->
+    <div class="deck__art" id="deck-art">
+      <img id="deck-img" src="img/covers/030.webp" alt="" width="1100" height="1100" fetchpriority="high" decoding="async">
+    </div>
+
+    <div class="deck__meta">
+      <p class="deck__note"><span class="deck__no" id="deck-no">030</span> · <span id="deck-note">Latest session</span></p>
+      <p class="deck__name" id="deck-name">—</p>
+    </div>
+
+    <nav class="deck__nav" aria-label="Primary">
       <a href="#sessions">Sessions</a>
       <a href="artists.html">Artists</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </nav>
+  </aside>
 
-    <div class="cover__mid">
-      <h1 class="cover__word" id="cover-title">Oscillator</h1>
-      <p class="cover__sub">Independent techno label · Tehran</p>
-    </div>
+  <main class="feed">
 
-    <dl class="cover__spec">
-      <div><dt>Signal</dt><dd id="spec-latest">—</dd></div>
-      <div><dt>Output</dt><dd id="spec-count">Sessions</dd></div>
-      <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
-    </dl>
+    <!-- ══ what the label is, in one sentence ═══════════════════════ -->
+    <section class="lede" aria-labelledby="lede-title">
+      <p class="tag">Independent techno · Tehran</p>
+      <h1 id="lede-title">Oscillator puts forward <em>one artist at a time</em>.</h1>
+    </section>
 
-    <p class="tag cover__scroll">Scroll</p>
-  </section>
+    <!-- ══ the catalogue ════════════════════════════════════════════ -->
+    <section id="sessions" aria-labelledby="sessions-title">
+      <h2 class="sr-only" id="sessions-title">Sessions</h2>
+      <ol class="rows" id="session-list"></ol>
+    </section>
 
-  <!-- ══ SESSIONS — a catalogue, not a feed ═════════════════════════ -->
-  <section id="sessions" class="section" aria-labelledby="sessions-title">
-    <div class="head">
-      <p class="tag tag--soft">Every session, in order</p>
-      <h2 class="title" id="sessions-title">The archive</h2>
-    </div>
+    <!-- ══ about ════════════════════════════════════════════════════ -->
+    <section id="about" class="panel" aria-labelledby="about-title">
+      <p class="tag panel__tag">The label</p>
+      <h2 id="about-title">About</h2>
+      <div class="prose">
+        <p>
+          Oscillator is an independent techno label founded by KEYV. Every
+          session hands the deck to another artist, and the archive is the
+          record of it.
+        </p>
+        <p>
+          Sessions go out numbered, in order, with no schedule to fill.
+        </p>
+      </div>
 
-    <div class="cat">
-      <ol class="cat__list" id="session-list"></ol>
-      <!-- the artwork follows whichever row you are on; desktop only -->
-      <div class="cat__peek" id="session-peek" aria-hidden="true"></div>
-    </div>
+      <dl class="facts">
+        <div><dt>Sessions</dt><dd id="fact-count">—</dd></div>
+        <div><dt>Latest</dt><dd id="fact-latest">—</dd></div>
+        <div><dt>Based in</dt><dd>Tehran</dd></div>
+        <div><dt>Founded by</dt><dd><a href="https://keyvdj.com/">KEYV</a></dd></div>
+      </dl>
+    </section>
 
-    <p class="after">
-      <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen on SoundCloud</a>
-      <a class="btn" href="artists.html">Artist index</a>
-    </p>
-  </section>
-
-  <!-- ══ ABOUT ══════════════════════════════════════════════════════ -->
-  <section id="about" class="section" aria-labelledby="about-title">
-    <div class="head">
-      <p class="tag tag--soft">The label</p>
-      <h2 class="title" id="about-title">About</h2>
-    </div>
-    <div class="prose">
-      <p>
-        Oscillator is an independent techno label founded by KEYV. Every
-        session hands the deck to another artist, and the archive is the
-        record of it.
-      </p>
-      <p>
-        Based in Tehran. Sessions go out numbered, in order, with no
-        schedule to fill.
-      </p>
-    </div>
-  </section>
-
-  <!-- ══ CONTACT ════════════════════════════════════════════════════ -->
-  <section id="contact" class="section" aria-labelledby="contact-title">
-    <div class="head">
-      <p class="tag tag--soft">Demos, bookings, press</p>
-      <h2 class="title" id="contact-title">Get in touch</h2>
-    </div>
-    <div class="prose">
-      <p>
-        We listen to everything that comes in. Send a private link with a
-        line about who you are — no attachments, no zip files.
-      </p>
-      <p class="contact__links">
-        <button class="btn btn--acid" type="button" id="contact-open">Email us</button>
+    <!-- ══ contact ══════════════════════════════════════════════════ -->
+    <section id="contact" class="panel" aria-labelledby="contact-title">
+      <p class="tag panel__tag">Demos, bookings, press</p>
+      <h2 id="contact-title">Get in touch</h2>
+      <div class="prose">
+        <p>
+          We listen to everything that comes in. Send a private link with a
+          line about who you are — no attachments, no zip files.
+        </p>
+      </div>
+      <p class="actions">
+        <button class="btn btn--acid" type="button" id="contact-open">Write to us</button>
+        <a class="btn" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
         <a class="btn" href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
       </p>
-    </div>
-  </section>
+    </section>
 
-</main>
+    <footer class="foot">
+      <p class="foot__mark">
+        <img src="img/wordmark.webp" alt="Oscillator" width="1600" height="470" loading="lazy" decoding="async">
+      </p>
+      <div class="foot__rows">
+        <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
+        <span class="foot__set">
+          <a href="artists.html">Artists</a>
+          <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
+          <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
+        </span>
+      </div>
+    </footer>
 
-<footer class="footer">
-  <div class="footer__rows">
-    <span>© <span id="year">2026</span> Oscillator · Founded by <a href="https://keyvdj.com/">KEYV</a></span>
-    <span class="footer__set">
-      <a href="artists.html">Artists</a>
-      <a href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">SoundCloud</a>
-      <a href="https://www.instagram.com/oscillator__" target="_blank" rel="noopener">Instagram</a>
-    </span>
-  </div>
-</footer>
+  </main>
+</div>
 
 <dialog class="modal" id="contact-modal" aria-labelledby="modal-title">
   <form class="modal__in" id="contact-form" novalidate>
@@ -164,9 +164,8 @@
   </form>
 </dialog>
 
-<script defer src="assets/js/oscilloscope.js?v=43388eac"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=e8624e3c"></script>
+<script defer src="assets/js/main.js?v=773f9ea1"></script>
 </body>
 </html>
