@@ -1,41 +1,32 @@
 /* =============================================================
-   OSCILLATOR — the beam
+   OSCILLATOR — the field that writes the name
 
-   An oscilloscope in XY mode does not draw a waveform, it draws a
-   Lissajous figure: two oscillators at right angles, one on each axis.
-   The label is named after the thing, so this is the picture of it.
+   The first screen has no logo on it. The name is written by the lines
+   themselves: a field of short lit strokes that drift free, gather at
+   the centre of the window, and settle into the word. Scroll away and
+   they let go again and go back to drifting behind the rest of the site.
 
-   Nothing here is a texture or an image. Two sines, a beam that sweeps
-   them, and phosphor:
+   How the word is found
+   ---------------------
+   "OSCILLATOR" is set once on an offscreen canvas in the display face,
+   sized to the window, and its pixels are read back. Every pixel the
+   type covers is a candidate; a grid of them becomes the targets. So
+   the letterforms come from the font rather than from coordinates typed
+   in here, and they stay right at any width and through a font swap.
 
-     · the screen is never cleared. Each frame lays a nearly-transparent
-       black over the last, so the beam leaves a decaying trail and the
-       brightest part is wherever it just passed
-     · the strokes are additive, so where the trace crosses itself it
-       burns toward white instead of merely overlapping
-     · the ratio drifts. It locks onto a small integer ratio, holds a
-       closed figure a while, then slides to the next — and everything
-       between is an open, tumbling curve
+   How a stroke is drawn
+   ---------------------
+   Each one is a dash centred on its position, laid along the direction
+   it is travelling. Moving fast it stretches into a trail; at rest it
+   holds a minimum length along a fixed angle of its own, so the settled
+   word is woven out of little lines rather than dotted out of points.
 
-   ---- why it is not in a box ----------------------------------------
-
-   A figure reads as boxed when you can see where it stops. The first
-   version used one radius for both axes and kept it well inside the
-   window, so its bounding square was plainly visible and it sat in the
-   middle of the screen like a picture hung on a wall.
-
-   Two changes, and there is no frame to see:
-
-     · the amplitudes are larger than the window and set per axis, so
-       the curve runs off all four edges. You only ever see the part of
-       it that is passing through
-     · the centre is never still. It drifts on its own slow cycle and is
-       pushed further by the scroll position, so the figure wanders the
-       page instead of orbiting one point
-
-   The trail is drawn in screen space, so when the centre moves the old
-   trace fades where it was rather than following. That is what a scope
-   does when the signal moves, and it is why this is left alone.
+   Cost
+   ----
+   All of them go into one path and it is stroked three times — wide and
+   faint for the bloom, middle for the halo, tight and bright for the
+   line. Three stroke calls a frame, not three per stroke, so the count
+   can be in the hundreds without touching the frame budget.
    ============================================================= */
 
 (function () {
@@ -50,62 +41,156 @@
   var ACID = '254, 237, 7';
   var GROUND = '5, 5, 4';        /* --black; the decay has to match it */
 
-  /* Slow, and a short enough tail that it reads as one line being drawn
-     rather than as a ball of wire. */
-  var SEGS = 12;                 /* segments drawn per frame */
-  var DT = 0.0035;               /* radians of sweep per segment */
-  var DECAY = 0.016;             /* how fast the phosphor gives up */
+  var WORD = 'OSCILLATOR';
+  /* Density is the whole game, and brute force is the wrong way to get
+     it: at a 4px grid the mark count reached 2600 and the frame rate
+     halved, because the wide bloom pass has to fill every one of them.
 
-  /* Amplitudes and centre drift, both as a fraction of the window.
+     So the marks stay sparse and a settled one keeps a small orbit
+     instead of freezing. The screen is never cleared, so over a few
+     frames each mark's own wobble paints out the gap around it and the
+     letterform fills in — density from movement rather than from count.
+     It also stops the held word looking like a printed still. */
+  /* These three are set from the type size in buildTargets, not fixed:
+     a 5px grid and a 6px dash are right under a 200px word and are as
+     thick as the strokes themselves under a 57px one, which is what a
+     phone gets — the word came out as mush there. Anton's stroke is
+     about 0.17 of its size, and it takes three or four marks across a
+     stroke to read, so the grid is a twentieth of the size, clamped. */
+  var GRID = 5;                  /* px between sampled targets */
+  var MAX_MARKS = 1300;
+  var DASH_MIN = 6;              /* a settled stroke is still a stroke */
+  var WOBBLE = 2.9;              /* px of orbit once it has arrived */
+  var DASH_MAX = 18;
 
-     These are not picked by eye: the amplitude has to beat the worst
-     case the centre can drift to, or the figure keeps one edge inside
-     the window and that edge is the box. On x the centre reaches
-     0.5 ± 0.22, so an amplitude of 0.80 puts the near extreme at -0.08
-     and the far one at 1.08 — outside on both sides whatever the drift
-     is doing. Same arithmetic on y. Measured before this: it was
-     leaving by left, right and bottom but never the top. */
+  /* What is left once the word lets go.
+
+     It takes over a thousand marks to write the word solidly, and
+     turning all of them loose at once did not read as a few free lines —
+     it filled the window with a hairball that buried every section under
+     it. So the count is tied to how formed the word is: at rest only
+     this fraction stays lit, and the rest wink out as it releases. */
+  var FREE_KEEP = 0.085;
+  var DECAY = 0.055;             /* how fast the phosphor gives up */
+
+  /* the free drift, when the word is let go */
   var AMP_X = 0.80, DRIFT_X = 0.12, SCROLL_X = 0.08, LEAN_X = 0.02;
   var AMP_Y = 0.72, DRIFT_Y = 0.10, SCROLL_Y = 0.08;
-
-  /* Small integers only: the ratio is how many lobes the figure has, so
-     7:5 is a thicket and 3:2 is a shape. */
-  var RATIOS = [
-    [1, 2], [2, 3], [3, 2], [1, 1], [3, 4], [4, 3], [2, 1], [1, 3]
-  ];
 
   var w = 0, h = 0, dpr = 1;
   var raf = null, running = false;
 
-  /* The two oscillators carry their own accumulated angle rather than a
-     shared clock.
+  /* per-stroke state, in typed arrays: position, previous position,
+     target, its own angle, and where it sits in the stagger */
+  var n = 0;
+  var px, py, ox, oy, tx, ty, ang, seedA, seedB, spread, delay, rank;
 
-     This used to be one running t with x = sin(a*t), and t grew without
-     bound. A drifting `a` then multiplied by an ever-larger t, so a
-     change of 0.004 in the ratio moved the phase by whole radians from
-     one frame to the next and the trace came out in dashes. Advancing
-     each angle by its own frequency each step is what an oscillator
-     actually does: changing the frequency changes the rate from here on
-     and never rewrites where the beam has already been. */
-  var angX = 0, angY = 0;
-  var a = 3, b = 2;              /* live frequency ratio */
-  var aTo = 3, bTo = 2;          /* where it is heading */
-  var phase = 0, phaseRate = 0.02;
-  var hold = 0;                  /* frames left before the next ratio */
-  var wander = 0;                /* the centre's own slow clock */
-
-  /* the pointer leans the figure, without ever driving it */
+  var angX = 0, angY = 0;        /* the drift oscillators' own angles */
+  var angW = 0;                  /* the settled marks' own orbit */
+  var wander = 0;
   var lean = 0, leanTo = 0;
 
-  function pickRatio() {
-    var next = RATIOS[(Math.random() * RATIOS.length) | 0];
-    /* never pick the one already showing, or it looks stuck */
-    if (next[0] === aTo && next[1] === bTo) {
-      next = RATIOS[(RATIOS.indexOf(next) + 1) % RATIOS.length];
+  /* 0 = drifting free, 1 = holding the word. The name belongs to the
+     first screen, so a page without one never forms it — otherwise the
+     word and its guides were drawn behind the artists list, which has no
+     hero to scroll past and so could never release them. */
+  var hero = document.querySelector('.hero');
+  var form = 0, formTo = hero ? 1 : 0;
+
+  /* the word's box, for the guides drawn around it */
+  var box = null;
+
+  function scrollTop() {
+    return window.pageYOffset || document.documentElement.scrollTop || 0;
+  }
+
+  /* ---- the targets -------------------------------------------------------
+     Set the word once, read the pixels back, keep a grid of the ones the
+     type covers. */
+  function buildTargets() {
+    var pad = Math.min(w * 0.09, 90);
+    var off = document.createElement('canvas');
+    off.width = Math.max(1, Math.round(w));
+    off.height = Math.max(1, Math.round(h));
+    var oc = off.getContext('2d');
+
+    /* find the size that fills the width, by measuring rather than
+       guessing — the display face is condensed and its ratio is not
+       something to hard-code */
+    var size = 10;
+    oc.font = '400 ' + size + 'px "Anton", "Arial Narrow", sans-serif';
+    var unit = oc.measureText(WORD).width / size;
+    /* Held well inside the window on both axes: at h*0.34 the word was
+       tall enough to sit on the foot of the screen. */
+    var wide = Math.min((w - pad * 2) / unit * 0.82, h * 0.21);
+    size = Math.max(28, wide);
+
+    oc.font = '400 ' + size + 'px "Anton", "Arial Narrow", sans-serif';
+    oc.textAlign = 'center';
+    oc.textBaseline = 'middle';
+    oc.fillStyle = '#fff';
+    var midX = w / 2, midY = h * 0.46;
+    oc.fillText(WORD, midX, midY);
+
+    /* Rounded, and it has to be: the sample loop steps x by GRID and
+       indexes the pixel buffer with it, so a fractional step lands
+       between bytes and the alpha test never passes. At 390px wide this
+       came out 3.07 and found exactly zero targets — the word simply did
+       not appear. It only worked at 1440 because the clamp happened to
+       return a whole number there. */
+    GRID = Math.max(3, Math.min(7, Math.round(size * 0.027)));
+    DASH_MIN = GRID * 1.25;
+    WOBBLE = GRID * 0.55;
+
+    var textWidth = oc.measureText(WORD).width;
+    box = {
+      left: midX - textWidth / 2,
+      right: midX + textWidth / 2,
+      top: midY - size * 0.42,
+      bottom: midY + size * 0.42
+    };
+
+    var data;
+    try {
+      data = oc.getImageData(0, 0, off.width, off.height).data;
+    } catch (e) {
+      return;                    /* nothing to do; the drift still runs */
     }
-    aTo = next[0];
-    bTo = next[1];
-    hold = 620 + ((Math.random() * 420) | 0);
+
+    var found = [];
+    for (var y = 0; y < off.height; y += GRID) {
+      for (var x = 0; x < off.width; x += GRID) {
+        if (data[(y * off.width + x) * 4 + 3] > 110) found.push(x, y);
+      }
+    }
+    if (!found.length) return;
+
+    var count = Math.min(found.length / 2, MAX_MARKS);
+    var step = (found.length / 2) / count;
+
+    n = Math.floor(count);
+    px = new Float32Array(n); py = new Float32Array(n);
+    ox = new Float32Array(n); oy = new Float32Array(n);
+    tx = new Float32Array(n); ty = new Float32Array(n);
+    ang = new Float32Array(n); seedA = new Float32Array(n);
+    seedB = new Float32Array(n); spread = new Float32Array(n);
+    delay = new Float32Array(n); rank = new Float32Array(n);
+
+    for (var i = 0; i < n; i++) {
+      var at = Math.floor(i * step) * 2;
+      tx[i] = found[at];
+      ty[i] = found[at + 1];
+      ang[i] = Math.random() * 6.28318;
+      seedA[i] = Math.random() * 6.28318;
+      seedB[i] = Math.random() * 6.28318;
+      spread[i] = 0.45 + Math.random() * 0.55;
+      /* the stagger, so they arrive as a wave rather than all at once */
+      delay[i] = Math.random() * 0.45;
+      /* and the order they leave in — see FREE_KEEP */
+      rank[i] = Math.random();
+      px[i] = ox[i] = w / 2;
+      py[i] = oy[i] = h / 2;
+    }
   }
 
   /* ---- sizing ----------------------------------------------------------- */
@@ -114,139 +199,176 @@
     if (!rect.width || !rect.height) return;
     w = rect.width;
     h = rect.height;
-    /* the beam is a hairline on black; full device ratio rasterises far
-       more than the look needs and the decay fill is per-pixel work */
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    /* a resize wipes the buffer, so lay the ground back down */
+    buildTargets();
+
     ctx.fillStyle = 'rgb(' + GROUND + ')';
     ctx.fillRect(0, 0, w, h);
     if (reduced.matches) still();
   }
 
-  function scrollTop() {
-    return window.pageYOffset || document.documentElement.scrollTop || 0;
-  }
-
-  /* ---- the centre --------------------------------------------------------
-     Two slow cycles of its own, plus a term taken from the scroll — put
-     through a sine so it stays bounded however long the page is, but
-     still means that moving down the site moves the figure. */
+  /* ---- where a stroke is when it is not holding the word ----------------- */
   function centreX() {
     return w * 0.5
       + Math.sin(wander * 0.31) * w * DRIFT_X
       + Math.sin(scrollTop() / 1100) * w * SCROLL_X
       + lean * w * LEAN_X;
   }
-
   function centreY() {
     return h * 0.5
       + Math.cos(wander * 0.23) * h * DRIFT_Y
       + Math.sin(scrollTop() / 760 + 1.2) * h * SCROLL_Y;
   }
 
-  /* ---- the readout ------------------------------------------------------ */
-  var rx = document.getElementById('scope-x');
-  var ry = document.getElementById('scope-y');
-  var rp = document.getElementById('scope-p');
-  var readoutAt = 0;
+  /* ---- the guides --------------------------------------------------------
+     Two rules above and below the word and two down its sides, with a
+     small filled node where they cross — the measurement marks the
+     reference sets around its title. They arrive with the word. */
+  function guides(alpha) {
+    if (!box || alpha <= 0.01) return;
+    var over = Math.min(w * 0.035, 42);
+    var l = box.left - over, r = box.right + over;
+    var t = box.top - over, b = box.bottom + over;
 
-  function readout(now) {
-    if (now - readoutAt < 240) return;   /* four times a second is plenty */
-    readoutAt = now;
-    if (rx) rx.textContent = a.toFixed(2);
-    if (ry) ry.textContent = b.toFixed(2);
-    if (rp) rp.textContent = (((phase % 6.28318) + 6.28318) % 6.28318).toFixed(2);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = 'rgba(' + ACID + ',' + (alpha * 0.30) + ')';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, t); ctx.lineTo(w, t);
+    ctx.moveTo(0, b); ctx.lineTo(w, b);
+    ctx.moveTo(l, 0); ctx.lineTo(l, h);
+    ctx.moveTo(r, 0); ctx.lineTo(r, h);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(' + ACID + ',' + (alpha * 0.85) + ')';
+    var s = 4;
+    [[l, t], [r, t], [l, b], [r, b]].forEach(function (p) {
+      ctx.fillRect(p[0] - s / 2, p[1] - s / 2, s, s);
+    });
   }
 
   /* ---- one frame -------------------------------------------------------- */
-  function sweep(cx, cy, ax, ay, alpha, width, steps) {
-    var n = steps || SEGS;
-    ctx.beginPath();
-    for (var i = 0; i <= n; i++) {
-      var x = cx + Math.sin(angX + a * i * DT + phase) * ax;
-      var y = cy + Math.sin(angY + b * i * DT) * ay;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  function ease(v) { return v <= 0 ? 0 : v >= 1 ? 1 : 1 - Math.pow(1 - v, 3); }
+
+  function place(now) {
+    var cx = centreX(), cy = centreY();
+    var ax = w * AMP_X, ay = h * AMP_Y;
+    var span = 1 - 0.45;                 /* the stagger's own window */
+
+    for (var i = 0; i < n; i++) {
+      ox[i] = px[i];
+      oy[i] = py[i];
+
+      var dx = cx + Math.sin(angX + seedA[i]) * ax * spread[i];
+      var dy = cy + Math.sin(angY + seedB[i]) * ay * spread[i];
+
+      var m = ease((form - delay[i]) / span);
+      /* the orbit only applies once it is there, or it would fight the
+         approach */
+      var wob = WOBBLE * m;
+      px[i] = dx + (tx[i] - dx) * m + Math.cos(angW + seedA[i]) * wob;
+      py[i] = dy + (ty[i] - dy) * m + Math.sin(angW * 1.31 + seedB[i]) * wob;
     }
+  }
+
+  /* One path, stroked three times. Rebuilding it per pass meant laying
+     out every dash three times a frame for no gain — the geometry does
+     not change between the bloom, the halo and the line. */
+  function build() {
+    var path = new Path2D();
+    var alive = FREE_KEEP + form * (1 - FREE_KEEP);
+    for (var i = 0; i < n; i++) {
+      if (rank[i] > alive) continue;
+      var vx = px[i] - ox[i];
+      var vy = py[i] - oy[i];
+      var speed = Math.sqrt(vx * vx + vy * vy);
+      var len, ux, uy;
+      if (speed > 0.35) {
+        len = Math.min(speed * 1.7 + DASH_MIN, DASH_MAX);
+        ux = vx / speed; uy = vy / speed;
+      } else {
+        len = DASH_MIN;
+        ux = Math.cos(ang[i]); uy = Math.sin(ang[i]);
+      }
+      var hx = ux * len * 0.5, hy = uy * len * 0.5;
+      path.moveTo(px[i] - hx, py[i] - hy);
+      path.lineTo(px[i] + hx, py[i] + hy);
+    }
+    return path;
+  }
+
+  function paint(path, alpha, width) {
     ctx.strokeStyle = 'rgba(' + ACID + ',' + alpha + ')';
     ctx.lineWidth = width;
-    ctx.stroke();
+    ctx.stroke(path);
   }
 
   function frame(now) {
-    /* phosphor: never cleared, only dimmed */
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = 'rgba(' + GROUND + ',' + DECAY + ')';
     ctx.fillRect(0, 0, w, h);
 
-    if (--hold <= 0) pickRatio();
-    a += (aTo - a) * 0.004;
-    b += (bTo - b) * 0.004;
-    phase += phaseRate * 0.016;
+    form += (formTo - form) * 0.022;
+    angX += 0.0042;
+    angY += 0.0031;
+    angW += 0.055;
     wander += 0.0016;
     lean += (leanTo - lean) * 0.04;
 
-    /* Additive, so the crossings burn rather than merely overlap. Kept
-       dim: this is behind every section, not only the first screen. */
+    guides(Math.max(0, form * 1.4 - 0.4));
+
+    place(now);
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    var path = build();
+    paint(path, 0.030, 6);       /* bloom */
+    paint(path, 0.085, 3);       /* halo */
+    paint(path, 0.34, 1.3);      /* the stroke itself */
 
-    var cx = centreX(), cy = centreY();
-    var ax = w * AMP_X, ay = h * AMP_Y;
-    sweep(cx, cy, ax, ay, 0.035, 7);   /* bloom */
-    sweep(cx, cy, ax, ay, 0.09, 3);    /* halo */
-    sweep(cx, cy, ax, ay, 0.42, 1.2);  /* the beam itself */
-
-    /* No dot marks the head. One was drawn here and left a speck at
-       every frame's position; once the ratio drifted those specks sat
-       off the curve the beam was now on and read as dirt. */
-
-    /* each angle advances by its own frequency, and is wrapped so it
-       never grows large enough for float error to reach the curve */
-    angX = (angX + a * SEGS * DT) % 6.28318;
-    angY = (angY + b * SEGS * DT) % 6.28318;
-    readout(now);
     raf = running ? requestAnimationFrame(frame) : null;
   }
 
-  /* ---- the still ---------------------------------------------------------
-     Reduced motion gets one closed figure drawn in full rather than a
-     blank screen: the same picture, just not sweeping. */
+  /* reduced motion: the word, formed, once — and redrawn on scroll so it
+     is still there when the page has moved */
   function still() {
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = 'rgb(' + GROUND + ')';
     ctx.fillRect(0, 0, w, h);
+    form = 1;
+    for (var i = 0; i < n; i++) { px[i] = ox[i] = tx[i]; py[i] = oy[i] = ty[i]; }
+    guides(1);
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    a = aTo = 3; b = bTo = 2; phase = Math.PI / 2; lean = 0;
-    angX = angY = 0;
-    var cx = centreX(), cy = centreY();
-    var ax = w * AMP_X, ay = h * AMP_Y;
-    var whole = Math.ceil(6.28318 / DT);   /* one entire period */
-    sweep(cx, cy, ax, ay, 0.035, 7, whole);
-    sweep(cx, cy, ax, ay, 0.09, 3, whole);
-    sweep(cx, cy, ax, ay, 0.42, 1.2, whole);
+    var path = build();
+    paint(path, 0.030, 6);
+    paint(path, 0.085, 3);
+    paint(path, 0.34, 1.3);
   }
 
   function start() {
     if (reduced.matches) { still(); return; }
     if (!running) { running = true; raf = requestAnimationFrame(frame); }
   }
-
   function stop() {
     running = false;
     if (raf) { cancelAnimationFrame(raf); raf = null; }
   }
 
-  /* ---- boot ------------------------------------------------------------- */
+  /* ---- boot --------------------------------------------------------------
+     The targets come from type, so they are only right once the face has
+     actually loaded — otherwise the word is sampled from the fallback
+     and keeps its shape. */
   resize();
-  pickRatio();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      buildTargets();
+      if (reduced.matches) still();
+    });
+  }
   start();
 
   var rt;
@@ -255,9 +377,12 @@
     rt = setTimeout(resize, 150);
   }, { passive: true });
 
-  /* standing still, the figure still has to move when the page does */
+  /* Hold the word while the first screen is in view and let it go once
+     the page has moved on, so the same strokes become the field behind
+     everything below. */
   var pending = false;
   window.addEventListener('scroll', function () {
+    if (hero) formTo = scrollTop() < hero.offsetHeight * 0.55 ? 1 : 0;
     if (running || pending) return;
     pending = true;
     requestAnimationFrame(function () { pending = false; still(); });

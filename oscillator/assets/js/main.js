@@ -93,7 +93,7 @@
     if (artist.cover) fig.appendChild(coverImage(artist));
     row.appendChild(fig);
 
-    var body = el('div');
+    var body = el('div', 'roster__body');
     if (artist.number) body.appendChild(el('p', 'roster__no', artist.number));
     body.appendChild(el('h2', 'roster__name', artist.name || ''));
     /* bios are hand-written and may not be filled in yet */
@@ -126,11 +126,29 @@
     if (count) count.textContent = ARTISTS.length || '—';
     if (!newest) return;
 
+    var name = newest.name || '';
+    var number = newest.number || '';
+
     function put(id, text) {
       var node = document.getElementById(id);
       if (node) node.textContent = text;
     }
     put('fact-latest', (newest.number ? newest.number + ' — ' : '') + (newest.name || ''));
+    put('strip-no', newest.number ? 'OSC—' + newest.number : '');
+    put('spec-artist', name);
+    put('spec-number', number);
+
+    var shot = document.getElementById('signal-shot');
+    if (shot && newest.cover) shot.src = newest.cover;
+
+    /* the button falls back to the label's own page in the markup, so it
+       only moves when this session has a link we trust */
+    var link = document.getElementById('signal-link');
+    var url = safeUrl(newest.url);
+    if (link && url) {
+      link.href = url;
+      link.setAttribute('aria-label', listenLabel(newest));
+    }
   }
 
   /* ---- contact dialog ----------------------------------------------------
@@ -236,27 +254,13 @@
     Promise.all(running.map(function (an) { return an.finished; })).then(settle, settle);
   }
 
-  function setUpBadge() {
-    var badge = document.getElementById('badge');
-    if (!badge) return;
+  function setUpIntro() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { settle(); return; }
-
     armIntro();
-
-    badge.addEventListener('click', function () {
-      document.body.classList.remove('is-in');
-      document.body.classList.remove('is-done');
-      /* reading a layout property forces the style change to land;
-         without it the class goes off and on inside one frame and the
-         animations never restart */
-      void document.body.offsetWidth;
-      document.body.classList.add('is-in');
-      armIntro();
-    });
   }
 
   function boot() {
-    setUpBadge();
+    setUpIntro();
     renderLatest();
     renderTiles();
     renderRoster();

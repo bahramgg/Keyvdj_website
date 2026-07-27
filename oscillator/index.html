@@ -31,10 +31,8 @@
 
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/anton-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/spacegrotesk-latin.woff2" crossorigin>
-<link rel="preload" as="image" href="img/emblem.webp" fetchpriority="high">
-<link rel="preload" as="image" href="img/wordmark-lit.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="assets/css/style.css?v=cb653765">
+<link rel="stylesheet" href="assets/css/style.css?v=d19bbf64">
 </head>
 
 <body class="is-in">
@@ -42,76 +40,70 @@
 <!-- the reel cuts the whole frame to its inverse twice on the way in -->
 <span class="flash" aria-hidden="true"></span>
 
-<!-- An oscilloscope in XY mode draws a Lissajous figure: two
-     oscillators, one per axis. Its amplitudes are larger than the
-     window and its centre wanders with the scroll, so it runs off every
-     edge instead of sitting in a box. See assets/js/scope.js. -->
+<!-- The lines that write the name, and the field they become once the
+     page moves on. See assets/js/scope.js. -->
 <canvas class="scope" id="scope" aria-hidden="true"></canvas>
 
-<a class="skip-link" href="#artists">Skip to the artists</a>
+<a class="skip-link" href="#signal">Skip to the latest session</a>
 
 <!-- ══ THE FIRST SCREEN ═══════════════════════════════════════════════
-     The badge from the identity reel: a thin ring with the name running
-     around it, turning, and the lockup lit at its centre. Everything
-     yellow on this page glows — see .glow and .lit in the stylesheet. -->
+     No mark on it. The name is written by the lines themselves — a
+     field of lit strokes that gather at the centre and settle into the
+     word, and let go again once the page moves on. See scope.js. -->
 <header class="hero" id="top">
   <nav class="hero__nav" aria-label="Primary">
-    <a href="#artists">Artists</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
+    <span class="hero__set">
+      <a href="#signal">Signal</a>
+      <a href="#artists">Artists</a>
+    </span>
+    <span class="hero__set">
+      <a href="#label">Label</a>
+      <a href="#transmit">Transmit</a>
+    </span>
   </nav>
 
-  <div class="hero__mid">
-    <h1 class="sr-only">Oscillator — independent techno label, Tehran</h1>
-
-    <div class="badge" id="badge">
-      <svg class="badge__ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-        <defs>
-          <!-- one full circle, started at the top and running clockwise,
-               so the type sets the right way up -->
-          <path id="ring" d="M100,100 m0,-82 a82,82 0 1,1 -0.1,0" />
-        </defs>
-        <circle class="ring-bloom" cx="100" cy="100" r="93" />
-        <circle class="ring-line"  cx="100" cy="100" r="93" />
-        <circle class="ring-bloom" cx="100" cy="100" r="70.5" />
-        <circle class="ring-line"  cx="100" cy="100" r="70.5" />
-        <g class="badge__spin">
-          <!-- textLength is the circle's own circumference, so the
-               repeats close the loop exactly instead of leaving a gap or
-               running over themselves at a different font size -->
-          <!-- xml:space, or the trailing space is dropped and the loop
-               closes as "…OSCILLATOR /OSCILLATOR" with no gap at the seam -->
-          <text xml:space="preserve"><textPath href="#ring" textLength="515.2" lengthAdjust="spacing">OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR / OSCILLATOR / </textPath></text>
-        </g>
-      </svg>
-
-      <!-- two pieces, so the emblem can turn on its own axis; they are
-           cut at the master's full width and reassemble at this one -->
-      <span class="badge__core">
-        <img class="badge__emblem" src="img/emblem.webp" alt=""
-             width="1400" height="607" fetchpriority="high" decoding="async">
-        <img class="badge__word" src="img/wordmark-lit.webp" alt=""
-             width="1400" height="412" fetchpriority="high" decoding="async">
-      </span>
-    </div>
-
-    <p class="hero__we lit">We are Oscillator</p>
-  </div>
+  <h1 class="sr-only">Oscillator — independent techno label, Tehran</h1>
 
   <div class="hero__foot">
-    <p class="readout" aria-hidden="true">
-      X <b id="scope-x">3.00</b> : Y <b id="scope-y">2.00</b> &middot; &phi; <b id="scope-p">0.00</b>
-    </p>
-    <p class="tag">Independent techno · Tehran</p>
-    <p class="tag"><a href="#artists">Scroll <span aria-hidden="true">↓</span></a></p>
+    <p class="tag">Independent techno · Tehran · Est. by KEYV</p>
+    <p class="tag"><a href="#signal">Scroll <span aria-hidden="true">↓</span></a></p>
   </div>
 </header>
 
 <main>
 
+  <!-- ══ SIGNAL — the newest session, as a spec sheet ═════════════════ -->
+  <section class="sect" id="signal" aria-labelledby="signal-title">
+    <div class="strip">
+      <p class="tag">Latest transmission</p>
+      <p class="tag tag--acid" id="strip-no">OSC—030</p>
+    </div>
+
+    <div class="signal">
+      <figure class="signal__shot">
+        <span class="nodes" aria-hidden="true"></span>
+        <img id="signal-shot" src="img/covers/030.webp" alt=""
+             width="1100" height="1100" decoding="async">
+      </figure>
+
+      <div>
+        <h2 class="sr-only" id="signal-title">The latest session</h2>
+        <dl class="spec">
+          <div><dt>Artist</dt><dd id="spec-artist">—</dd></div>
+          <div><dt>Session</dt><dd id="spec-number">—</dd></div>
+          <div><dt>Format</dt><dd>Continuous mix</dd></div>
+          <div><dt>Channel</dt><dd>SoundCloud</dd></div>
+        </dl>
+        <p class="actions">
+          <a class="btn btn--acid" id="signal-link" href="https://soundcloud.com/oscillatorr" target="_blank" rel="noopener">Listen</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- ══ ARTISTS ══════════════════════════════════════════════════════
-       There is no separate archive: an artist and their session are the
-       same entry. Three of them here, the rest on artists.html. -->
+       An artist and their session are one entry — there is no separate
+       archive. Three here, the rest on artists.html. -->
   <section class="sect" id="artists" aria-labelledby="artists-title">
     <div class="head">
       <p class="tag">One artist at a time</p>
@@ -126,13 +118,13 @@
     </p>
   </section>
 
-  <!-- ══ ABOUT ════════════════════════════════════════════════════════ -->
-  <section class="sect" id="about" aria-labelledby="about-title">
+  <!-- ══ THE LABEL ════════════════════════════════════════════════════ -->
+  <section class="sect" id="label" aria-labelledby="label-title">
     <div class="about">
       <div>
         <div class="head">
           <p class="tag">The label</p>
-          <h2 id="about-title">We are Oscillator</h2>
+          <h2 id="label-title">We are Oscillator</h2>
         </div>
         <div class="prose">
           <p>
@@ -160,11 +152,11 @@
     </div>
   </section>
 
-  <!-- ══ CONTACT ══════════════════════════════════════════════════════ -->
-  <section class="sect" id="contact" aria-labelledby="contact-title">
+  <!-- ══ TRANSMIT — demos, bookings, press ════════════════════════════ -->
+  <section class="sect" id="transmit" aria-labelledby="transmit-title">
     <div class="head">
       <p class="tag">Demos, bookings, press</p>
-      <h2 id="contact-title">Get in touch</h2>
+      <h2 id="transmit-title">Transmit</h2>
     </div>
     <div class="prose">
       <p>
@@ -219,9 +211,9 @@
   </form>
 </dialog>
 
-<script defer src="assets/js/scope.js?v=008fbebb"></script>
+<script defer src="assets/js/scope.js?v=fb554329"></script>
 <script src="assets/js/artists.js?v=9cd33205"></script>
 <script src="assets/js/info.js?v=55f4d261"></script>
-<script defer src="assets/js/main.js?v=b8ee9be4"></script>
+<script defer src="assets/js/main.js?v=cd7a3807"></script>
 </body>
 </html>
